@@ -58,7 +58,15 @@ set -euo pipefail
 expected='/var/www/chipsa/data/www/dnl.chipsa.ru/wp-content/themes/frame/'
 [[ "$1" == "$expected" ]] || { echo 'Unexpected remote target' >&2; exit 1; }
 target=${1%/}
-[[ -d "$target" && ! -L "$target" ]] || { echo 'Missing or symlinked staging directory' >&2; exit 1; }
+if [[ -L "$target" ]]; then
+    echo 'Staging directory is a symlink; refusing to follow it' >&2
+    exit 1
+fi
+if [[ ! -d "$target" ]]; then
+    echo 'Staging path is missing, inaccessible, or not a directory:' >&2
+    stat --format='Target type: %F; permissions: %a; owner: %U:%G' -- "$target" >&2 || true
+    exit 1
+fi
 [[ "$(realpath -e -- "$target")" == "$target" ]] || { echo 'Staging path resolves elsewhere' >&2; exit 1; }
 cd -P -- "$target"
 [[ "$PWD" == "$target" ]] || exit 1
