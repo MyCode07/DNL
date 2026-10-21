@@ -1,0 +1,78 @@
+name: Frame staging dry-run
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: frame-staging
+    cancel-in-progress: false
+
+defaults:
+    run:
+        shell: bash
+
+jobs:
+    staging:
+        if: github.ref == 'refs/heads/main'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 30
+        environment: staging
+        steps:
+            - name: Checkout
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Set up Node.js
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version: '24'
+                  cache: npm
+                  cache-dependency-path: package-lock.json
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Lint, formatting and existing tests
+              run: npm run check
+
+            - name: Build assets
+              run: npm run build
+
+            - name: Verify required CSS and JS
+              run: |
+                  set -euo pipefail
+                  test -s dist/css/style.min.css
+                  test -s dist/js/app.min.js
+
+            - name: Set up PHP 8.3
+              uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+              with:
+                  php-version: '8.3'
+                  coverage: none
+                  tools: none
+
+            - name: Check theme PHP syntax
+              run: |
+                  set -euo pipefail
+                  while IFS= read -r -d '' file; do
+                    php -l "$file"
+                  done < <(git ls-files -z -- '*.php')
+
+            - name: Package runtime theme
+              run: node build/scripts/package-theme.mjs "$RUNNER_TEMP/frame-package"
+
+            - name: Verify SSH and preview staging changes (no writes)
+              env:
+                  FRAME_PACKAGE_DIR: ${{ runner.temp }}/frame-package
+                  SSH_HOST: ${{ secrets.SSH_HOST }}
+                  SSH_PORT: ${{ secrets.SSH_PORT }}
+                  SSH_USER: ${{ secrets.SSH_USER }}
+                  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+                  SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+              run: bash build/scripts/staging-dry-run.sh
