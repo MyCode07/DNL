@@ -1,0 +1,359 @@
+{
+    "h1": {
+        "selectors": "h1, .h1",
+        "steps": {
+            "767": {
+                "font-size": "3.2rem",
+                "line-height": "3rem",
+                "letter-spacing": "-0.2rem"
+            },
+            "1024": {
+                "font-size": "6rem",
+                "line-height": "6rem",
+                "letter-spacing": "-0.38rem"
+            },
+            "1280": {
+                "font-size": "7.2rem",
+                "line-height": "7rem",
+                "letter-spacing": "-0.45rem"
+            },
+            "base": {
+                "font-size": "10rem",
+                "line-height": "9.4rem",
+                "letter-spacing": "-0.64rem",
+                "font-weight": "500",
+                "text-transform": "uppercase"
+            }
+        }
+    },
+    "h1-subtitle": {
+        "selectors": ".h1-subtitle",
+        "steps": {
+            "767": {
+                "font-size": "1.8rem",
+                "line-height": "2.2rem",
+                "letter-spacing": "-0.05rem"
+            },
+            "1280": {
+                "font-size": "2rem",
+                "line-height": "2.4rem",
+                "letter-spacing": "-0.05rem"
+            },
+            "base": {
+                "font-size": "2.4rem",
+                "line-height": "2.8rem",
+                "letter-spacing": "-0.08rem",
+                "font-weight": "500"
+            }
+        }
+    },
+    "big-nums": {
+        "selectors": ".big-nums",
+        "steps": {
+            "767": {
+                "font-size": "4.4rem",
+                "line-height": "4.2rem",
+                "letter-spacing": "-0.22rem"
+            },
+            "1280": {
+                "font-size": "6.4rem",
+                "line-height": "5.4rem",
+                "letter-spacing": "-0.4rem"
+            },
+            "base": {
+                "font-size": "8rem",
+                "line-height": "6rem",
+                "letter-spacing": "-0.5rem",
+                "font-weight": "400"
+            }
+        }
+    },
+    "h2": {
+        "selectors": "h2, .h2",
+        "steps": {
+            "767": {
+                "font-size": "3.2rem",
+                "line-height": "3rem",
+                "letter-spacing": "-0.15rem"
+            },
+            "1280": {
+                "font-size": "4.8rem",
+                "line-height": "4.4rem",
+                "letter-spacing": "-0.3rem"
+            },
+            "base": {
+                "font-size": "6.4rem",
+                "line-height": "6rem",
+                "letter-spacing": "-0.45rem",
+                "font-weight": "500",
+                "text-transform": "uppercase"
+            }
+        }
+    },
+    "big-text": {
+        "selectors": ".big-text",
+        "steps": {
+            "767": {
+                "font-size": "3.4rem",
+                "line-height": "3rem",
+                "letter-spacing": "-0.14rem"
+            },
+            "1280": {
+                "font-size": "4.8rem",
+                "line-height": "4.4rem",
+                "letter-spacing": "-0.3rem"
+            },
+            "base": {
+                "font-size": "6.4rem",
+                "line-height": "6rem",
+                "letter-spacing": "-0.45rem",
+                "font-weight": "500"
+            }
+        }
+    },
+    "medium-nums": {
+        "selectors": ".medium-nums",
+        "steps": {
+            "767": {
+                "font-size": "2.4rem",
+                "line-height": "2.4rem",
+                "letter-spacing": "-0.1rem"
+            },
+            "1280": {
+                "font-size": "4rem",
+                "line-height": "4rem",
+                "letter-spacing": "-0.2rem"
+            },
+            "base": {
+                "font-size": "5rem",
+                "line-height": "5rem",
+                "letter-spacing": "-0.3rem",
+                "font-weight": "400"
+            }
+        }
+    },
+    "project-name": {
+        "selectors": ".project-name",
+        "steps": {
+            "767": {
+                "font-size": "2.6rem",
+                "line-height": "2.8rem",
+                "letter-spacing": "-0.08rem"
+            },
+            "1280": {
+                "font-size": "4rem",
+                "line-height": "3.8rem",
+                "letter-spacing": "-0.15rem"
+            },
+            "base": {
+                "font-size": "4.8rem",
+                "line-height": "4.6rem",
+                "letter-spacing": "-0.15rem",
+                "font-weight": "500"
+            }
+        }
+    },
+    "h3": {
+        "selectors": "h3, .h3",
+        "steps": {
+            "767": {
+                "font-size": "2.4rem",
+                "line-height": "2.2rem",
+                "letter-spacing": "-0.05rem"
+            },
+            "1280": {
+                "font-size": "3rem",
+                "line-height": "2.8rem",
+                "letter-spacing": "-0.08rem"
+            },
+            "base": {
+                "font-size": "3.4rem",
+                "line-height": "3.2rem",
+                "letter-spacing": "-0.1rem",
+                "font-weight": "400"
+            }
+        }
+    },
+    "h4": {
+        "selectors": "h4, .h4",
+        "steps": {
+            "767": {
+                "font-size": "1.8rem",
+                "line-height": "2.2rem",
+                "letter-spacing": "-0.04rem"
+            },
+            "1280": {
+                "font-size": "2.2rem",
+                "line-height": "2.6rem",
+                "letter-spacing": "-0.06rem"
+            },
+            "base": {
+                "font-size": "2.4rem",
+                "line-height": "2.8rem",
+                "letter-spacing": "-0.08rem",
+                "font-weight": "500"
+            }
+        }
+    },
+    "body-text": {
+        "selectors": ".body-text",
+        "steps": {
+            "767": {
+                "font-size": "1.6rem",
+                "line-height": "2rem",
+                "letter-spacing": "-0.02rem"
+            },
+            "1280": {
+                "font-size": "1.8rem",
+                "line-height": "2.2rem",
+                "letter-spacing": "-0.04rem"
+            },
+            "base": {
+                "font-size": "2rem",
+                "line-height": "2.4rem",
+                "letter-spacing": "-0.05rem",
+                "font-weight": "400"
+            }
+        }
+    },
+    "primary-button": {
+        "selectors": ".primary-button",
+        "steps": {
+            "767": {
+                "font-size": "1.4rem",
+                "line-height": "1.4rem",
+                "letter-spacing": "-0.03rem"
+            },
+            "1280": {
+                "font-size": "1.6rem",
+                "line-height": "1.6rem",
+                "letter-spacing": "-0.04rem"
+            },
+            "base": {
+                "font-size": "1.8rem",
+                "line-height": "1.8rem",
+                "letter-spacing": "-0.05rem",
+                "font-weight": "500"
+            }
+        }
+    },
+    "text-m": {
+        "selectors": ".text-m",
+        "steps": {
+            "767": {
+                "font-size": "1.4rem",
+                "line-height": "1.5rem",
+                "letter-spacing": "-0.02rem"
+            },
+            "1280": {
+                "font-size": "1.4rem",
+                "line-height": "1.4rem",
+                "letter-spacing": "-0.02rem"
+            },
+            "base": {
+                "font-size": "1.6rem",
+                "line-height": "1.6rem",
+                "letter-spacing": "-0.05rem",
+                "font-weight": "500"
+            }
+        }
+    },
+    "text-s": {
+        "selectors": ".text-s",
+        "steps": {
+            "767": {
+                "font-size": "1.4rem",
+                "line-height": "1.8rem",
+                "letter-spacing": "-0.02rem"
+            },
+            "1280": {
+                "font-size": "1.4rem",
+                "line-height": "2rem",
+                "letter-spacing": "-0.02rem"
+            },
+            "base": {
+                "font-size": "1.6rem",
+                "line-height": "2rem",
+                "letter-spacing": "-0.05rem",
+                "font-weight": "400"
+            }
+        }
+    },
+    "label-uppercase-m": {
+        "selectors": ".label-uppercase-m",
+        "steps": {
+            "767": {
+                "font-size": "1.3rem",
+                "line-height": "1.3rem"
+            },
+            "1280": {
+                "font-size": "1.4rem",
+                "line-height": "1.4rem"
+            },
+            "base": {
+                "font-size": "1.4rem",
+                "line-height": "1.5rem",
+                "letter-spacing": "-0.02rem",
+                "font-weight": "500",
+                "text-transform": "uppercase"
+            }
+        }
+    },
+    "label-m": {
+        "selectors": ".label-m",
+        "steps": {
+            "767": {
+                "font-size": "1.4rem",
+                "line-height": "1.3rem"
+            },
+            "1280": {
+                "font-size": "1.4rem",
+                "line-height": "1.4rem"
+            },
+            "base": {
+                "font-size": "1.5rem",
+                "line-height": "1.5rem",
+                "letter-spacing": "-0.02rem",
+                "font-weight": "500"
+            }
+        }
+    },
+    "label-uppercase": {
+        "selectors": ".label-uppercase",
+        "steps": {
+            "1280": {
+                "font-size": "1.4rem",
+                "line-height": "1.4rem"
+            },
+            "base": {
+                "text-transform": "uppercase",
+                "font-size": "1.5rem",
+                "line-height": "1.5rem",
+                "letter-spacing": "-0.02rem",
+                "font-weight": "400"
+            }
+        }
+    },
+    "label": {
+        "selectors": ".label",
+        "steps": {
+            "base": {
+                "font-size": "1.4rem",
+                "line-height": "1.4rem",
+                "letter-spacing": "-0.02rem",
+                "font-weight": "500"
+            }
+        }
+    },
+    "caption": {
+        "selectors": ".caption",
+        "steps": {
+            "base": {
+                "font-size": "1.4rem",
+                "line-height": "1.4rem",
+                "letter-spacing": "-0.02rem",
+                "font-weight": "400"
+            }
+        }
+    }
+}

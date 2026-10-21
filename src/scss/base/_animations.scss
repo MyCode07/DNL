@@ -1,0 +1,135 @@
+@use "../abstracts/variables" as *;
+
+/* Одиночные анимации */
+[data-animate="top"] {
+    transform: translate3d(0, -2.5rem, 0);
+    opacity: 0;
+}
+
+[data-animate="bottom"] {
+    transform: translate3d(0, 2.5rem, 0);
+    opacity: 0;
+}
+
+[data-animate="left"] {
+    transform: translate3d(-2.5rem, 0, 0);
+    opacity: 0;
+}
+
+[data-animate="right"] {
+    transform: translate3d(2.5rem, 0, 0);
+    opacity: 0;
+}
+
+[data-animate="opacity"] {
+    opacity: 0;
+}
+
+[data-animate="svg"] {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+}
+
+/* Stagger-анимации */
+[data-animate-stagger="top"] {
+    transform: translate3d(0, -2.5rem, 0);
+    opacity: 0;
+}
+
+[data-animate-stagger="bottom"] {
+    transform: translate3d(0, 2.5rem, 0);
+    opacity: 0;
+}
+
+[data-animate-stagger="left"] {
+    transform: translate3d(-2.5rem, 0, 0);
+    opacity: 0;
+}
+
+[data-animate-stagger="right"] {
+    transform: translate3d(2.5rem, 0, 0);
+    opacity: 0;
+}
+
+[data-animate-stagger="opacity"] {
+    opacity: 0;
+}
+
+[data-animate-menu] {
+   filter: blur(0.2rem);
+}
+
+[data-animate-flip],
+[data-animate-double-flip] {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    perspective: 800px;
+    height: 1lh;
+
+    span {
+
+        i,
+        span {
+            font-style: inherit;
+            display: inline-block;
+            padding-inline: 0;
+            will-change: transform;
+        }
+    }
+}
+
+[data-animate-text] {
+    overflow: hidden;
+
+    .animate-word {
+        display: inline-block;
+        vertical-align: top;
+        will-change: transform, opacity;
+    }
+}
+
+.odometer__digit,
+[data-animate-double-flip] span > i:not(:empty) {
+    width: 5.6rem;
+    text-align: right;
+    flex: 0 0 auto;
+
+    &.num-1 {
+        text-align: center;
+    }
+
+    @media (max-width:1280px) {
+        width: 3.77rem;
+    }
+
+    @media (max-width:767px) {
+        width: 2.95rem;
+    }
+}
+
+.odometer {
+    height: 100%;
+
+    // .odometer__digit
+    &__digit {
+        position: relative;
+        height: 100%;
+        display: inline-block;
+    }
+
+    // .odometer__glyph
+    &__glyph {
+        position: absolute;
+        right: 0;
+        will-change: transform;
+        width: fit-content;
+        height: 100%;
+    }
+}
+
+.innerFlip {
+    flex: 0 0 auto;
+    vertical-align: top;
+    font-variant-numeric: tabular-nums;
+}

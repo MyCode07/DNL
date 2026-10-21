@@ -1,0 +1,305 @@
+@use 'sass:map';
+
+// Desktop first; breakpoint order is also the cascade order.
+$breakpoints: (
+    1280: '(max-width: 1280px)',
+    767: '(max-width: 767px)',
+) !default;
+
+// Shared declarations are defined once, without coupling responsive variants.
+$_large-heading: (
+    base: (
+        font-size: 6.4rem,
+        line-height: 6rem,
+        letter-spacing: -0.45rem,
+        font-weight: 500,
+    ),
+    1280: (
+        font-size: 4.8rem,
+        line-height: 4.4rem,
+        letter-spacing: -0.3rem,
+    ),
+);
+$_subtitle: (
+    font-size: 2.4rem,
+    line-height: 2.8rem,
+    letter-spacing: -0.08rem,
+    font-weight: 500,
+);
+$_label: (
+    font-size: 1.4rem,
+    line-height: 1.4rem,
+    letter-spacing: -0.02rem,
+    font-weight: 500,
+);
+
+$styles: (
+    'h1': (
+        base: (
+            font-size: 10rem,
+            line-height: 9.4rem,
+            letter-spacing: -0.64rem,
+            font-weight: 500,
+            text-transform: uppercase,
+        ),
+        1280: (
+            font-size: 6.4rem,
+            line-height:6.2rem,
+            letter-spacing: -0.45rem,
+        ),
+        767: (
+            font-size: 3.2rem,
+            line-height: 3rem,
+            letter-spacing: -0.2rem,
+        ),
+    ),
+    'h1-subtitle': (
+        base: $_subtitle,
+        1280: (
+            font-size: 2rem,
+            line-height: 2.4rem,
+            letter-spacing: -0.05rem,
+        ),
+        767: (
+            font-size: 1.8rem,
+            line-height: 2.2rem,
+        ),
+    ),
+    'big-nums': (
+        base: (
+            font-size: 8rem,
+            line-height: 6rem,
+            letter-spacing: -0.5rem,
+            font-weight: 400,
+        ),
+        1280: (
+            font-size: 6.4rem,
+            line-height: 5.4rem,
+            letter-spacing: -0.4rem,
+        ),
+        767: (
+            font-size: 4.4rem,
+            line-height: 4.2rem,
+            letter-spacing: -0.22rem,
+        ),
+    ),
+    'h2': map.deep-merge(
+            $_large-heading,
+            (
+                base: (
+                    text-transform: uppercase,
+                ),
+                767: (
+                    font-size: 3.2rem,
+                    line-height: 3rem,
+                    letter-spacing: -0.15rem,
+                ),
+            )
+        ),
+    'big-text': map.deep-merge(
+            $_large-heading,
+            (
+                767: (
+                    font-size: 3.4rem,
+                    line-height: 3rem,
+                    letter-spacing: -0.14rem,
+                ),
+            )
+        ),
+    'medium-nums': (
+        base: (
+            font-size: 5rem,
+            line-height: 5rem,
+            letter-spacing: -0.3rem,
+            font-weight: 400,
+        ),
+        1280: (
+            font-size: 4rem,
+            line-height: 4rem,
+            letter-spacing: -0.2rem,
+        ),
+        767: (
+            font-size: 2.4rem,
+            line-height: 2.4rem,
+            letter-spacing: -0.1rem,
+        ),
+    ),
+    'project-name': (
+        base: (
+            font-size: 4.8rem,
+            line-height: 4.6rem,
+            letter-spacing: -0.15rem,
+            font-weight: 500,
+        ),
+        1280: (
+            font-size: 4rem,
+            line-height: 3.8rem,
+        ),
+        767: (
+            font-size: 2.6rem,
+            line-height: 2.8rem,
+            letter-spacing: -0.08rem,
+        ),
+    ),
+    'h3': (
+        base: (
+            font-size: 3.4rem,
+            line-height: 3.2rem,
+            letter-spacing: -0.1rem,
+            font-weight: 400,
+        ),
+        1280: (
+            font-size: 3rem,
+            line-height: 2.8rem,
+            letter-spacing: -0.08rem,
+        ),
+        767: (
+            font-size: 2.4rem,
+            line-height: 2.2rem,
+            letter-spacing: -0.05rem,
+        ),
+    ),
+    'h4': (
+        base: $_subtitle,
+        1280: (
+            font-size: 2.2rem,
+            line-height: 2.6rem,
+            letter-spacing: -0.06rem,
+        ),
+        767: (
+            font-size: 1.8rem,
+            line-height: 2.2rem,
+            letter-spacing: -0.04rem,
+        ),
+    ),
+    'body-text': (
+        base: (
+            font-size: 2rem,
+            line-height: 2.4rem,
+            letter-spacing: -0.05rem,
+            font-weight: 400,
+        ),
+        1280: (
+            font-size: 1.8rem,
+            line-height: 2.2rem,
+            letter-spacing: -0.04rem,
+        ),
+        767: (
+            font-size: 1.6rem,
+            line-height: 2rem,
+            letter-spacing: -0.02rem,
+        ),
+    ),
+    'primary-button': (
+        base: (
+            font-size: 1.8rem,
+            line-height: 1.8rem,
+            letter-spacing: -0.05rem,
+            font-weight: 500,
+        ),
+        1280: (
+            font-size: 1.6rem,
+            line-height: 1.6rem,
+            letter-spacing: -0.04rem,
+        ),
+        767: (
+            font-size: 1.4rem,
+            line-height: 1.4rem,
+            letter-spacing: -0.03rem,
+        ),
+    ),
+    'text-m': (
+        base: (
+            font-size: 1.6rem,
+            line-height: 1.6rem,
+            letter-spacing: -0.05rem,
+            font-weight: 500,
+        ),
+        1280: (
+            font-size: 1.4rem,
+            line-height: 1.4rem,
+            letter-spacing: -0.02rem,
+        ),
+        767: (
+            line-height: 1.5rem,
+        ),
+    ),
+    'text-s': (
+        base: (
+            font-size: 1.6rem,
+            line-height: 2rem,
+            letter-spacing: -0.05rem,
+            font-weight: 400,
+        ),
+        1280: (
+            font-size: 1.4rem,
+            letter-spacing: -0.02rem,
+        ),
+        767: (
+            line-height: 1.8rem,
+        ),
+    ),
+    'label-uppercase-m': (
+        base: (
+            font-size: 1.4rem,
+            line-height: 1.5rem,
+            letter-spacing: -0.02rem,
+            font-weight: 500,
+            text-transform: uppercase,
+        ),
+        1280: (
+            line-height: 1.4rem,
+        ),
+        767: (
+            font-size: 1.3rem,
+            line-height: 1.3rem,
+        ),
+    ),
+    'label-m': (
+        base: (
+            font-size: 1.5rem,
+            line-height: 1.5rem,
+            letter-spacing: -0.02rem,
+            font-weight: 500,
+        ),
+        1280: (
+            font-size: 1.4rem,
+            line-height: 1.4rem,
+        ),
+        767: (
+            line-height: 1.3rem,
+        ),
+    ),
+    'label-uppercase': (
+        base: (
+            text-transform: uppercase,
+            font-size: 1.5rem,
+            line-height: 1.5rem,
+            letter-spacing: -0.02rem,
+            font-weight: 400,
+        ),
+        1280: (
+            font-size: 1.4rem,
+            line-height: 1.4rem,
+        ),
+    ),
+    'label': (
+        base: $_label,
+    ),
+    'caption': (
+        base: map.merge(
+                $_label,
+                (
+                    font-weight: 400,
+                )
+            ),
+    ),
+) !default;
+
+// Other styles generate .<name> automatically.
+$selectors: (
+    'h1': 'h1, .h1',
+    'h2': 'h2, .h2',
+    'h3': 'h3, .h3',
+    'h4': 'h4, .h4',
+) !default;

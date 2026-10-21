@@ -1,0 +1,27 @@
+// Base styles and font declarations.
+@use "base/reset";
+@use "base/fonts";
+// Shared Sass variables and mixins (no CSS output).
+@use "abstracts";
+// Third-party styles retain their original position in the cascade.
+@use "vendors";
+// Global styles and animations.
+@use "base/global";
+@use "base/animations";
+// Preserve component order: several selectors share the same specificity.
+@use "components/ticker";
+@use "layout/header";
+@use "layout/footer";
+@use "components/form";
+@use "components/popup";
+@use "components/popup-result";
+@use "components/menu";
+@use "layout/grid";
+@use "components/cards";
+// Page sections and responsive overrides.
+@use "sections/section";
+@use "sections/hero";
+@use "sections/single";
+@use "overrides/large-screen";
+// Existing development page switcher.
+@use "dev/page-list";

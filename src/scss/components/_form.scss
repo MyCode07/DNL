@@ -1,0 +1,332 @@
+@use "../abstracts/variables" as *;
+@use "../typography" as type;
+
+.form {
+    width: 100%;
+
+    // .form__fields
+    &__fields {
+        display: flex;
+        gap: 6rem;
+        justify-content: space-between;
+
+        @media (max-width:1280px) {
+            gap: 4rem;
+        }
+
+        @media (max-width:1024px) {
+            gap: 6rem;
+            flex-direction: column;
+        }
+    }
+
+    // .form__col
+    &__col {
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+        width: calc(50% - 3rem);
+        flex: 0 0 auto;
+
+        @media (max-width:1280px) {
+            gap: 3rem;
+            width: calc(50% - 2rem);
+        }
+
+        @media (max-width:1024px) {
+            width: 100%;
+        }
+
+        // .form__col-title
+        &-title {
+            @media (min-width:1025px) {
+                display: none;
+            }
+        }
+    }
+
+    // .form__item
+    &__item {
+        border-bottom: 0.1rem solid $gray-300;
+        padding-bottom: 1.2rem;
+
+        input {
+            @include type.typography("primary-button");
+            display: block;
+
+            &::placeholder {
+                color: $gray-600;
+            }
+        }
+    }
+
+    // .form__upload
+    &__upload {}
+
+    // .form__checkboxes
+    &__checkboxes {
+        padding-bottom: 1.6rem;
+        border-bottom: 0.1rem solid $gray-300;
+
+        p {
+            margin-bottom: 1.6rem;
+        }
+
+        .wpcf7-checkbox {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+
+            label {
+                cursor: pointer;
+                padding: 1.3rem 2rem 1.3rem 1.6rem;
+                border-radius: 1.4rem;
+                display: flex;
+                gap: 1.2rem;
+                background-color: $gray-100;
+                align-items: center;
+
+                @media (max-width:1280px) {
+                    padding: 1.1rem 2rem 1.1rem 1.6rem;
+                }
+
+                &:before {
+                    content: '';
+                    display: block;
+                    flex: 0 0 auto;
+                    width: 2.2rem;
+                    height: 2.2rem;
+                    border-radius: 0.6rem;
+                    border: 0.1rem solid $gray-300;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    background-size: 1.6rem;
+                }
+
+                &:has(input:checked) {
+                    &:before {
+                        border-color: $black;
+                        background-color: $black;
+                        background-image: url('@img/icons/check.svg');
+                    }
+                }
+
+                * {
+                    cursor: pointer;
+                }
+
+                input {
+                    display: none;
+                }
+            }
+        }
+
+        // .form__checkboxes-text
+        &-text {
+            margin-top: 1.6rem;
+
+            input {
+                width: 100%;
+                padding: 1.6rem;
+                border-radius: 1.4rem;
+                background-color: $gray-100;
+                @include type.typography("primary-button");
+
+                &::placeholder {
+                    color: $gray-600;
+                }
+            }
+        }
+    }
+
+    // .form__action
+    &__action {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4rem;
+
+        @media (max-width:1024px) {
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 3rem;
+        }
+    }
+
+    // .form__privacy
+    &__privacy {
+        max-width: 41.5rem;
+
+        @media (max-width:1024px) {
+            max-width: 38rem;
+        }
+
+        label {
+            cursor: pointer;
+            display: flex;
+            gap: 1.4rem;
+            user-select: none;
+
+            &:before {
+                content: '';
+                width: 2.2rem;
+                height: 2.2rem;
+                border-radius: 0.6rem;
+                border: 0.1rem solid $gray-300;
+                flex: 0 0 auto;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: 1.6rem;
+                margin-top: 0.4rem;
+            }
+
+            &:has(input:checked) {
+                &:before {
+                    border-color: $black;
+                    background-color: $black;
+                    background-image: url('@img/icons/check.svg');
+                }
+            }
+
+            input {
+                display: none;
+            }
+
+            p {
+                color: $gray-600;
+                @include type.typography("text-s");
+
+                a,
+                span {
+                    color: $black;
+                }
+            }
+        }
+
+        a {
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+.wpcf7-list-item {
+    margin: 0 !important;
+}
+
+.codedropz-upload-inner > :first-child,
+.codedropz-upload-inner > :nth-child(2) {
+    display: none;
+}
+
+.codedropz-upload-container {
+    padding: 0;
+}
+
+.codedropz-upload-handler {
+    border: 0;
+}
+
+.codedropz-upload-handler {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+.cd-upload-btn {
+    display: flex;
+    gap: 0.8rem;
+    border-bottom: 0.1rem solid $gray-300;
+    padding-top: 0.6rem;
+    padding-bottom: 1.2rem;
+    @include type.typography("primary-button");
+
+    &:before {
+        content: '';
+        display: block;
+        width: 1.4rem;
+        height: 1.4rem;
+        background: center / contain no-repeat url(@img/icons/plus.svg);
+    }
+}
+
+.dnd-upload-image {
+    display: none;
+}
+
+.dnd-upload-details {
+    padding-left: 0 !important;
+    width: 100% !important;
+}
+
+.dnd-upload-counter {
+    display: none !important;
+}
+
+.dnd-progress-bar {
+    display: none !important;
+}
+
+.name em {
+    display: none !important;
+}
+
+.dnd-upload-status .dnd-upload-details .remove-file span:after {
+    width: 1.2rem;
+    height: 1.2rem;
+    background-image: url('@img/icons/close.svg');
+}
+
+.dnd-upload-status .dnd-upload-details .name {
+    color: inherit;
+    padding: 0;
+    padding-right: 0;
+}
+
+.dnd-upload-status {
+    padding: 0;
+}
+
+.dnd-upload-status .dnd-upload-details .remove-file {
+    position: static;
+}
+
+.codedropz-upload-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 3rem;
+}
+
+.codedropz-upload-handler {
+    width: 100%;
+    flex: 0 0 100%;
+}
+
+.dnd-upload-details {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dnd-upload-status .dnd-upload-details .name span {
+    padding-right: 0;
+}
+
+.codedropz-upload-wrapper:has(.dnd-upload-status) .codedropz-upload-handler {
+    margin-bottom: 3.2rem;
+}
+
+.dnd-upload-status .dnd-upload-details .name span {
+    padding-right: 0;
+    line-height: 1.2em;
+    max-width: 7.5rem;
+}
+
+.dnd-progress-bar + span {
+    display: none;
+}
+
+.wpcf7-response-output {
+    display: none !important;
+}

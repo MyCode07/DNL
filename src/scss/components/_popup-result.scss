@@ -1,0 +1,204 @@
+@use "../abstracts/variables" as *;
+
+.popup {
+    .form[hidden],
+    .popup-result[hidden] {
+        display: none;
+    }
+
+    &._result {
+        padding-bottom: 0;
+
+        .popup-close {
+            position: relative;
+            z-index: 2;
+            background-color: $white;
+            color: $black;
+
+            &:hover {
+                background-color: $gray-100;
+
+                svg {
+                    fill: $black;
+                }
+            }
+        }
+    }
+}
+
+.popup-result {
+    position: absolute;
+    inset: 0;
+    min-height: 54rem;
+    overflow: hidden;
+    background-color: $black;
+    color: $white;
+
+    &__background {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+
+        picture,
+        picture img {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        picture img {
+            object-fit: fill;
+            max-width: none;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 39.6% 35% at 50% 33.75%, transparent 67.67%, $black 100%);
+        }
+    }
+
+    &__tablet-overlay {
+        display: none;
+    }
+
+    &__content {
+        position: absolute;
+        inset-inline: 1.6rem;
+        bottom: 12rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4rem;
+        text-align: center;
+        outline: none;
+
+        p {
+            color: $white-60;
+            margin-top: -2.4rem;
+        }
+    }
+
+    &--error &__background {
+        picture img {
+            position: absolute;
+            width: 63.95%;
+            height: 71.98%;
+            top: 7.5%;
+            left: 16.99%;
+        }
+
+        &::after {
+            background: radial-gradient(ellipse 28.72% 38.96% at 50% 38.28%, transparent 65.24%, $black 90%);
+        }
+    }
+
+    @media (max-width:1280px) {
+        &__content {
+            bottom: 8rem;
+            gap: 3rem;
+
+            p {
+                margin-top: -1.4rem;
+            }
+        }
+
+        &__background::after {
+            background: radial-gradient(ellipse 38.67% 30.66% at 50% 30.88%, transparent 65%, $black 100%);
+        }
+
+        &--error &__content {
+            gap: 4rem;
+        }
+
+        &--error &__background {
+            picture img {
+                width: 60.94%;
+                height: 65.82%;
+                top: 9.9%;
+                left: 19.53%;
+            }
+
+            &::after {
+                background: radial-gradient(ellipse 31.02% 31.48% at 50% 42.05%, transparent 77.59%, $black 100%);
+            }
+        }
+    }
+
+    @media (max-width:1024px) {
+        &__content {
+            bottom: 23.4375%;
+        }
+
+        &__tablet-overlay {
+            position: absolute;
+            inset: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        &__background::after {
+            background: radial-gradient(ellipse 75.64% 33.84% at 50% 24.85%, transparent 75%, $black 100%);
+        }
+
+        &--error &__content {
+            gap: 3rem;
+        }
+
+        &--error &__background {
+            picture img {
+                width: 100%;
+                height: 100%;
+                top: -9.39%;
+                left: 0;
+            }
+
+            &::after {
+                background: radial-gradient(ellipse 58.79% 45.26% at 50% 24.85%, transparent 69.76%, $black 100%);
+            }
+        }
+    }
+
+    @media (max-width:767px) {
+        &__content {
+            bottom: 18.75%;
+        }
+
+        &__tablet-overlay {
+            display: none;
+        }
+
+        &__background::after {
+            background: radial-gradient(ellipse 69.05% 30.38% at 50% 24.85%, transparent 70.7%, $black 100%);
+        }
+
+        &--error &__background {
+            picture img {
+                width: 133.33%;
+                left: -16.67%;
+                top: -10.49%;
+            }
+
+            &::after {
+                background: radial-gradient(ellipse 153.07% 51.33% at 50% 21.41%, transparent 65%, $black 100%);
+            }
+        }
+    }
+}
+
+// Temporary local outcome chooser; removed with features/popup-demo.js.
+.popup-demo {
+    position: fixed;
+    z-index: 4;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 1.2rem;
+    padding: 2rem;
+    border-radius: 2rem;
+    background: $white;
+    box-shadow: 0 1rem 6rem $black-20;
+}

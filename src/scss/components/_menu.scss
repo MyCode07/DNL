@@ -1,0 +1,289 @@
+@use "../abstracts/variables" as *;
+@use "../typography" as type;
+
+.menu {
+    @media (max-width:1280px) {
+        margin-left: auto;
+    }
+
+    &-surface {
+        position: relative;
+        padding: 2rem 2.4rem;
+        border-radius: 2.8rem;
+        background-color: $white-06;
+        backdrop-filter: blur(14rem);
+
+        @media (max-width:1280px) {
+            padding: 1.4rem;
+            border-radius: 2rem;
+        }
+
+        @media (max-width:1024px) {
+            padding: 0;
+            border-radius: 1.4rem;
+            height: 4.4rem;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+
+    &-heading {
+        @media (max-width:1024px) {
+            position: relative;
+            flex-shrink: 0;
+            min-height: 2.4rem;
+        }
+    }
+
+    &-logo {
+        display: none;
+
+        @media (max-width:1024px) {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5rem;
+            height: 2.4rem;
+            opacity: 0;
+            visibility: hidden;
+
+            img {
+                width: 5rem;
+                height: 2rem;
+            }
+        }
+    }
+
+    &:not(._open) .menu-surface {
+        cursor: pointer;
+    }
+
+    // .menu-body
+    &-body {
+        height: 0;
+        overflow: hidden;
+
+        @media (max-width:1024px) {
+            display: flex;
+            flex-direction: column;
+            flex: 0 1 auto;
+        }
+    }
+
+    // .menu-toggle
+    &-toggle {
+        position: relative;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.4rem;
+        background-color: transparent;
+        margin-left: auto;
+
+        * {
+            pointer-events: none;
+        }
+
+        @media (max-width:1024px) {
+            justify-content: flex-end;
+            padding: 1rem 1rem 0 0;
+        }
+
+        @media (max-width:1280px) {
+            justify-content: flex-end;
+        }
+
+        span {
+            white-space: nowrap;
+
+            @media (max-width:1280px) {
+                position: absolute;
+                top: 0;
+                right: 3.8rem;
+                height: 2.4rem;
+                display: flex;
+                align-items: center;
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        @media (any-hover: hover) {
+            &:hover {
+                rect {
+                    fill-opacity: 1;
+                }
+            }
+        }
+
+        img,
+        svg {
+            width: 2.4rem;
+            height: 2.4rem;
+            flex: 0 0 auto;
+
+            rect {
+                transition: fill-opacity 0.3s ease;
+            }
+        }
+    }
+
+    &._open {
+        @media (max-width:1024px) {
+            .menu-surface {}
+        }
+
+        .menu-body {
+            @media (max-width:1024px) {
+                overflow-y: auto;
+                flex: 1 1 auto;
+            }
+        }
+    }
+
+    nav {
+        margin-top: 4.5rem;
+        margin-bottom: 6rem;
+
+        @media (max-width:1024px) {
+            margin-top: 3.4rem;
+            margin-bottom: 5rem;
+            font-weight: 400;
+        }
+
+        ul {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+
+            @media (max-width:1024px) {
+                gap: 0.4rem;
+            }
+
+            a {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                @include type.typography("h4");
+
+                &:hover {
+                    &:after {
+                        opacity: 1;
+                    }
+                }
+
+                &:after {
+                    content: '';
+                    display: block;
+                    width: 1rem;
+                    height: 1rem;
+                    border-radius: 0.2rem;
+                    background-color: currentColor;
+                    opacity: 0;
+                    transition: opacity 0.3s ease-in-out 0s;
+                }
+            }
+        }
+    }
+
+    // .menu-btn
+    &-btn {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background-color: transparent;
+        transition: opacity 0.3s ease 0s;
+
+        &:hover {
+            opacity: 0.6;
+        }
+
+        img,
+        svg {
+            flex: 0 0 auto;
+            width: 1.3rem;
+            height: 1rem;
+            pointer-events: none;
+            fill: currentColor;
+        }
+    }
+
+    // .menu-line
+    &-line {
+        margin-top: 1.6rem;
+        padding-top: 2rem;
+        border-top: 1px solid $white-30;
+
+        @media (max-width:1024px) {
+            margin-top: 1.2rem;
+            padding-top: 1.6rem;
+        }
+    }
+
+    .lang {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+
+        // .lang-item
+        &-item {
+            color: $white-60;
+            display: flex;
+            align-items: center;
+        }
+
+        a {
+            @include type.typography("caption");
+            text-transform: uppercase;
+            transition: color 0.3s ease 0s;
+
+            &:hover {
+                color: $white;
+            }
+        }
+
+        .current-lang {
+            gap: 0.4rem;
+            color: $white;
+
+            a {
+                &:hover {
+                    color: $gray-300;
+                }
+            }
+
+            &:after {
+                flex: 0 0 auto;
+                display: block;
+                width: 0.1rem;
+                height: 1rem;
+                content: '';
+                background-color: currentColor;
+            }
+        }
+    }
+
+    // .menu-soc
+    &-soc {
+        flex: 1 1 auto;
+        margin-top: 6rem;
+
+        @media (max-width:1024px) {
+            margin-top: 5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        span {
+            color: $white-60;
+        }
+
+        ._social {
+            gap: 1rem;
+        }
+    }
+}

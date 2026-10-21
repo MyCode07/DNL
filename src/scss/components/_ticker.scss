@@ -1,0 +1,66 @@
+@use "../abstracts/variables" as *;
+
+._ticker {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 8.8rem;
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    transform: translate(-50%, 0);
+    padding: 2.4rem 3.2rem;
+    background-color: $white;
+    color: $black;
+
+    @media (max-width:1024px) {
+        padding: 1.6rem;
+        gap: 3.2rem;
+    }
+
+    &._rotate {
+        transform: translate(-50%, 0) rotate(180deg);
+        border-bottom: 0;
+
+        ._ticker-text > div {
+            transform: rotate(180deg);
+        }
+    }
+
+    @media (any-hover: hover) {
+        &:hover {
+            .ticker-text {
+                animation-play-state: paused;
+            }
+        }
+    }
+
+    // ._ticker-text
+    &-text {
+        display: flex;
+        align-items: center;
+        gap: 8.8rem;
+        flex: 0 0 auto;
+        will-change: transform, opacity;
+
+        @media (max-width:1024px) {
+            gap: 3.2rem;
+        }
+
+        span {}
+
+        svg,
+        img {
+            width: 2rem;
+            height: 2rem;
+            object-fit: contain;
+            stroke: currentColor;
+            stroke-width: 0.2rem;
+
+            @media (max-width:1024px) {
+                ew: 1.6rem;
+                height: 1.6rem;
+            }
+        }
+    }
+}

@@ -1,0 +1,97 @@
+﻿@use 'sass:list';
+@use 'sass:map';
+@use 'tokens';
+
+// Resolve each property independently; equal values never produce another declaration.
+@function _declarations($name, $step, $properties: null) {
+    @if not map.has-key(tokens.$styles, $name) {
+        @error "Unknown typography style: #{$name}";
+    }
+    $style: map.get(tokens.$styles, $name);
+    $previous: ();
+    @each $current in list.join((base), map.keys(tokens.$breakpoints)) {
+        $values: map.get($style, $current);
+        @if $current == $step {
+            $result: ();
+            @if $values {
+                @each $property, $value in $values {
+                    $changed: map.get($previous, $property) != $value;
+                    $selected: $properties == null or list.index($properties, $property);
+                    @if $value != null and $changed and $selected {
+                        $result: map.set($result, $property, $value);
+                    }
+                }
+            }
+            @return $result;
+        }
+        @if $values {
+            $previous: map.merge($previous, $values);
+        }
+    }
+    @error "Unknown typography breakpoint: #{$step}";
+}
+
+@mixin _properties($declarations) {
+    @each $property, $value in $declarations {
+        #{$property}: $value;
+    }
+}
+
+/// Apply a complete style, or only the listed properties, in the current selector.
+/// The module itself emits no CSS. Include generate() once for HTML classes.
+@mixin typography($name, $properties: null) {
+    @include _properties(_declarations($name, base, $properties));
+    @each $step, $query in tokens.$breakpoints {
+        $declarations: _declarations($name, $step, $properties);
+        @if list.length($declarations) > 0 {
+            @media #{$query} {
+                @include _properties($declarations);
+            }
+        }
+    }
+}
+
+@mixin _group($step, $aliases) {
+    $groups: ();
+    @each $name, $style in tokens.$styles {
+        $declarations: _declarations($name, $step);
+        @if list.length($declarations) > 0 {
+            $selector: map.get(tokens.$selectors, $name);
+            @if $selector == null {
+                $selector: '.#{$name}';
+            }
+            @if map.has-key($aliases, $name) {
+                $selector: '#{$selector}, #{map.get($aliases, $name)}';
+            }
+            $existing: map.get($groups, $declarations);
+            @if $existing {
+                $selector: '#{$existing}, #{$selector}';
+            }
+            $groups: map.set($groups, $declarations, $selector);
+        }
+    }
+    @each $declarations, $selector in $groups {
+        #{$selector} {
+            @include _properties($declarations);
+        }
+    }
+}
+
+/// Group identical rules and emit at most one media query per breakpoint.
+/// Aliases reuse generated rules without changing existing HTML.
+@mixin generate($aliases: ()) {
+    @include _group(base, $aliases);
+    @each $step, $query in tokens.$breakpoints {
+        $has-changes: false;
+        @each $name, $style in tokens.$styles {
+            @if list.length(_declarations($name, $step)) > 0 {
+                $has-changes: true;
+            }
+        }
+        @if $has-changes {
+            @media #{$query} {
+                @include _group($step, $aliases);
+            }
+        }
+    }
+}

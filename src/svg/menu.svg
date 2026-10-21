@@ -1,0 +1,25 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="24" height="24" fill="#1C1C1C"/>
+<g id="Menu">
+<rect x="-400.5" y="-39.5" width="937" height="103" rx="4.5" stroke="#9747FF" stroke-dasharray="10 5"/>
+<g id="Breakpoint=1920, Color=Dark, State=Close">
+<foreignObject x="-428" y="-160" width="616" height="344"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(70px);clip-path:url(#bgblur_0_906_6014_clip_path);height:100%;width:100%"></div></foreignObject><g id="Container" data-figma-bg-blur-radius="140">
+<path d="M-288 12C-288 8.28504 -288 6.42755 -287.824 4.86499C-286.361 -8.11636 -276.116 -18.3613 -263.135 -19.8239C-261.572 -20 -259.715 -20 -256 -20H16C19.715 -20 21.5724 -20 23.135 -19.8239C36.1164 -18.3613 46.3613 -8.11636 47.8239 4.86499C48 6.42755 48 8.28504 48 12C48 15.715 48 17.5724 47.8239 19.135C46.3613 32.1164 36.1164 42.3613 23.135 43.8239C21.5724 44 19.715 44 16 44H-256C-259.715 44 -261.572 44 -263.135 43.8239C-276.116 42.3613 -286.361 32.1164 -287.824 19.135C-288 17.5724 -288 15.715 -288 12Z" fill="white" fill-opacity="0.06"/>
+<g id="Frame">
+<rect id="Rectangle 70" x="2" y="2" width="4" height="4" rx="1" fill="white" fill-opacity="0.2"/>
+<rect id="Rectangle 71" x="10" y="2" width="4" height="4" rx="1" fill="white"/>
+<rect id="Rectangle 72" x="18" y="2" width="4" height="4" rx="1" fill="white" fill-opacity="0.2"/>
+<rect id="Rectangle 73" x="2" y="10" width="4" height="4" rx="1" fill="white"/>
+<rect id="Rectangle 75" x="10" y="10" width="4" height="4" rx="1" fill="white"/>
+<rect id="Rectangle 76" x="18" y="10" width="4" height="4" rx="1" fill="white"/>
+<rect id="Rectangle 77" x="2" y="18" width="4" height="4" rx="1" fill="white" fill-opacity="0.2"/>
+<rect id="Rectangle 78" x="10" y="18" width="4" height="4" rx="1" fill="white"/>
+<rect id="Rectangle 79" x="18" y="18" width="4" height="4" rx="1" fill="white" fill-opacity="0.2"/>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clipPath id="bgblur_0_906_6014_clip_path" transform="translate(428 160)"><path d="M-288 12C-288 8.28504 -288 6.42755 -287.824 4.86499C-286.361 -8.11636 -276.116 -18.3613 -263.135 -19.8239C-261.572 -20 -259.715 -20 -256 -20H16C19.715 -20 21.5724 -20 23.135 -19.8239C36.1164 -18.3613 46.3613 -8.11636 47.8239 4.86499C48 6.42755 48 8.28504 48 12C48 15.715 48 17.5724 47.8239 19.135C46.3613 32.1164 36.1164 42.3613 23.135 43.8239C21.5724 44 19.715 44 16 44H-256C-259.715 44 -261.572 44 -263.135 43.8239C-276.116 42.3613 -286.361 32.1164 -287.824 19.135C-288 17.5724 -288 15.715 -288 12Z"/>
+</clipPath></defs>
+</svg>
