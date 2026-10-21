@@ -1,4 +1,4 @@
-# Staging preview
+# Staging deployment
 
 `staging.yml` runs on pushes to `main` and manual dispatches of `main`. It uses the
 `staging` Environment and only its five SSH secrets. Actions are pinned to commit
@@ -19,23 +19,28 @@ production workflow or artifact promotion is configured in this initial phase.
 The SSH script requires user `chipsa` and exactly
 `/var/www/chipsa/data/www/dnl.chipsa.ru/wp-content/themes/frame/`. The directory
 must already exist, resolve to the same canonical path, and contain no symlinks.
-It never creates directories on the VPS. Host verification is mandatory, using
+The root directory must be created manually; rsync creates its contents only
+after verifying the SSH user and directory permissions. Host verification uses
 `SSH_KNOWN_HOSTS`; a nonstandard port needs a matching `[host]:port` entry.
 
-The only rsync invocation contains `--dry-run`. There is no live mode, deletion
-flag, remote cleanup or production target. SSH/rsync read remote theme data and
-metadata only; file transfers and permission/timestamp changes are not applied.
-Normal SSH access logging and filesystem access-time updates may still occur.
+The rsync invocation writes only to the fixed staging theme path. There is no
+deletion flag, remote cleanup or production target. The theme is not activated;
+no WP-CLI commands run. Existing remote files absent from the package are retained.
 
 `--checksum` compares file contents rather than treating rebuilt timestamps as
 content changes. It reads files on both machines and costs disk I/O/CPU, but avoids
-resending unchanged images and fonts. Rsync's normal delta transfer remains
-available for the future real deployment. The itemized output and statistics show
-the proposed changes. Without deletion, obsolete remote files remain in place.
+resending unchanged images and fonts. Rsync's normal delta transfer is retained.
+The itemized output and statistics show actual transfers. A repeat workflow run
+of the same commit should report zero regular-file transfers for identical build
+outputs; timestamps and directory metadata can still be updated.
 
-Before enabling writes: resolve failing checks, review a successful SSH/dry-run,
-confirm staging has `WP_ENVIRONMENT_TYPE=staging` (the theme then always uses
-`dist`), and obtain separate approval. A later reviewed change can remove the
-hardcoded dry-run flag while retaining path guards and host verification. Do not
-rebuild an approved artifact between staging and production; production approval
-and immutable artifact promotion are separate future work.
+After transfer, SSH verifies required theme entry files and every packaged file
+against a SHA-256 manifest streamed over stdin; the manifest is not stored on the
+VPS. HTTPS checks test homepage availability and compare served CSS/JS bytes with
+the package. HTTP 200 alone does not prove theme activation or correct rendering.
+Activate Frame manually in WordPress and visually validate the site separately.
+
+Staging must have `WP_ENVIRONMENT_TYPE=staging` (the theme then always uses `dist`).
+Server configuration and other WordPress directories are not changed. Production
+approval and immutable artifact promotion remain separate future work; do not
+rebuild an approved artifact between staging and production.

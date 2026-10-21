@@ -1,4 +1,4 @@
-name: Frame staging dry-run
+name: Frame staging deploy
 
 on:
     push:
@@ -67,7 +67,7 @@ jobs:
             - name: Package runtime theme
               run: node build/scripts/package-theme.mjs "$RUNNER_TEMP/frame-package"
 
-            - name: Verify SSH and preview staging changes (no writes)
+            - name: Deploy staging and verify remote files
               env:
                   FRAME_PACKAGE_DIR: ${{ runner.temp }}/frame-package
                   SSH_HOST: ${{ secrets.SSH_HOST }}
@@ -75,4 +75,22 @@ jobs:
                   SSH_USER: ${{ secrets.SSH_USER }}
                   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
                   SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
-              run: bash build/scripts/staging-dry-run.sh
+              run: bash build/scripts/staging-deploy.sh
+
+            - name: Check staging availability and deployed CSS/JS
+              run: |
+                  set -euo pipefail
+                  curl_options=(--silent --show-error --fail --location --max-redirs 5
+                    --connect-timeout 15 --max-time 60 --retry 2
+                    --proto '=https' --proto-redir '=https')
+                  curl "${curl_options[@]}" --output "$RUNNER_TEMP/staging-home.html" \
+                    --write-out 'Staging homepage HTTP %{http_code}\n' \
+                    'https://dnl.chipsa.ru/'
+                  for asset in css/style.min.css js/app.min.js; do
+                    output="$RUNNER_TEMP/staging-$(basename "$asset")"
+                    curl "${curl_options[@]}" --output "$output" \
+                      "https://dnl.chipsa.ru/wp-content/themes/frame/dist/$asset?frame_deploy=$GITHUB_SHA"
+                    cmp -- "$output" "$RUNNER_TEMP/frame-package/dist/$asset"
+                    printf 'Deployed asset verified over HTTPS: %s\n' "$asset"
+                  done
+                  echo 'HTTP availability does not confirm theme activation or visual correctness.'
