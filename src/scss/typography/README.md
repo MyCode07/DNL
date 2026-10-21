@@ -64,6 +64,6 @@ selectors, add aliases to the existing `generate()` call. Keep breakpoint order
 from larger to smaller widths. To reset a property, use a CSS value such as
 `normal`, `inherit`, or `unset`; null values produce no declaration.
 
-`build/tests/fixtures/typography.json` records the original source values as a
-regression reference. Tests compare every original selector at all breakpoint
-boundaries and verify sparse properties, mixin filters and grouped output.
+Typography values and breakpoints are maintained in `_tokens.scss` without a
+fixed test snapshot. The Vite build checks SCSS compilation; validate typography
+visually at the project's responsive widths after design changes.

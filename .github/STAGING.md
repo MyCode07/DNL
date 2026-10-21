@@ -6,9 +6,9 @@ SHAs; the workflow token has only `contents: read`. Concurrency prevents overlap
 staging runs. Node.js 24 and PHP 8.3 match the project's requirements.
 
 All checks are blocking: `npm ci`, `npm run check`, the existing Vite build,
-required CSS/JS checks, PHP lint, and runtime packaging precede SSH. Existing
-typography test failures must be resolved before SSH or rsync can execute; there
-is no bypass or `continue-on-error`.
+required CSS/JS checks, PHP lint, and runtime packaging precede SSH. Any failing
+check prevents SSH and rsync from executing; there is no bypass or
+`continue-on-error`.
 
 The temporary package includes tracked root PHP files, PHP under `inc/` and
 `template-parts/`, `style.css`, ACF JSON, and the build's runtime asset directories.
