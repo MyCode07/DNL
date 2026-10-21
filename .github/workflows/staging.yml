@@ -80,15 +80,19 @@ jobs:
             - name: Check staging availability and deployed CSS/JS
               run: |
                   set -euo pipefail
-                  curl_options=(--silent --show-error --fail --location --max-redirs 5
+                  curl_options=(--silent --show-error --location --max-redirs 5
                     --connect-timeout 15 --max-time 60 --retry 2
                     --proto '=https' --proto-redir '=https')
-                  curl "${curl_options[@]}" --output "$RUNNER_TEMP/staging-home.html" \
-                    --write-out 'Staging homepage HTTP %{http_code}\n' \
-                    'https://dnl.chipsa.ru/'
+                  homepage_status=$(curl "${curl_options[@]}" --output "$RUNNER_TEMP/staging-home.html" \
+                    --write-out '%{http_code}' 'https://dnl.chipsa.ru/')
+                  case "$homepage_status" in
+                    2??) printf 'Staging homepage HTTP %s\n' "$homepage_status" ;;
+                    401) echo 'Staging homepage HTTP 401: intentional authentication protection; application content not checked.' ;;
+                    *) printf 'Unexpected staging homepage HTTP %s\n' "$homepage_status" >&2; exit 1 ;;
+                  esac
                   for asset in css/style.min.css js/app.min.js; do
                     output="$RUNNER_TEMP/staging-$(basename "$asset")"
-                    curl "${curl_options[@]}" --output "$output" \
+                    curl "${curl_options[@]}" --fail --output "$output" \
                       "https://dnl.chipsa.ru/wp-content/themes/frame/dist/$asset?frame_deploy=$GITHUB_SHA"
                     cmp -- "$output" "$RUNNER_TEMP/frame-package/dist/$asset"
                     printf 'Deployed asset verified over HTTPS: %s\n' "$asset"

@@ -37,7 +37,10 @@ outputs; timestamps and directory metadata can still be updated.
 After transfer, SSH verifies required theme entry files and every packaged file
 against a SHA-256 manifest streamed over stdin; the manifest is not stored on the
 VPS. HTTPS checks test homepage availability and compare served CSS/JS bytes with
-the package. HTTP 200 alone does not prove theme activation or correct rendering.
+the package. The homepage intentionally requires authentication: HTTP 401 is
+reported as reachable but protected, without attempting to bypass authentication.
+Other unexpected HTTP errors fail the check. Asset responses must be successful
+and match package bytes. HTTP 200 alone does not prove theme activation or correct rendering.
 Activate Frame manually in WordPress and visually validate the site separately.
 
 Staging must have `WP_ENVIRONMENT_TYPE=staging` (the theme then always uses `dist`).
