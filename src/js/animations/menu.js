@@ -65,8 +65,9 @@ export function createMenuAnimation(menu, { media, toggle }) {
             timeline = gsap.timeline({
                 defaults: { duration: reducedMotion ? 0 : 0.8, ease: 'power2.out' },
             });
-            const logoDuration = reducedMotion ? 0 : 0.2;
-            const expandAt = reducedMotion ? 0 : mobile ? 0.2 : compact && !open ? 0.2 : 0;
+            const logoDuration = reducedMotion ? 0 : 0.3;
+            const logoEase = 'power1.inOut';
+            const expandAt = mobile || (compact && !open) ? logoDuration : 0;
             const finishAt = expandAt + (reducedMotion ? 0 : 0.8);
             if (compact && label) {
                 if (open) label.textContent = label.dataset.textClose;
@@ -76,6 +77,7 @@ export function createMenuAnimation(menu, { media, toggle }) {
                         autoAlpha: open ? 1 : 0,
                         x: open ? 0 : 6,
                         duration: logoDuration,
+                        ease: logoEase,
                         onComplete: () => {
                             if (!open) label.textContent = label.dataset.textOpen;
                         },
@@ -88,7 +90,11 @@ export function createMenuAnimation(menu, { media, toggle }) {
                 const disappearingLogo = open ? outerLogo : innerLogo;
                 const appearingLogo = open ? innerLogo : outerLogo;
                 if (disappearingLogo) {
-                    timeline.to(disappearingLogo, { autoAlpha: 0, duration: logoDuration }, 0);
+                    timeline.to(
+                        disappearingLogo,
+                        { autoAlpha: 0, duration: logoDuration, ease: logoEase },
+                        0,
+                    );
                 }
                 if (appearingLogo) {
                     timeline.to(
@@ -96,6 +102,7 @@ export function createMenuAnimation(menu, { media, toggle }) {
                         {
                             autoAlpha: 1,
                             duration: logoDuration,
+                            ease: logoEase,
                             onComplete: () => {
                                 appearingLogo.inert = false;
                             },
