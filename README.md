@@ -14,7 +14,11 @@ npm install
 npm start
 ```
 
-Сервер ассетов: `http://localhost:4040` (фиксированный порт). Страницы открывайте через WordPress: `https://dnl.local`.
+Сервер ассетов: `http://localhost:4040` (фиксированный порт). Страницы открывайте через WordPress: `http://dnl.local` или `https://dnl.local`; оба origin разрешены в CORS.
+
+В локальном `wp-config.php` задайте `WP_ENVIRONMENT_TYPE` как `local` и `WP_VITE_DEV` как `true`. Для проверки production-сборки переключите `WP_VITE_DEV` в `false`.
+
+В dev HTML не нужен: JS и SCSS обрабатываются Vite по запросу с горячим обновлением, а не записываются в `dist`. При запуске автоматически создаётся `dist/img/svg/icons.svg`: WordPress должен отдавать внешний SVG-спрайт со своего origin. При добавлении, изменении или удалении иконок спрайт обновляется, а страница перезагружается. Полную папку `dist` с JS, CSS и остальными ресурсами создаёт `npm run build`.
 
 `npm run dev` — эквивалентная команда запуска. Все команды выполняются из корня проекта.
 
@@ -190,7 +194,7 @@ API references: [Lenis integration and cleanup](https://github.com/darkroomengin
 
 ID равен имени исходного SVG-файла без `.svg`.
 
-PHP всегда использует спрайт из `dist`. Для обновления этого файла:
+PHP всегда использует спрайт из `dist`. В dev он создаётся и обновляется автоматически. Для production выполните:
 
 ```bash
 npm run build

@@ -88,14 +88,20 @@ export default defineConfig(({ command }) => {
             },
         },
 
+        // WordPress renders HTML; dependency discovery starts at the JS entry.
+        optimizeDeps: {
+            entries: [resolve(srcRoot, 'js/app.js')],
+        },
+
         server: {
             host: '127.0.0.1',
             port: 4040,
             strictPort: true,
             open: false,
+            origin: 'http://localhost:4040',
 
             cors: {
-                origin: 'https://dnl.local',
+                origin: ['http://dnl.local', 'https://dnl.local'],
             },
 
             hmr: {

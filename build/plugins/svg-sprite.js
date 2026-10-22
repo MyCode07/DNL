@@ -8,17 +8,13 @@ export function svgSpritePlugin({ projectRoot, srcRoot }) {
     const spriteOutput = resolve(projectRoot, 'dist/img/svg/icons.svg');
 
     let devSprite = '';
+    let isBuild = false;
 
     async function buildSprite() {
         const files = await fg('*.svg', {
             cwd: svgSourceDir,
             absolute: true
         });
-
-        if (!files.length) {
-            devSprite = '';
-            return '';
-        }
 
         const symbols = [];
 
@@ -28,16 +24,8 @@ export function svgSpritePlugin({ projectRoot, srcRoot }) {
             const optimized = optimize(svg, {
                 path: file,
                 multipass: true,
-                plugins: [
-                    {
-                        name: 'preset-default',
-                        params: {
-                            overrides: {
-                                removeViewBox: false
-                            }
-                        }
-                    }
-                ]
+                // SVGO 4 preserves viewBox in preset-default.
+                plugins: ['preset-default']
             }).data;
 
             const id = basename(file, '.svg');
@@ -67,10 +55,8 @@ export function svgSpritePlugin({ projectRoot, srcRoot }) {
         return devSprite;
     }
 
-    async function writeProductionSprite() {
+    async function writeSprite() {
         const sprite = await buildSprite();
-
-        if (!sprite) return;
 
         await fs.mkdir(resolve(projectRoot, 'dist/img/svg'), {
             recursive: true
@@ -83,8 +69,10 @@ export function svgSpritePlugin({ projectRoot, srcRoot }) {
         name: 'svg-sprite',
 
         async configResolved(config) {
+            isBuild = config.command === 'build';
             if (config.command === 'serve') {
-                await buildSprite();
+                // External SVG <use> must stay on the WordPress origin.
+                await writeSprite();
             }
         },
 
@@ -108,30 +96,43 @@ export function svgSpritePlugin({ projectRoot, srcRoot }) {
 
             server.watcher.add(resolve(svgSourceDir, '**/*.svg'));
 
-            server.watcher.on('add', async (file) => {
-                if (!file.startsWith(svgSourceDir)) return;
+            let pending = Promise.resolve();
+            const update = (file) => {
+                if (
+                    !file.startsWith(svgSourceDir + '/') &&
+                    !file.startsWith(svgSourceDir + '\\')
+                ) return;
                 if (!file.endsWith('.svg')) return;
 
-                await buildSprite();
-            });
-
-            server.watcher.on('change', async (file) => {
-                if (!file.startsWith(svgSourceDir)) return;
-                if (!file.endsWith('.svg')) return;
-
-                await buildSprite();
-            });
-
-            server.watcher.on('unlink', async (file) => {
-                if (!file.startsWith(svgSourceDir)) return;
-                if (!file.endsWith('.svg')) return;
-
-                await buildSprite();
+                pending = pending
+                    .then(async () => {
+                        await writeSprite();
+                        server.ws.send({ type: 'full-reload', path: '*' });
+                    })
+                    .catch((error) => {
+                        server.config.logger.error(`[svg-sprite] ${error.stack || error.message}`);
+                        server.ws.send({
+                            type: 'error',
+                            err: {
+                                message: error.message,
+                                stack: error.stack,
+                                plugin: 'svg-sprite',
+                            },
+                        });
+                    });
+            };
+            for (const event of ['add', 'change', 'unlink']) {
+                server.watcher.on(event, update);
+            }
+            server.httpServer?.once('close', () => {
+                for (const event of ['add', 'change', 'unlink']) {
+                    server.watcher.off(event, update);
+                }
             });
         },
 
         async closeBundle() {
-            await writeProductionSprite();
+            if (isBuild) await writeSprite();
         }
     };
 }
