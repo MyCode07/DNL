@@ -10,6 +10,8 @@ export function createProjectAnimation(header, media) {
     let visible;
 
     function sync(immediate = false) {
+        if (immediate && header.classList.contains('header-page')) return;
+
         const nextVisible = isProjectVisible({
             open: menu.classList.contains('_open'),
             mobile: media.mobile.matches,

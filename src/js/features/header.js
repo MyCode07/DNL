@@ -30,7 +30,7 @@ export function initHeader(root, menu) {
             }
         }
         header.classList.toggle('dark', dark);
-        menu?.syncProject(!initialized);
+        if (!header.classList.contains('header-page')) menu?.syncProject(!initialized);
         initialized = true;
     }
 
