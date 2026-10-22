@@ -20,7 +20,7 @@ export function initHeader(root, menu) {
         });
         header.classList.toggle('header-scrolled', window.scrollY >= window.innerHeight);
 
-        if (window.innerWidth > 1024) {
+        if (window.innerWidth > 1024 && !header.classList.contains('header-page') && menuBtn) {
             if (header.classList.contains('dark')) {
                 menuBtn.classList.remove('_btn-white');
                 menuBtn.classList.add('_btn-black');
