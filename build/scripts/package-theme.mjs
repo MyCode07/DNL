@@ -42,16 +42,12 @@ const runtime = tracked.filter(
     (file) =>
         file === 'style.css' ||
         (/^[^/]+\.php$/.test(file) && !file.startsWith('wp-config')) ||
-        /^(inc|template-parts)\/.*\.php$/.test(file) ||
+        /^(inc|template-parts|pages)\/.*\.php$/.test(file) ||
         /^acf-json\/.*\.json$/.test(file),
 );
-for (const required of [
-    'style.css',
-    'functions.php',
-    'index.php',
-    'inc/helpers.php',
-    'inc/enqueue.php',
-]) {
+// Module paths may change; all tracked PHP under the runtime directories above
+// is included without requiring a particular inc/ layout.
+for (const required of ['style.css', 'functions.php', 'index.php']) {
     if (!runtime.includes(required)) throw new Error(`Missing tracked runtime file: ${required}`);
 }
 for (const file of runtime) await copyRuntimeFile(file);

@@ -83,6 +83,34 @@ test('runtime package refuses destinations outside the runner temporary director
     assert.match(result.stderr, /inside the runner temporary directory/);
 });
 
+test('runtime package supports moved inc modules and nested page templates', async (t) => {
+    const { root, destination, run } = await fixture(t);
+    for (const file of ['inc/helpers.php', 'inc/enqueue.php']) {
+        await rm(join(root, file));
+    }
+    const movedFiles = [
+        'inc/#helpers.php',
+        'inc/wp/enqueue.php',
+        'inc/wp/setup.php',
+        'inc/forms/cf7.php',
+        'pages/publications.php',
+        'pages/legal/cookies.php',
+    ];
+    for (const file of movedFiles) {
+        await mkdir(join(root, file, '..'), { recursive: true });
+        await writeFile(join(root, file), '<?php // runtime module');
+    }
+    execFileSync('git', ['add', '--update'], { cwd: root, stdio: 'ignore' });
+    execFileSync('git', ['add', '--', ...movedFiles], { cwd: root, stdio: 'ignore' });
+    const result = run();
+    assert.equal(result.status, 0, result.stderr);
+    const packaged = await filesIn(destination);
+    for (const file of movedFiles) assert.ok(packaged.includes(file), file);
+    assert.ok(!packaged.includes('inc/helpers.php'));
+    assert.ok(!packaged.includes('inc/enqueue.php'));
+    assert.ok(!packaged.includes('inc/untracked-local.php'));
+});
+
 test('runtime package refuses symlinked asset directories', async (t) => {
     const { temporary, root, run } = await fixture(t);
     const external = join(temporary, 'external-fonts');
