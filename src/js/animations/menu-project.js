@@ -15,7 +15,7 @@ export function createProjectAnimation(header, media) {
             mobile: media.mobile.matches,
             compact: media.compact.matches,
             scrolled: header.classList.contains('header-scrolled'),
-            innerPage: header.classList.contains('header-page'),
+            hideMenuBtn: header.classList.contains('hide-menu-btn'),
         });
         project.inert = !nextVisible;
         if (!immediate && visible === nextVisible) return;

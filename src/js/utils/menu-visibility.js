@@ -1,4 +1,4 @@
-/** Opening the menu overrides scroll visibility on every screen size. */
-export function isProjectVisible({ open, mobile, compact, scrolled, innerPage }) {
-    return open || (!mobile && !compact && !scrolled && !innerPage);
+/** Only opted-in headers show the CTA outside the open menu. */
+export function isProjectVisible({ open, mobile, compact, scrolled, hideMenuBtn }) {
+    return open || (hideMenuBtn && !mobile && !compact && !scrolled);
 }
