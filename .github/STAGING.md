@@ -4,14 +4,19 @@
 `staging` Environment and only its five SSH secrets. Actions are pinned to commit
 SHAs; the workflow token has only `contents: read`. Concurrency prevents overlapping
 staging runs. Node.js 24 and PHP 8.3 match the project's requirements.
+The runner explicitly updates PHP and requires at least upstream PHP 8.3.36.
+This checks the CI interpreter only; it does not update or certify the VPS's
+web PHP runtime. Vendor-backported server packages must be assessed separately.
 
 All checks are blocking: `npm ci`, `npm run check`, the existing Vite build,
 required CSS/JS checks, PHP lint, and runtime packaging precede SSH. Any failing
 check prevents SSH and rsync from executing; there is no bypass or
 `continue-on-error`.
 
-The temporary package includes tracked root PHP files, PHP under `inc/` and
-`template-parts/`, `style.css`, ACF JSON, and the build's runtime asset directories.
+The temporary package includes tracked root PHP files, PHP under `inc/`,
+`template-parts/` and `pages/`, `style.css`, ACF JSON, and the build's runtime asset
+directories. The packager supports nested PHP modules without fixing their names
+to a legacy `inc/` layout. New runtime files must be committed to be packaged.
 It excludes development sources, dependencies, build tools, tests and local
 settings. Source and package symlinks are rejected. No release system, backups,
 production workflow or artifact promotion is configured in this initial phase.

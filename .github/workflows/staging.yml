@@ -56,6 +56,12 @@ jobs:
                   php-version: '8.3'
                   coverage: none
                   tools: none
+              env:
+                  update: 'true'
+
+            - name: Verify patched PHP runtime on CI runner
+              run: |
+                  php -r 'if (version_compare(PHP_VERSION, "8.3.36", "<")) { fwrite(STDERR, "CI requires PHP 8.3.36 or newer\n"); exit(1); } echo "CI PHP: ", PHP_VERSION, "\n";'
 
             - name: Check theme PHP syntax
               run: |
