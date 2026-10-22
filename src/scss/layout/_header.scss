@@ -2,16 +2,16 @@
 
 .header {
     position: fixed;
-    inset: 4rem 0 auto;
+    inset: 4rem 0 auto auto;
     z-index: 10;
     word-spacing: normal;
 
     @media (max-width:1280px) {
-        inset: 3rem 0 auto;
+        inset: 3rem 0 auto auto;
     }
 
     @media (max-width:1024px) {
-        inset: 1.6rem 0 auto;
+        inset: 1.6rem 0 auto auto;
     }
 
     // .header__body

@@ -23,5 +23,6 @@
 @use "sections/hero";
 @use "sections/single";
 @use "overrides/large-screen";
+@use "overrides/small-screen";
 // Existing development page switcher.
 @use "dev/page-list";

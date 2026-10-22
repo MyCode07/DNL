@@ -16,6 +16,9 @@
     if (!is_front_page() && !is_404()) {
         $header_class = ' dark-static header-page header-scrolled';
     }
+    if (is_404()) {
+        $header_class = ' header-page';
+    }
     ?>
     <div class="wrapper">
         <header class="header white _fixed <?php echo $header_class ?>">

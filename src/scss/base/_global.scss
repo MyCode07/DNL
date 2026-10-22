@@ -21,6 +21,7 @@ body {
 
     &._noscroll {
         overflow: hidden;
+        overflow: clip;
     }
 
     -webkit-font-smoothing: antialiased;
@@ -553,6 +554,11 @@ picture {
             align-items: center;
             gap: 1.2rem;
             color: $gray-600;
+            transition: color 0.3s ease 0s;
+
+            &:hover {
+                color: $black;
+            }
 
             &:last-child {
                 color: $black;
@@ -627,6 +633,11 @@ picture {
 
     a {
         text-decoration: underline;
+        transition: opacity 0.3s ease 0s;
+
+        &:hover {
+            opacity: 0.6;
+        }
     }
 
     ul,

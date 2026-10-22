@@ -9,7 +9,7 @@ get_header();
                 <div class="breadcrumbs text-m">
                     <ul class="breadcrumb">
                         <li>
-                            <a>Главная</a>
+                            <a href="/">Главная</a>
                             <div class="sep"></div>
                         </li>
                         <li>

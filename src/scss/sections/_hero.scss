@@ -39,7 +39,7 @@
             top: 0;
             width: 100%;
             height: 150vh;
-            height: 150svh;
+            // height: 150svh;
             background-image: url('@img/hero-city.png');
             background-repeat: no-repeat;
             background-size: cover;
@@ -48,7 +48,7 @@
 
             @media (max-width:1024px) {
                 height: 100vh;
-                height: 100svh;
+                // height: 100svh;
                 background-image: url('@img/hero-city-tablet.png');
             }
 
@@ -64,7 +64,7 @@
     // .hero__content
     &__content {
         min-height: 100vh;
-        min-height: 100svh;
+        // min-height: 100svh;
         padding-top: 4rem;
 
         @media (max-width:1280px) {

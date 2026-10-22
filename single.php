@@ -10,11 +10,11 @@ get_header();
                 <div class="breadcrumbs text-m">
                     <ul class="breadcrumb">
                         <li>
-                            <a>Главная</a>
+                            <a href="/">Главная</a>
                             <div class="sep"></div>
                         </li>
                         <li>
-                            <a href="">Взгляд на рынок: экосистема ИИ, IPO и недвижимость</a>
+                            <a href="/publications/" href="">Взгляд на рынок: экосистема ИИ, IPO и недвижимость</a>
                             <div class="sep"></div>
                         </li>
                         <li>
@@ -182,10 +182,10 @@ get_header();
                             </ol>
                             <h3>Источники</h3>
                             <ul>
-                                <li>Investopedia — Investing</li>
-                                <li>U.S. Securities and Exchange Commission — Investor.gov</li>
-                                <li>FINRA — Investing</li>
-                                <li>Vanguard — Investment Education</li>
+                                <li><a href="">Investopedia — Investing</a></li>
+                                <li><a href="">U.S. Securities and Exchange Commission — Investor.gov</a></li>
+                                <li><a href="">FINRA — Investing</a></li>
+                                <li><a href="">Vanguard — Investment Education</a></li>
                             </ul>
                         </div>
                         <div class="single-data__share _mobile">
