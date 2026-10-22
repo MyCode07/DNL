@@ -1,4 +1,4 @@
-/** Only opted-in headers show the CTA outside the open menu. */
-export function isProjectVisible({ open, mobile, compact, scrolled, hideMenuBtn }) {
-    return open || (hideMenuBtn && !mobile && !compact && !scrolled);
+/** Inner-page headers show the CTA only inside the open menu. */
+export function isProjectVisible({ open, mobile, compact, scrolled, innerPage }) {
+    return open || (!innerPage && !mobile && !compact && !scrolled);
 }

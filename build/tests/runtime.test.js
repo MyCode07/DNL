@@ -222,24 +222,24 @@ test('scrollbar compensation is recalculated after resize and destroy releases a
 });
 
 test('an open menu shows the CTA at any scroll position; closing restores viewport policy', () => {
-    const base = { open: false, mobile: false, compact: false, scrolled: false, hideMenuBtn: true };
+    const base = { open: false, mobile: false, compact: false, scrolled: false, innerPage: false };
     assert.equal(isProjectVisible(base), true);
     for (const state of [
         { scrolled: true },
         { compact: true },
         { mobile: true, compact: true },
-        { hideMenuBtn: false },
+        { innerPage: true },
     ]) {
         assert.equal(isProjectVisible({ ...base, ...state }), false);
         assert.equal(isProjectVisible({ ...base, ...state, open: true }), true);
     }
 });
 
-test('without hide-menu-btn the CTA only appears inside the open menu regardless of scroll', () => {
+test('header-page CTA only appears inside the open menu regardless of scroll', () => {
     for (const scrolled of [false, true]) {
         for (const compact of [false, true]) {
             for (const mobile of [false, true]) {
-                const state = { scrolled, compact, mobile, hideMenuBtn: false };
+                const state = { scrolled, compact, mobile, innerPage: true };
                 assert.equal(isProjectVisible({ ...state, open: false }), false);
                 assert.equal(isProjectVisible({ ...state, open: true }), true);
             }
