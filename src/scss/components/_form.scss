@@ -72,7 +72,7 @@
             margin-bottom: 1.6rem;
         }
 
-        .wpcf7-checkbox {
+        .wpcf7-radio {
             display: flex;
             flex-wrap: wrap;
             gap: 0.8rem;
@@ -212,8 +212,34 @@
     }
 }
 
+.dnd-progress-bar + span,
+.wpcf7-response-output,
+.dnd-upload-image,
+.dnd-upload-counter,
+.dnd-progress-bar,
+.name em,
+.hp-message,
+[name *='honeypot'] {
+    display: none !important;
+}
+
 .wpcf7-list-item {
     margin: 0 !important;
+}
+
+.codedropz-upload-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1.6rem 2.4rem;
+
+    @media (max-width:1024px) {
+        justify-content: flex-start;
+    }
+
+    input {
+        display: none;
+    }
 }
 
 .codedropz-upload-inner > :first-child,
@@ -227,19 +253,27 @@
 
 .codedropz-upload-handler {
     border: 0;
-}
-
-.codedropz-upload-handler {
     margin-bottom: 0;
     border-radius: 0;
+    max-width: 22rem;
+    margin-right: auto;
+
+    @media (max-width:1280px) {
+        max-width: 20rem;
+    }
+
+    @media (max-width:1024px) {
+        max-width: 100%;
+        width: 100%;
+        flex: 0 0 100%;
+    }
 }
 
 .cd-upload-btn {
     display: flex;
+    align-items: center;
     gap: 0.8rem;
-    border-bottom: 0.1rem solid $gray-300;
     padding-top: 0.6rem;
-    padding-bottom: 1.2rem;
     @include type.typography("primary-button");
 
     &:before {
@@ -251,82 +285,74 @@
     }
 }
 
-.dnd-upload-image {
-    display: none;
-}
-
-.dnd-upload-details {
-    padding-left: 0 !important;
-    width: 100% !important;
-}
-
-.dnd-upload-counter {
-    display: none !important;
-}
-
-.dnd-progress-bar {
-    display: none !important;
-}
-
-.name em {
-    display: none !important;
-}
-
-.dnd-upload-status .dnd-upload-details .remove-file span:after {
-    width: 1.2rem;
-    height: 1.2rem;
-    background-image: url('@img/icons/close.svg');
-}
-
-.dnd-upload-status .dnd-upload-details .name {
-    color: inherit;
-    padding: 0;
-    padding-right: 0;
-}
-
 .dnd-upload-status {
     padding: 0;
-}
 
-.dnd-upload-status .dnd-upload-details .remove-file {
-    position: static;
-}
+    .dnd-upload-details {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding-left: 0 !important;
+        width: fit-content !important;
 
-.codedropz-upload-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 3rem;
-}
+        &:hover {
+            .name {
+                color: $black;
+            }
 
-.codedropz-upload-handler {
-    width: 100%;
-    flex: 0 0 100%;
-}
+            .remove-file {
+                background-color: $black;
 
-.dnd-upload-details {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
+                &::before {
+                    filter: invert(100%);
+                }
+            }
+        }
 
-.dnd-upload-status .dnd-upload-details .name span {
-    padding-right: 0;
-}
+        .name {
+            padding-right: 0;
+            max-width: 7.5rem;
+            padding: 0;
+            padding-right: 0;
+            color: $gray-600;
+            @include type.typography("text-s");
 
-.codedropz-upload-wrapper:has(.dnd-upload-status) .codedropz-upload-handler {
-    margin-bottom: 3.2rem;
-}
+            @media (max-width:1024px) {
+                max-width: 7rem;
+            }
+        }
 
-.dnd-upload-status .dnd-upload-details .name span {
-    padding-right: 0;
-    line-height: 1.2em;
-    max-width: 7.5rem;
-}
+        .remove-file {
+            position: static;
+            flex: 0 0 auto;
+            width: 1.8rem;
+            height: 1.8rem;
+            padding: 0.1rem;
+            border-radius: 0.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: $gray-100;
 
-.dnd-progress-bar + span {
-    display: none;
-}
+            * {
+                pointer-events: none;
+            }
 
-.wpcf7-response-output {
-    display: none !important;
+            &:before {
+                flex: 0 0 auto;
+                content: '';
+                display: block;
+                width: 100%;
+                height: 100%;
+                background-image: url('@img/icons/close.svg');
+                background-size: 100%;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+
+            span {
+                display: none !important;
+            }
+        }
+    }
 }

@@ -1,7 +1,5 @@
 <?php
-if (!defined('ABSPATH')) {
-    exit;
-}
+
 /** Set WP_VITE_DEV to true in local wp-config.php only while npm run dev is running. */
 add_action('wp_enqueue_scripts', static function (): void {
     if (frame_is_vite_dev()) {

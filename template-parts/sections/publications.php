@@ -4,12 +4,14 @@
             <div class="section__top">
                 <div class="section__top-flex">
                     <h2>Публикации</h2>
-                    <a href="/archive.html" class="arrow-btn text-m">
-                        Смотреть все
-                        <svg width="13" height="10" viewBox="0 0 13 10">
-                            <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#menu-btn-arrow')); ?>' />
-                        </svg>
-                    </a>
+                    <?php if (is_front_page()): ?>
+                        <a href="/publications/" class="arrow-btn text-m">
+                            Смотреть все
+                            <svg width="13" height="10" viewBox="0 0 13 10">
+                                <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#menu-btn-arrow')); ?>' />
+                            </svg>
+                        </a>
+                    <?php endif; ?>
                 </div>
                 <div class="line"></div>
             </div>
@@ -20,7 +22,6 @@
                             <div class="post-item__data label-m">
                                 <div>
                                     <span class="post-item__author label-m">Андрей Волков — 24 Сен. 2026</span>
-                                    <span class="post-item__date label-m">Обновлено: 26 Сен. 2026</span>
                                 </div>
                             </div>
                             <h4><a href="/single.html">Взгляд на рынок: экосистема ИИ, IPO и недвижимость</a></h4>
@@ -39,7 +40,6 @@
                             <div class="post-item__data label-m">
                                 <div>
                                     <span class="post-item__author label-m">Мария Орлова — 24 Сен. 2026</span>
-                                    <span class="post-item__date label-m">Обновлено: 26 Сен. 2026</span>
                                 </div>
                             </div>
                             <h4><a href="/single.html">Где же отдача? Денис Лагутенкоиз DNL Capital — о результатах
@@ -58,7 +58,6 @@
                             <div class="post-item__data label-m">
                                 <div>
                                     <span class="post-item__author label-m">Илья Кузнецов — 21 Сен. 2026</span>
-                                    <span class="post-item__date label-m">Обновлено: 23 Сен. 2026</span>
                                 </div>
                             </div>
                             <h4><a href="/single.html">Инвестиционный прогноз</a></h4>
@@ -77,7 +76,6 @@
                             <div class="post-item__data label-m">
                                 <div>
                                     <span class="post-item__author label-m">Анна Белова — 17 Сен. 2026</span>
-                                    <span class="post-item__date label-m">Обновлено: 19 Сен. 2026</span>
                                 </div>
                             </div>
                             <h4><a href="/single.html">Как формируется доходность</a></h4>

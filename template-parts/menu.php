@@ -1,3 +1,10 @@
+<?php
+$is_glass_menu = true;
+
+if (!is_front_page() && !is_404()) {
+    $is_glass_menu = false;
+}
+?>
 <div class="menu">
     <div class="menu-surface">
         <div class="menu-heading">
@@ -26,7 +33,7 @@
                     <li><a href="/#projects">Проекты</a></li>
                     <li><a href="/#seo">Основатель</a></li>
                     <li><a href="/#deals">Подход</a></li>
-                    <li><a href="/archive.html">Публикации</a></li>
+                    <li><a href="/publications/">Публикации</a></li>
                 </ul>
             </nav>
             <button class="menu-btn text-m">
@@ -56,8 +63,8 @@
             </div>
         </div>
     </div>
-    <div class="menu-project" inert>
-        <button class="_btn _btn-white primary-button" data-open-popup="contact-me">
+    <div class="menu-project" <?php echo is_front_page() ? '' : 'style="height:0px"' ?> inert>
+        <button class="_btn _btn-<?php echo $is_glass_menu ? 'white' : 'black' ?> primary-button" data-open-popup="propose">
             Предложить<br>проект
         </button>
     </div>

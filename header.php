@@ -9,9 +9,16 @@
 </head>
 
 <body <?php body_class(); ?>>
-    <?php wp_body_open(); ?>
+    <?php
+    wp_body_open();
+    $header_class = '';
+
+    if (!is_front_page() && !is_404()) {
+        $header_class = ' dark-static header-page header-scrolled';
+    }
+    ?>
     <div class="wrapper">
-        <header class="header white _fixed @@class">
+        <header class="header white _fixed <?php echo $header_class ?>">
             <div class="header__container _container">
                 <div class="header__body">
                     <a href="/" class="header__logo">

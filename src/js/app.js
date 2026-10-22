@@ -14,7 +14,6 @@ import { initPageList } from './features/page-list.js';
 import { initPostTitleHeight } from './features/postTitleHeight.js';
 import { initAuthor } from './features/author.js';
 import { initPopupResults } from './features/popup-results.js';
-import { initPopupDemo } from './features/popup-demo.js';
 
 let destroyCurrentApp;
 
@@ -35,7 +34,6 @@ export function initApp(root = document) {
         scope.add(initHeader(root, menu));
         scope.add(initPopups(root, scrollLock, media));
         scope.add(initPopupResults(root, media));
-        scope.add(initPopupDemo(root));
         scope.add(initSliders(root, media));
         scope.add(initPostTitleHeight(root));
         scope.add(initAuthor(root, media));
