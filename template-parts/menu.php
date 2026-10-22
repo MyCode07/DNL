@@ -1,9 +1,5 @@
 <?php
-$is_glass_menu = true;
-
-if (!is_front_page() && !is_404()) {
-    $is_glass_menu = false;
-}
+$is_glass_menu = is_front_page();
 ?>
 <div class="menu">
     <div class="menu-surface">
@@ -63,7 +59,7 @@ if (!is_front_page() && !is_404()) {
             </div>
         </div>
     </div>
-    <div class="menu-project" <?php echo is_front_page() ? '' : 'style="height:0px"' ?> inert>
+    <div class="menu-project" <?php echo $is_glass_menu ? '' : 'style="height:0px"' ?> inert>
         <button class="_btn _btn-<?php echo $is_glass_menu ? 'white' : 'black' ?> primary-button" data-open-popup="propose">
             Предложить<br>проект
         </button>
