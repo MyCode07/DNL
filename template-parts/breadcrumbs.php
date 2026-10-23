@@ -1,1 +1,3 @@
-<div class="breadcrumbs _container"><?php do_action('pretty_breadcrumb') ?></div>
+<div class="_container">
+    <div class="breadcrumbs"><?php do_action('pretty_breadcrumb') ?></div>
+</div>

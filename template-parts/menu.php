@@ -29,7 +29,7 @@ $is_glass_menu = is_front_page();
                     <li><a href="/#projects">Проекты</a></li>
                     <li><a href="/#seo">Основатель</a></li>
                     <li><a href="/#deals">Подход</a></li>
-                    <li><a href="/publications/">Публикации</a></li>
+                    <li><a href="/publikaczii/">Публикации</a></li>
                 </ul>
             </nav>
             <button class="menu-btn text-m" data-open-popup="contact-me">

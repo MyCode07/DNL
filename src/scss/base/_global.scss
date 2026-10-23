@@ -538,6 +538,7 @@ picture {
     padding-top: 4rem;
     position: relative;
     z-index: 11;
+    max-width: 72%;
 
     @media (max-width:1280px) {
         margin-bottom: 12rem;
@@ -599,11 +600,11 @@ picture {
             margin-top: 10rem;
 
             @media (max-width:1280px) {
-                margin-bottom: 8rem;
+                margin-top: 8rem;
             }
 
             @media (max-width:767px) {
-                margin-bottom: 6rem;
+                margin-top: 6rem;
             }
         }
     }
@@ -721,8 +722,8 @@ picture {
     img,
     picture,
     figure {
+        display: block;
         margin: 10rem 0;
-        margin-bottom: 10rem;
         width: 100%;
         height: auto;
         border-radius: 2.8rem;
@@ -830,6 +831,7 @@ figcaption {
     align-items: center;
     gap: 1.6rem;
     margin-top: 2.4rem;
+    @include type.typography("text-m");
 
     @media (max-width:1280px) {
         margin-top: 2rem;
@@ -925,5 +927,17 @@ input[type="checkbox"] {
                 fill: $white;
             }
         }
+    }
+}
+
+.pixelated-scroll-transition {
+    position: relative;
+
+    &[data-direction="down"] {
+        bottom: -0.1rem;
+    }
+
+    &[data-direction="up"] {
+        top: -0.1rem;
     }
 }

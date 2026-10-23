@@ -13,7 +13,7 @@ get_header();
             <div class="section__body">
                 <div class="section__top">
                     <h1 class="h2">Политика в отношении обработки файлов «Cookie» и метрических данных</h1>
-                    <div class="line"></div>
+                    <div class="line"><span></span></div>
                 </div>
                 <div class="text-box">
                     <p>Этот веб-сайт использует куки-файлы для корректной работы, а также куки позволяют определять

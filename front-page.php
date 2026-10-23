@@ -52,8 +52,8 @@ get_header();
             <div class="section__body">
                 <div class="section__top">
                     <h2><span>DNL Capital рассматривает</span>
-                        недвижимость <span>прежде всего</span> как инвестиционный инструмент</h2>
-                    <div class="line"></div>
+                        недвижимость <span> прежде всего</span> как инвестиционный инструмент</h2>
+                    <div class="line"><span></span></div>
                     <p>Работаем с разными форматами сделок: приобретениеи перепродажа, девелопмент, арендный доход,
                         повышение стоимости объектов и освоение земельных участков. Стратегия зависит от конкретного
                         актива.</p>
@@ -87,7 +87,7 @@ get_header();
             <div class="section__body">
                 <div class="section__top">
                     <h2>Проекты</h2>
-                    <div class="line"></div>
+                    <div class="line"><span></span></div>
                 </div>
                 <div class="projects-wrap">
                     <div data-tab-content="0" class="_active">
@@ -300,7 +300,7 @@ get_header();
             <div class="section__body">
                 <div class="section__top">
                     <h2>Денис Лагутенко</h2>
-                    <div class="line"></div>
+                    <div class="line"><span></span></div>
                     <div class="h3 seo-subtitle">Основатель DNL Capital</div>
                 </div>
                 <div class="seo-text">Денис лично участвует в оценке инвестиционных возможностей и вкладывает
@@ -339,7 +339,7 @@ get_header();
             <div class="section__body">
                 <div class="section__top">
                     <h2>Как мы ищем сделки</h2>
-                    <div class="line"></div>
+                    <div class="line"><span></span></div>
                     <p>Количество проектов неявляется целью DNL Capital.При выборе объекта мыоцениваем прежде всего
                         его экономику, существующий денежный поток, потенциал его увеличения идополнительные
                         возможности создания стоимости.</p>
@@ -484,7 +484,7 @@ get_header();
             <div class="section__body">
                 <div class="section__top">
                     <h2>Почему real estate</h2>
-                    <div class="line"></div>
+                    <div class="line"><span></span></div>
                     <p>Предприниматель, создавший капитал в основном бизнесе, сталкивается с новым вопросом: как его
                         сохранить, диверсифицировать и продолжить приумножать.</p>
                     <p>Акции, облигации, частный бизнес, стартапы, криптовалюты и недвижимость имеют разный профиль
@@ -549,7 +549,7 @@ get_header();
         </div>
     </section>
 
-    <?php get_template_part('template-parts/sections/publications'); ?>
+    <?php get_template_part('template-parts/sections/posts'); ?>
 
     <section class="section white cta" id="cta">
         <div class="cta__bg">
@@ -564,7 +564,7 @@ get_header();
                     <h2>Предложить <br>
                         инвестиционную <br>
                         возможность</h2>
-                    <div class="line"></div>
+                    <div class="line"><span></span></div>
                     <p>Рассматриваем инвестиционные возможности в недвижимости в США — от готовых cash-flow активов до
                         value-add и проектов с development potential.</p>
                 </div>

@@ -1,12 +1,12 @@
 import { ScrollTrigger, gsap } from '../core/gsap.js';
 import { createPixelCells } from '../utils/pixels.js';
 
-const ROWS = 4;
+const ROWS = 3;
 const MAX_PIXEL_SIZE = {
-    desktop: 50,
-    below1280: 40,
-    below1024: 30,
-    below767: 20,
+    desktop: 100,
+    below1280: 80,
+    below1024: 60,
+    below767: 40,
 };
 
 function initCanvases(root, maxPixelSize) {

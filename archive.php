@@ -8,8 +8,8 @@ get_header();
         <div class="section__container _container">
             <div class="section__body">
                 <div class="section__top">
-                    <h1 class="h2">Публикации</h1>
-                    <div class="line"></div>
+                    <h1 class="h2"><?php the_archive_title() ?></h1>
+                    <div class="line"><span></span></div>
                 </div>
 
                 <div class="grid grid-3" data-post-container data-post-type="publications" data-count="6">

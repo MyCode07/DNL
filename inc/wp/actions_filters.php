@@ -27,7 +27,7 @@ add_filter('get_the_archive_title_prefix', '__return_empty_string');
 add_filter('the_content', 'frame_wrap_content_tables', 20);
 function frame_wrap_content_tables($content)
 {
-    if (!in_array(get_post_type(), ['post', 'publication'], true)) {
+    if (!in_array(get_post_type(), ['post'], true)) {
         return $content;
     }
 
