@@ -297,6 +297,24 @@
                 background-image: url('@img/seo-1280.png');
             }
 
+            @media (min-width:1025px) {
+                --seo-header-top: 4rem;
+                // Header line inside the 1920 x 1650 Figma composition.
+                --seo-image-anchor: calc(379 / 1650);
+                // Keep the original crop, enlarging only when a tall viewport needs it.
+                --seo-image-height: max(85.9375vw, calc((100vh - var(--seo-header-top)) / (1 - var(--seo-image-anchor))));
+
+                top: calc(var(--seo-header-top) - var(--seo-image-height) * var(--seo-image-anchor));
+                height: var(--seo-image-height);
+                background-size: cover;
+
+                @media (max-width:1280px) {
+                    --seo-header-top: 3rem;
+                    // The 1280 x 1100 composition has its own header line.
+                    --seo-image-anchor: calc(239 / 1100);
+                }
+            }
+
             @media (max-width:1024px) {
                 position: relative;
                 left: 0;
