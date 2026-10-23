@@ -27,3 +27,56 @@
 @use "overrides/small-screen";
 // Existing development page switcher.
 @use "dev/page-list";
+
+// Temporary CSS-only post title alignment experiment.
+@supports (grid-template-rows: subgrid) {
+    @media (min-width: 768px) {
+        .grid.grid-3 > .post-item {
+            display: grid;
+            grid-row: span 4;
+            grid-template-rows: subgrid;
+            row-gap: 0;
+            min-height: 0;
+        }
+    }
+
+    .publications .swiper-wrapper {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: min(55rem, 100%);
+        grid-template-rows: repeat(4, auto);
+        column-gap: 16px;
+        row-gap: 0;
+
+        @media (max-width: 1280px) {
+            grid-auto-columns: min(39.6rem, 100%);
+        }
+
+        @media (max-width: 1024px) {
+            grid-auto-columns: calc(50% - 0.8rem);
+        }
+
+        @media (max-width: 767px) {
+            grid-auto-columns: min(31.2rem, 100%);
+        }
+    }
+
+    .publications .swiper-slide {
+        display: grid;
+        grid-row: 1 / span 4;
+        grid-template-rows: subgrid;
+        row-gap: 0;
+        height: auto;
+        max-width: none;
+        // Grid owns the same 16px spacing that Swiper uses for navigation.
+        margin-right: 0 !important;
+    }
+
+    .publications .swiper-slide > .post-item {
+        display: grid;
+        grid-row: span 4;
+        grid-template-rows: subgrid;
+        row-gap: 0;
+        min-height: 0;
+    }
+}
