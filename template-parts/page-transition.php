@@ -6,15 +6,21 @@
         state.pending = false;
         document.dispatchEvent(new Event('frame:page-reveal'));
     };
-    const key = 'frame:page-transition';
+    // Safety recovery only: animation completion releases normal reveals.
+    state.fallback = setTimeout(() => {
+        if (!state.pending && window.frameElementRevealReady) return;
+        state.failed = true;
+        state.cover?.remove();
+        state.cover = null;
+        document.documentElement.classList.add('reveal-disabled');
+        state.release();
+    }, 4000);
     try {
-        const saved = JSON.parse(sessionStorage.getItem(key) || 'null');
-        sessionStorage.removeItem(key);
-        if (!state.enabled || !saved || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        const target = new URL(saved.url);
-        if (!Number.isFinite(saved.at) || Date.now() - saved.at < 0 || Date.now() - saved.at > 15000 || target.origin !== location.origin ||
-            target.pathname.replace(/\/$/, '') !== location.pathname.replace(/\/$/, '') ||
-            target.search !== location.search) return;
+        // First loads and reloads also open; consume the previous document's marker.
+        sessionStorage.removeItem('frame:page-transition');
+    } catch { /* Storage is optional for the entrance phase. */ }
+    if (!state.enabled || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    try {
         const cover = document.createElement('canvas');
         const context = cover.getContext('2d');
         if (!context) return;
@@ -22,13 +28,15 @@
         cover.dataset.pageTransition = '';
         cover.setAttribute('aria-hidden', 'true');
         cover.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:2147483647;pointer-events:none;display:block';
-        context.fillStyle = '#fff';
+        context.fillStyle = '#000';
         context.fillRect(0, 0, 1, 1);
         document.documentElement.append(cover);
         state.cover = cover;
         state.pending = true;
-        // A missing or failed app bundle must never leave the page covered.
-        state.fallback = setTimeout(() => { cover.remove(); state.cover = null; state.release(); }, 4000);
-    } catch { /* Storage may be unavailable; retain ordinary browser navigation. */ }
+    } catch {
+        state.cover?.remove();
+        state.cover = null;
+        state.release();
+    }
 })();
 </script>

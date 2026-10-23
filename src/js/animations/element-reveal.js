@@ -1,5 +1,5 @@
 import { gsap } from '../core/gsap.js';
-import { getRevealDelay } from '../utils/reveal-delay.js';
+import { whenPageRevealed } from '../utils/page-revealed.js';
 
 const DURATION = 0.8;
 const POST_ITEM_STAGGER = 0.12;
@@ -28,7 +28,11 @@ export const ELEMENT_REVEAL_TARGETS = [
 export function initElementReveal(root) {
     const view = root.defaultView;
     if (view) view.frameElementRevealReady = true;
-    if (!view?.IntersectionObserver || !view.CSS.supports('translate', '0 1rem')) {
+    if (
+        !view?.IntersectionObserver ||
+        !view.CSS.supports('translate', '0 1rem') ||
+        view.framePageTransition?.failed
+    ) {
         root.documentElement.classList.add('reveal-disabled');
         return;
     }
@@ -153,36 +157,15 @@ export function initElementReveal(root) {
             showBatch(targets);
         };
         root.addEventListener('frame:page-reveal', resume);
-        const delay = getRevealDelay(root);
-        const transition = root.querySelector('.page-transition[data-reveal-delay]');
-        const tiles =
-            transition
-                ?.getAnimations?.({ subtree: true })
-                .filter((animation) => animation.animationName === 'tile-reveal') || [];
-        let delayReady = delay === 0;
-        let tilesReady = tiles.every((animation) => animation.playState === 'finished');
-        const updateReady = () => {
+        const readiness = new AbortController();
+        whenPageRevealed(root, readiness.signal).then(() => {
             if (disposed) return;
-            ready = delayReady && tilesReady;
-            if (ready) resume();
-        };
-        updateReady();
-        if (!tilesReady) {
-            // A cancelled CSS animation also releases the content; its timing stays in CSS.
-            Promise.all(tiles.map((animation) => animation.finished.catch(() => {}))).then(() => {
-                tilesReady = true;
-                updateReady();
-            });
-        }
-        const timer = delayReady
-            ? null
-            : view.setTimeout(() => {
-                  delayReady = true;
-                  updateReady();
-              }, delay);
+            ready = true;
+            resume();
+        });
         return () => {
             disposed = true;
-            view.clearTimeout(timer);
+            readiness.abort();
             observer.disconnect();
             root.removeEventListener('focusin', focus);
             root.removeEventListener('frame:page-reveal', resume);

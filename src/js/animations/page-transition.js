@@ -5,8 +5,6 @@ import { createPixelCells } from '../utils/pixels.js';
 const STORAGE_KEY = 'frame:page-transition';
 const COVER_DURATION = 0.65;
 const OPEN_DURATION = 0.75;
-// CSS tile-reveal currently owns navigation; retain the disabled canvas link behavior.
-const CANVAS_LINK_TRANSITIONS_ENABLED = false;
 
 /** Only ordinary same-origin document links participate. */
 export function getPageTransitionUrl(anchor, event, currentHref) {
@@ -38,6 +36,7 @@ export function getPageTransitionUrl(anchor, event, currentHref) {
     if (
         !['http:', 'https:'].includes(url.protocol) ||
         url.origin !== current.origin ||
+        url.hash ||
         (url.pathname === current.pathname && url.search === current.search) ||
         /\/(?:wp-admin(?:\/|$)|wp-login\.php)/i.test(url.pathname) ||
         /\.(?:pdf|zip|gz|rar|7z|jpe?g|png|webp|svg|gif|mp[34]|webm|docx?|xlsx?|csv)$/i.test(
@@ -51,7 +50,7 @@ export function getPageTransitionUrl(anchor, event, currentHref) {
 /** One removable module owns the canvas, navigation interception and entrance handoff. */
 export function initPageTransition(root) {
     const view = root.defaultView;
-    const bridge = view.framePageTransition;
+    const bridge = view?.framePageTransition;
     if (!bridge?.enabled) return;
     const scope = createScope();
     const motion = view.matchMedia('(prefers-reduced-motion: reduce)');
@@ -60,8 +59,6 @@ export function initPageTransition(root) {
     let context;
     let cells = [];
     let tween;
-    let handoff;
-    let openTimer;
     let recoveryTimer;
     let destination;
     let navigating = false;
@@ -72,12 +69,20 @@ export function initPageTransition(root) {
         if (bridge.pending) bridge.release();
     };
     function draw() {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.fillStyle = '#fff';
-        for (const cell of cells) {
-            if (state.progress >= cell.threshold) {
-                context.fillRect(cell.x, cell.y, cell.width, cell.height);
+        try {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            if (state.progress <= 0) return;
+            context.fillStyle = '#000';
+            for (const cell of cells) {
+                if (state.progress >= cell.threshold) {
+                    context.fillRect(cell.x, cell.y, cell.width, cell.height);
+                }
             }
+        } catch {
+            // A lost context must not trap an intercepted navigation.
+            const url = destination;
+            reset();
+            if (url) view.location.assign(url);
         }
     }
     function resize() {
@@ -105,29 +110,30 @@ export function initPageTransition(root) {
         draw();
     }
     function prepare() {
-        if (!canvas) {
-            canvas = root.createElement('canvas');
-            canvas.dataset.pageTransition = '';
-            canvas.setAttribute('aria-hidden', 'true');
-            canvas.style.cssText =
-                'position:fixed;inset:0;width:100%;height:100%;z-index:2147483647;pointer-events:auto;display:block';
-            root.documentElement.append(canvas);
-        }
-        context = canvas.getContext('2d');
-        if (!context) {
-            canvas.remove();
-            canvas = null;
-            release();
+        try {
+            if (!canvas) {
+                canvas = root.createElement('canvas');
+                canvas.dataset.pageTransition = '';
+                canvas.setAttribute('aria-hidden', 'true');
+                canvas.style.cssText =
+                    'position:fixed;inset:0;width:100%;height:100%;z-index:2147483647;pointer-events:auto;display:block';
+                root.documentElement.append(canvas);
+            }
+            context = canvas.getContext('2d');
+            if (!context) {
+                reset();
+                return false;
+            }
+            bridge.cover = canvas;
+            resize();
+            return Boolean(canvas && context);
+        } catch {
+            reset();
             return false;
         }
-        bridge.cover = canvas;
-        resize();
-        return true;
     }
-    function reset() {
+    function reset(reveal = true) {
         tween?.kill();
-        handoff?.kill();
-        view.clearTimeout(openTimer);
         view.clearTimeout(recoveryTimer);
         view.clearTimeout(bridge.fallback);
         canvas?.remove();
@@ -136,13 +142,14 @@ export function initPageTransition(root) {
         state.progress = 0;
         destination = null;
         navigating = opening = false;
-        release();
+        if (reveal) release();
     }
     function navigate() {
         if (disposed || navigating || !destination) return;
         navigating = true;
         state.progress = 1;
         draw();
+        if (!destination) return;
         try {
             view.sessionStorage.setItem(
                 STORAGE_KEY,
@@ -158,6 +165,7 @@ export function initPageTransition(root) {
             throw error;
         }
         // Recover if a navigation is cancelled instead of unloading this document.
+        view.clearTimeout(recoveryTimer);
         recoveryTimer = view.setTimeout(() => {
             try {
                 view.sessionStorage.removeItem(STORAGE_KEY);
@@ -170,25 +178,26 @@ export function initPageTransition(root) {
     function open() {
         if (disposed || opening || !bridge.pending) return;
         opening = true;
-        view.clearTimeout(openTimer);
         view.clearTimeout(bridge.fallback);
         if (motion.matches || !prepare()) {
             reset();
             return;
         }
         canvas.style.pointerEvents = 'none';
-        tween = gsap.to(state, {
-            progress: 0,
-            duration: OPEN_DURATION,
-            ease: 'power1.inOut',
-            onUpdate: draw,
-            onComplete: reset,
-        });
-        // Begin the first-screen reveals while squares are still clearing.
-        handoff = gsap.delayedCall(0.12, release);
+        recoveryTimer = view.setTimeout(reset, 4000);
+        try {
+            tween = gsap.to(state, {
+                progress: 0,
+                duration: OPEN_DURATION,
+                ease: 'power1.inOut',
+                onUpdate: draw,
+                onComplete: reset,
+            });
+        } catch {
+            reset();
+        }
     }
     scope.on(root, 'click', (event) => {
-        if (!CANVAS_LINK_TRANSITIONS_ENABLED) return;
         if (motion.matches || !(event.target instanceof view.Element)) return;
         const url = getPageTransitionUrl(
             event.target.closest('a[href]'),
@@ -210,23 +219,40 @@ export function initPageTransition(root) {
         if (!prepare()) return;
         event.preventDefault();
         tween?.kill();
-        handoff?.kill();
-        view.clearTimeout(openTimer);
         view.clearTimeout(bridge.fallback);
         release();
         canvas.style.pointerEvents = 'auto';
         destination = url;
-        tween = gsap.to(state, {
-            progress: 1,
-            duration: COVER_DURATION,
-            ease: 'power1.inOut',
-            onUpdate: draw,
-            onComplete: navigate,
-        });
+        view.clearTimeout(recoveryTimer);
+        recoveryTimer = view.setTimeout(() => {
+            reset();
+            view.location.assign(url);
+        }, 5000);
+        try {
+            tween = gsap.to(state, {
+                progress: 1,
+                duration: COVER_DURATION,
+                ease: 'power1.inOut',
+                onUpdate: draw,
+                onComplete: navigate,
+            });
+        } catch {
+            reset();
+            view.location.assign(url);
+        }
     });
     scope.on(view, 'resize', resize);
     scope.on(view, 'pageshow', (event) => {
-        if (event.persisted) reset();
+        if (!event.persisted) return;
+        // Keep queued reveals waiting while replacing a cached outgoing cover.
+        reset(false);
+        if (motion.matches) {
+            release();
+            return;
+        }
+        bridge.pending = true;
+        state.progress = 1;
+        open();
     });
     scope.on(motion, 'change', () => {
         if (!motion.matches) return;
@@ -234,8 +260,8 @@ export function initPageTransition(root) {
         else reset();
     });
     if (bridge.pending) {
-        openTimer = view.setTimeout(open, 1200);
-        root.fonts.ready.then(open);
+        // Settle layout before opening; the bootstrap watchdog covers stalled resources.
+        Promise.resolve(root.fonts?.ready).then(open, open);
     }
     scope.add(() => {
         disposed = true;
