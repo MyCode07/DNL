@@ -11,7 +11,7 @@ import { initSliders } from './features/sliders.js';
 import { initProjectDescriptions } from './features/project-descriptions.js';
 import { initTabs } from './features/tabs.js';
 import { initPageList } from './features/page-list.js';
-// import { initPostTitleHeight } from './features/postTitleHeight.js';
+import { initPostTitleHeight } from './features/postTitleHeight.js';
 import { initAuthor } from './features/author.js';
 import { initPopupResults } from './features/popup-results.js';
 import { initContactForms } from './features/contact-forms.js';
@@ -37,8 +37,7 @@ export function initApp(root = document) {
         scope.add(initPopupResults(root, media));
         scope.add(initContactForms(root));
         scope.add(initSliders(root, media));
-        // Temporarily disabled while testing CSS subgrid title alignment.
-        // scope.add(initPostTitleHeight(root));
+        scope.add(initPostTitleHeight(root));
         scope.add(initAuthor(root, media));
         scope.add(initTabs(root));
         scope.add(initProjectDescriptions(root));
