@@ -1,12 +1,10 @@
 <div class="popup-result popup-result--success" data-popup-result="success" hidden inert>
     <div class="popup-result__background" aria-hidden="true">
         <picture>
-            <source media="(max-width: 767px)" srcset="<?php echo esc_url(frame_asset('img/popup-success-mobile.png')); ?>">
-            <source media="(max-width: 1024px)" srcset="<?php echo esc_url(frame_asset('img/popup-success-tablet.png')); ?>">
-            <source media="(max-width: 1280px)" srcset="<?php echo esc_url(frame_asset('img/popup-success-compact.png')); ?>">
+            <source media="(max-width: 767px)" srcset="<?php echo esc_url(frame_asset('img/popup-success-360.png')); ?>">
+            <source media="(max-width: 1024px)" srcset="<?php echo esc_url(frame_asset('img/popup-success-mobile.png')); ?>">
             <img src="<?php echo esc_url(frame_asset('img/popup-success-desktop.png')); ?>" alt="">
         </picture>
-        <img class="popup-result__tablet-overlay" src="<?php echo esc_url(frame_asset('img/popup-success-tablet-overlay.png')); ?>" alt="">
     </div>
     <div class="popup-result__content" role="status" tabindex="-1">
         <h3 class="h4">Заявка успешно<br>отправлена</h3>
@@ -17,6 +15,7 @@
 <div class="popup-result popup-result--error" data-popup-result="error" hidden inert>
     <div class="popup-result__background" aria-hidden="true">
         <picture>
+            <source media="(max-width: 767px)" srcset="<?php echo esc_url(frame_asset('img/popup-error-360.png')); ?>">
             <source media="(max-width: 1024px)" srcset="<?php echo esc_url(frame_asset('img/popup-error-mobile.png')); ?>">
             <img src="<?php echo esc_url(frame_asset('img/popup-error-desktop.png')); ?>" alt="">
         </picture>
