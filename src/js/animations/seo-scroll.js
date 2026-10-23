@@ -1,8 +1,6 @@
 import { initSectionScroll } from './section-scroll.js';
 import { gsap } from '../core/gsap.js';
 
-// The desktop portrait is 1920 × 1650. Limit its travel to keep the face above the quote.
-
 export function initSeoScroll(root) {
     const background = root.querySelector('.seo__bg-image');
     if (!background) return;

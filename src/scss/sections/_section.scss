@@ -289,10 +289,8 @@
             // height: 150svh;
             background-image: url('@img/seo.png');
             background-repeat: no-repeat;
-            // Keep a small vertical reserve for parallax even in tall desktop viewports.
             background-size: cover;
             background-position: 50% 0%;
-            will-change: background-position;
 
             @media (max-width:1280px) {
                 top: -18rem;

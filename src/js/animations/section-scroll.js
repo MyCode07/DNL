@@ -9,12 +9,10 @@ export function initSectionScroll(
         metricsSelector = '.glass__grid',
         cardSelector = '.glass__grid-item',
         metricsStart = 'top top',
-        backgroundPositionEnd = '50% 100%',
     },
 ) {
     const section = root.querySelector(selector);
     if (!section) return;
-    const background = section.querySelector(`${selector}__bg-image`);
     const metrics = section.querySelector(metricsSelector);
     const cards = [...section.querySelectorAll(cardSelector)];
     const media = gsap.matchMedia();
@@ -51,23 +49,6 @@ export function initSectionScroll(
                             start: metricsStart,
                             end: 'bottom top',
                             scrub: 1.3,
-                        },
-                    },
-                );
-            }
-            if (background) {
-                gsap.fromTo(
-                    background,
-                    { backgroundPosition: '50% 0%' },
-                    {
-                        backgroundPosition: backgroundPositionEnd,
-                        ease: 'linear',
-                        scrollTrigger: {
-                            trigger: section,
-                            start: 'top top',
-                            end: 'bottom bottom',
-                            scrub: 1.5,
-                            invalidateOnRefresh: true,
                         },
                     },
                 );
