@@ -46,3 +46,40 @@ function remove_nbsp($title)
     $title = preg_replace('~\x{00a0}~siu', ' ', $title);
     return $title;
 }
+
+
+// Применяем фильтры сразу для вывода контента, заголовков и цитат
+add_filter('the_content', 'fix_all_short_words');
+add_filter('the_title', 'fix_all_short_words');
+add_filter('get_the_excerpt', 'fix_all_short_words');
+add_filter('widget_text', 'fix_all_short_words');
+function fix_all_short_words($text)
+{
+    if (empty($text)) return $text;
+
+    // Регулярное выражение находит любые слова длиной 1 или 2 буквы (\p{L}{1,2})
+    // перед которыми есть пробел или начало строки, и заменяет следующий за ними пробел на &nbsp;
+    $pattern = '/(?<=\s|^)(\p{L}{1,2})\s+(?=\p{L})/ui';
+    $parts = wp_html_split($text);
+    $protected = [];
+    foreach ($parts as &$part) {
+        if (str_starts_with($part, '<')) {
+            // Preserve code and raw-text elements as well as HTML attributes.
+            if (preg_match('~^<(/?)(script|style|pre|code|textarea)\b~i', $part, $tag)) {
+                $name = strtolower($tag[2]);
+                if ($tag[1] === '/') {
+                    if (end($protected) === $name) array_pop($protected);
+                } else {
+                    $protected[] = $name;
+                }
+            }
+            continue;
+        }
+        if ($protected) continue;
+        $part = preg_replace($pattern, '$1&nbsp;', $part);
+        $part = preg_replace('/\s+([—–-])\s+/u', '&nbsp;$1 ', $part);
+    }
+    unset($part);
+
+    return implode('', $parts);
+}

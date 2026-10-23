@@ -50,6 +50,22 @@
         border-bottom: 0.1rem solid $gray-300;
         padding-bottom: 1.2rem;
 
+        &:hover {
+            border-color: $black;
+        }
+
+        &.error {
+            border-color: $red;
+
+            input {
+                color: $red;
+
+                &::placeholder {
+                    color: $red;
+                }
+            }
+        }
+
         input {
             @include type.typography("primary-button");
             display: block;
@@ -101,6 +117,7 @@
                     background-position: center;
                     background-repeat: no-repeat;
                     background-size: 1.6rem;
+                    transition: border-color 0.3s ease 0s, background-color 0.3s ease 0s;
                 }
 
                 &:has(input:checked) {
@@ -109,6 +126,10 @@
                         background-color: $black;
                         background-image: url('@img/icons/check.svg');
                     }
+                }
+
+                &:hover:before {
+                    border-color: $black;
                 }
 
                 * {
@@ -179,6 +200,7 @@
                 background-repeat: no-repeat;
                 background-size: 1.6rem;
                 margin-top: 0.4rem;
+                transition: border-color 0.3s ease 0s, background-color 0.3s ease 0s;
             }
 
             &:has(input:checked) {
@@ -187,6 +209,10 @@
                     background-color: $black;
                     background-image: url('@img/icons/check.svg');
                 }
+            }
+
+            &:hover:before {
+                border-color: $black;
             }
 
             input {
@@ -209,6 +235,18 @@
                 text-decoration: underline;
             }
         }
+    }
+
+    .wpcf7-not-valid-tip {
+        @include type.typography("caption");
+        margin-top: 0.8rem;
+        color: $red;
+    }
+
+    button[disabled] {
+        opacity: 0.25;
+        cursor: no-drop;
+        pointer-events: none;
     }
 }
 

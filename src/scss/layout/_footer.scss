@@ -125,6 +125,7 @@
                     background-position: center;
                     background-repeat: no-repeat;
                     background-size: 1.6rem;
+                    transition: border-color 0.3s ease 0s, background-color 0.3s ease 0s;
                 }
 
                 &:has(input:checked) {
@@ -133,6 +134,10 @@
                         background-color: $black;
                         background-image: url('@img/icons/check.svg');
                     }
+                }
+
+                &:hover:before {
+                    border-color: $black;
                 }
 
                 input {
