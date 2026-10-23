@@ -1,9 +1,9 @@
 import { gsap } from '../core/gsap.js';
+import { getRevealDelay } from '../utils/reveal-delay.js';
 
-const DISTANCE_REM = 5;
 const DURATION = 0.8;
 const POST_ITEM_STAGGER = 0.12;
-const TARGETS = [
+export const ELEMENT_REVEAL_TARGETS = [
     'main .hero__content > *',
     'main .section__top > *',
     'main .glass__grid-item',
@@ -11,28 +11,42 @@ const TARGETS = [
     'main .criteria-item',
     'main .projects-item > *',
     'main .projects-tabs',
+    'main .deals-controls',
     'main .seo-text',
     'main .seo-quote',
     'main .why-item',
     'main .post-item',
     'main .cta .section__body > *',
     'main .text-box > *',
+    'main .single-data__item',
+    'main .single-data__share',
+    '.footer__top',
+    '.footer__bottom',
 ].join(', ');
 
-/** JS-only trial: independent translate leaves existing scroll/slider transforms intact. */
+/** CSS owns the initial state; independent translate preserves existing scroll transforms. */
 export function initElementReveal(root) {
     const view = root.defaultView;
-    if (!view?.IntersectionObserver || !view.CSS.supports('translate', '0 1rem')) return;
-    const elements = [...root.querySelectorAll(TARGETS)].filter(
-        (element) => !element.parentElement.closest(TARGETS),
+    if (view) view.frameElementRevealReady = true;
+    if (!view?.IntersectionObserver || !view.CSS.supports('translate', '0 1rem')) {
+        root.documentElement.classList.add('reveal-disabled');
+        return;
+    }
+    root.documentElement.classList.remove('reveal-disabled');
+    const elements = [...root.querySelectorAll(ELEMENT_REVEAL_TARGETS)].filter(
+        (element) => !element.parentElement.closest(ELEMENT_REVEAL_TARGETS),
     );
     if (!elements.length) return;
 
     const media = gsap.matchMedia();
     const revealed = new WeakSet();
+    const originalClasses = new Map(
+        elements.map((element) => [element, element.classList.contains('is-revealed')]),
+    );
     media.add('(prefers-reduced-motion: no-preference)', () => {
         const states = new Map();
         const waiting = new Set();
+        let ready = false;
         let disposed = false;
         const restore = (element, state) => {
             for (const [name, value, priority] of state.styles) {
@@ -47,7 +61,7 @@ export function initElementReveal(root) {
         const show = (element, immediate = false, delay = 0) => {
             const state = states.get(element);
             if (disposed || !state || revealed.has(element)) return;
-            if (!immediate && view.framePageTransition?.pending) {
+            if (!immediate && (!ready || view.framePageTransition?.pending)) {
                 waiting.add(element);
                 return;
             }
@@ -85,7 +99,10 @@ export function initElementReveal(root) {
         );
 
         elements.forEach((element) => {
+            // Read the natural destination synchronously, without allowing a visible frame.
+            element.classList.add('is-revealed');
             const computed = view.getComputedStyle(element);
+            const opacity = Number(computed.opacity);
             if (revealed.has(element) || computed.translate !== 'none') return;
             const state = {
                 styles: ['opacity', 'translate'].map((name) => [
@@ -100,25 +117,23 @@ export function initElementReveal(root) {
                 ]),
             };
             states.set(element, state);
+            element.classList.remove('is-revealed');
+            // GSAP's parallax parser writes a neutral inline translate; let CSS supply the start.
+            if (element.style.translate === 'none') element.style.removeProperty('translate');
             state.tween = gsap.timeline({
                 paused: true,
                 defaults: { duration: DURATION, ease: 'power3.out' },
                 onComplete: () => {
                     revealed.add(element);
+                    element.classList.add('is-revealed');
                     restore(element, state);
                 },
             });
-            state.tween.fromTo(
-                element,
-                { opacity: 0, translate: `0 ${DISTANCE_REM}rem` },
-                { opacity: Number(computed.opacity), translate: '0 0rem', immediateRender: true },
-                0,
-            );
+            state.tween.to(element, { opacity, translate: '0 0rem' }, 0);
             if (state.lines.length) {
-                state.tween.fromTo(
+                state.tween.to(
                     state.lines.map(([span]) => span),
-                    { maxWidth: '0%' },
-                    { maxWidth: '100%', immediateRender: true },
+                    { maxWidth: '100%' },
                     0,
                 );
             }
@@ -132,17 +147,58 @@ export function initElementReveal(root) {
         };
         root.addEventListener('focusin', focus);
         const resume = () => {
-            showBatch([...waiting]);
+            if (!ready || view.framePageTransition?.pending) return;
+            const targets = [...waiting];
             waiting.clear();
+            showBatch(targets);
         };
         root.addEventListener('frame:page-reveal', resume);
+        const delay = getRevealDelay(root);
+        const transition = root.querySelector('.page-transition[data-reveal-delay]');
+        const tiles =
+            transition
+                ?.getAnimations?.({ subtree: true })
+                .filter((animation) => animation.animationName === 'tile-reveal') || [];
+        let delayReady = delay === 0;
+        let tilesReady = tiles.every((animation) => animation.playState === 'finished');
+        const updateReady = () => {
+            if (disposed) return;
+            ready = delayReady && tilesReady;
+            if (ready) resume();
+        };
+        updateReady();
+        if (!tilesReady) {
+            // A cancelled CSS animation also releases the content; its timing stays in CSS.
+            Promise.all(tiles.map((animation) => animation.finished.catch(() => {}))).then(() => {
+                tilesReady = true;
+                updateReady();
+            });
+        }
+        const timer = delayReady
+            ? null
+            : view.setTimeout(() => {
+                  delayReady = true;
+                  updateReady();
+              }, delay);
         return () => {
             disposed = true;
+            view.clearTimeout(timer);
             observer.disconnect();
             root.removeEventListener('focusin', focus);
             root.removeEventListener('frame:page-reveal', resume);
-            states.forEach((state, element) => restore(element, state));
+            states.forEach((state, element) => {
+                restore(element, state);
+                if (!revealed.has(element) && !originalClasses.get(element)) {
+                    element.classList.remove('is-revealed');
+                }
+            });
         };
     });
-    return () => media.revert();
+    return () => {
+        media.revert();
+        root.documentElement.classList.add('reveal-disabled');
+        originalClasses.forEach((hadClass, element) =>
+            element.classList.toggle('is-revealed', hadClass),
+        );
+    };
 }

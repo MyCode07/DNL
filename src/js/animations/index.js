@@ -12,11 +12,15 @@ const ELEMENT_REVEAL_ENABLED = true;
 /** One entry point owns all scroll-driven animations and their observers. */
 export function initAnimations(root) {
     const scope = createScope();
+    // Measure existing parallax baselines before the CSS entrance offset is applied.
+    root.documentElement.classList.add('reveal-initializing');
+    root.documentElement.classList.toggle('reveal-disabled', !ELEMENT_REVEAL_ENABLED);
     scope.add(initHeroScroll(root));
     scope.add(initCriteriaScroll(root));
     scope.add(initSeoScroll(root));
     scope.add(initWhyItemsScroll(root));
     scope.add(initPixelatedScroll(root));
+    root.documentElement.classList.remove('reveal-initializing');
     if (ELEMENT_REVEAL_ENABLED) scope.add(initElementReveal(root));
     return scope.destroy;
 }

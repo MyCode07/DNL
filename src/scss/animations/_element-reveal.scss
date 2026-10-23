@@ -1,0 +1,38 @@
+// Keep this list aligned with ELEMENT_REVEAL_TARGETS in animations/element-reveal.js.
+$targets: (
+    "main .hero__content > *",
+    "main .section__top > *",
+    "main .glass__grid-item",
+    "main ._label",
+    "main .criteria-item",
+    "main .projects-item > *",
+    "main .projects-tabs",
+    "main .deals-controls",
+    "main .seo-text",
+    "main .seo-quote",
+    "main .why-item",
+    "main .post-item",
+    "main .cta .section__body > *",
+    "main .text-box > *",
+    "main .single-data__item",
+    "main .single-data__share",
+    ".footer__top",
+    ".footer__bottom"
+);
+
+@media (prefers-reduced-motion: no-preference) {
+    @supports (translate: 0 1rem) {
+        html.js:not(.reveal-disabled):not(.reveal-initializing) {
+            // Match the JS ancestor filter so nested content is not hidden twice.
+            :is(#{$targets}):not(:is(#{$targets}) *):not(.is-revealed) {
+                opacity: 0;
+                translate: 0 5rem;
+
+                &.line > span,
+                .line > span {
+                    max-width: 0%;
+                }
+            }
+        }
+    }
+}

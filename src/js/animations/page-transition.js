@@ -5,6 +5,8 @@ import { createPixelCells } from '../utils/pixels.js';
 const STORAGE_KEY = 'frame:page-transition';
 const COVER_DURATION = 0.65;
 const OPEN_DURATION = 0.75;
+// CSS tile-reveal currently owns navigation; retain the disabled canvas link behavior.
+const CANVAS_LINK_TRANSITIONS_ENABLED = false;
 
 /** Only ordinary same-origin document links participate. */
 export function getPageTransitionUrl(anchor, event, currentHref) {
@@ -186,6 +188,7 @@ export function initPageTransition(root) {
         handoff = gsap.delayedCall(0.12, release);
     }
     scope.on(root, 'click', (event) => {
+        if (!CANVAS_LINK_TRANSITIONS_ENABLED) return;
         if (motion.matches || !(event.target instanceof view.Element)) return;
         const url = getPageTransitionUrl(
             event.target.closest('a[href]'),
