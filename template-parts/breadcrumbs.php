@@ -1,0 +1,1 @@
+<div class="breadcrumbs _container"><?php do_action('pretty_breadcrumb') ?></div>

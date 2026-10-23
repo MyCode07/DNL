@@ -7,21 +7,6 @@ get_header();
     <section class="section text-page single">
         <div class="section__container _container">
             <div class="section__body">
-                <div class="breadcrumbs text-m">
-                    <ul class="breadcrumb">
-                        <li>
-                            <a href="/">Главная</a>
-                            <div class="sep"></div>
-                        </li>
-                        <li>
-                            <a href="/publications/" href="">Взгляд на рынок: экосистема ИИ, IPO и недвижимость</a>
-                            <div class="sep"></div>
-                        </li>
-                        <li>
-                            <span>Публикации</span>
-                        </li>
-                    </ul>
-                </div>
                 <div class="single-grid">
                     <div class="section__top">
                         <h1 class="h2">Взгляд на рынок: экосистема ИИ, IPO и недвижимость</h1>
@@ -94,11 +79,13 @@ get_header();
                         </div>
                     </div>
                     <div class="single-content">
-                        <div class="text-box">
+                        <div class="img">
                             <figure>
                                 <img src="<?php echo esc_url(frame_asset('img/post-inner-1.png')); ?>" alt="">
                                 <figcaption>Первый инвестиционный объект DNL Capital</figcaption>
                             </figure>
+                        </div>
+                        <div class="text-box">
                             <h3>Выясняем, как ИИ‑технологии уже сейчас трансформируют рынок недвижимости, делая его
                                 менее восприимчивым к внешним обстоятельствамz</h3>
                             <p>Сегодня в авангарде тот, кто умеет пользоваться нейросетями и ИИ‑инструментами.

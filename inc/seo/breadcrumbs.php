@@ -67,7 +67,7 @@ class Pretty_Breadcrumb {
                     <span itemprop="name">%s</span>
                 </a>
             ', $link_data['url'], $link_data['text'] );
-			$li_inner .= '<div class="sep">/</div>';
+			$li_inner .= '<div class="sep"></div>';
 			$li_class = '';
 		} else {
 			$li_inner = sprintf( '<span itemprop="name">%s</span>', $link_data['text'] );

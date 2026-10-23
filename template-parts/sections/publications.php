@@ -18,7 +18,7 @@
             <div class="swiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
-                        <div class="post-item">
+                        <article class="post-item">
                             <div class="post-item__data label-m">
                                 <div>
                                     <span class="post-item__author label-m">Андрей Волков — 24 Сен. 2026</span>
@@ -33,10 +33,10 @@
                             </a>
                             <p>О чем говорит статус Blackstone как одногоиз крупнейших поставщиков частного капитала
                                 для экосистемы искусственно...</p>
-                        </div>
+                        </article>
                     </div>
                     <div class="swiper-slide">
-                        <div class="post-item">
+                        <article class="post-item">
                             <div class="post-item__data label-m">
                                 <div>
                                     <span class="post-item__author label-m">Мария Орлова — 24 Сен. 2026</span>
@@ -51,10 +51,10 @@
                                 <img src="<?php echo esc_url(frame_asset('img/post-2.png')); ?>" alt="">
                             </a>
                             <p>Скептики сомневаются</p>
-                        </div>
+                        </article>
                     </div>
                     <div class="swiper-slide">
-                        <div class="post-item">
+                        <article class="post-item">
                             <div class="post-item__data label-m">
                                 <div>
                                     <span class="post-item__author label-m">Илья Кузнецов — 21 Сен. 2026</span>
@@ -69,10 +69,10 @@
                             </a>
                             <p>Примечательно, что в сфере искусственного интеллекта (ИИ) — нашей ключевой тематике —
                                 наблюдается искл...</p>
-                        </div>
+                        </article>
                     </div>
                     <div class="swiper-slide">
-                        <div class="post-item">
+                        <article class="post-item">
                             <div class="post-item__data label-m">
                                 <div>
                                     <span class="post-item__author label-m">Анна Белова — 17 Сен. 2026</span>
@@ -86,7 +86,7 @@
                                 <img src="<?php echo esc_url(frame_asset('img/post-4.png')); ?>" alt="">
                             </a>
                             <p>Разбираем, как реконцепция...</p>
-                        </div>
+                        </article>
                     </div>
                 </div>
             </div>

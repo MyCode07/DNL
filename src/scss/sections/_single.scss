@@ -30,6 +30,23 @@
     &-content {
         grid-area: content;
         width: 100%;
+
+        .img {
+            margin-bottom: 8rem;
+
+            @media (max-width:1280px) {
+                margin-bottom: 6rem;
+            }
+
+            img,
+            picture {
+                border-radius: 2.8rem;
+
+                @media (max-width:1280px) {
+                    border-radius: 2rem;
+                }
+            }
+        }
     }
 
     // .single-data

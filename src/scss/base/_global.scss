@@ -49,9 +49,9 @@ main {
     margin-inline: auto;
     max-width: $container + px;
 
-    @media (max-width: $containerWithPadding + px) {
+    @media (max-width: $containerWithPadding + rem) {
         max-width: none;
-        padding-inline: $padding + px;
+        padding-inline: $padding + rem;
     }
 
     @media (max-width:1280px) {
@@ -535,9 +535,13 @@ picture {
 
 .breadcrumbs {
     margin-bottom: 16rem;
+    padding-top: 4rem;
+    position: relative;
+    z-index: 11;
 
     @media (max-width:1280px) {
         margin-bottom: 12rem;
+        padding-top: 3rem;
     }
 
     @media (max-width:1024px) {
@@ -562,6 +566,11 @@ picture {
 
             &:last-child {
                 color: $black;
+            }
+
+            a,
+            span {
+                @include type.typography("text-m");
             }
         }
     }
@@ -712,51 +721,42 @@ picture {
     img,
     picture,
     figure {
-        margin-bottom: 2rem;
-        width: auto;
+        margin: 10rem 0;
+        margin-bottom: 10rem;
+        width: 100%;
         height: auto;
         border-radius: 2.8rem;
 
         @media (max-width:1280px) {
             border-radius: 2rem;
+            margin: 6rem 0;
         }
-    }
 
-    figure {
+        @media (max-width:767px) {
+            margin: 4rem 0;
+        }
 
+        &:last-child,
         img,
         picture {
             margin-bottom: 0;
         }
-    }
 
-    figcaption {
-        display: flex;
-        align-items: center;
-        gap: 1.6rem;
-        margin-top: 2.4rem;
-
-        @media (max-width:1280px) {
-            margin-top: 2rem;
-        }
-
-        @media (max-width:1024px) {
-            gap: 1.2rem;
-        }
-
-        &:before {
-            content: '';
-            display: block;
-            width: 1rem;
-            height: 1rem;
-            border-radius: 0.2rem;
-            flex: 0 0 auto;
-            background-color: currentColor;
-
-            @media (max-width:1024px) {
-                width: 0.8rem;
-                height: 0.8rem;
-            }
+        & + h1,
+        & + h2,
+        & + h3,
+        & + h4,
+        & + h5,
+        & + h6,
+        & + table,
+        & + p,
+        & + ol,
+        & + ul,
+        & + b,
+        & + strong,
+        & + em,
+        & + i {
+            margin-top: 0 !important;
         }
     }
 
@@ -838,6 +838,36 @@ picture {
                     border-bottom: 0.1rem solid $gray-300;
                 }
             }
+        }
+    }
+}
+
+figcaption {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    margin-top: 2.4rem;
+
+    @media (max-width:1280px) {
+        margin-top: 2rem;
+    }
+
+    @media (max-width:1024px) {
+        gap: 1.2rem;
+    }
+
+    &:before {
+        content: '';
+        display: block;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 0.2rem;
+        flex: 0 0 auto;
+        background-color: currentColor;
+
+        @media (max-width:1024px) {
+            width: 0.8rem;
+            height: 0.8rem;
         }
     }
 }

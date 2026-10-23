@@ -515,6 +515,9 @@
     --deals-duration: 800ms;
     --deals-ease: cubic-bezier(0.65, 0, 0.35, 1);
 
+    @media (min-width:1921px) {
+    }
+
     @media (max-width:1280px) {
         --deals-slide-width: 32rem;
         --deals-active-width: 48rem;
@@ -535,12 +538,14 @@
 
     // .deals-viewport
     &-viewport {
-        overflow: hidden;
         padding-top: 0.2rem;
         touch-action: pan-y pinch-zoom;
-        width: 100vw;
-        padding-inline: 4rem;
-        margin-left: -4rem;
+
+        @media (max-width:1920px) {
+            width: 100vw;
+            padding-inline: 4rem;
+            margin-left: -4rem;
+        }
 
         @media (max-width:1280px) {
             padding-inline: 3rem;
@@ -557,6 +562,7 @@
     &-track {
         display: flex;
         align-items: flex-start;
+        justify-content: space-between;
         gap: var(--deals-gap);
         position: relative;
         transition: transform var(--deals-duration) var(--deals-ease);
@@ -836,20 +842,15 @@
         color: #fff;
         opacity: 1;
         pointer-events: none;
-        width: 100vw;
+        width: 100%;
         height: 100%;
         position: absolute;
         top: 0;
         left: 0;
-        margin-left: -4rem;
 
-        @media (max-width:1280px) {
-            margin-left: -3rem;
-        }
+        @media (max-width:1280px) {}
 
-        @media (max-width:1024px) {
-            margin-left: -1.6rem;
-        }
+        @media (max-width:1024px) {}
 
         &__wrap {
             // Keep animated image z-indices below the sibling controls.
@@ -857,16 +858,11 @@
             height: 100vh;
             // height: 100svh;
             min-height: 100vh;
-            // min-height: 100svh;
-            width: 100vw;
-            margin-left: -4rem;
 
-            @media (max-width:1280px) {
-                margin-left: -3rem;
-            }
+            // min-height: 100svh;
+            @media (max-width:1280px) {}
 
             @media (max-width:1024px) {
-                margin-left: -1.6rem;
                 margin-top: -5vh;
                 // margin-top: -5svh;
             }
@@ -1060,11 +1056,7 @@
 
 .text-page {
     .section__body {
-        padding-top: 4rem;
-
-        @media (max-width:1280px) {
-            padding-top: 3rem;
-        }
+        padding-top: 0;
 
         @media (max-width:1024px) {
             padding-top: 16rem;
@@ -1140,6 +1132,7 @@
 
 .archive {
     .grid {
+        // grid-template-rows: repeat(auto-fill, auto auto auto auto);
         row-gap: 12rem;
 
         @media (max-width:1280px) {
@@ -1148,9 +1141,11 @@
 
         @media (max-width:1024px) {
             row-gap: 6rem;
+            grid-template-columns: repeat(2, 1fr);
         }
 
         @media (max-width:767px) {
+            grid-template-columns: 1fr;
             row-gap: 4rem;
         }
     }
@@ -1163,4 +1158,11 @@
             margin-top: 4rem;
         }
     }
+
+    // .post-item {
+    //     display: grid;
+    //     grid-row: span 4;
+    //     grid-template-rows: subgrid;
+    //     row-gap: 0;
+    // }
 }

@@ -3,20 +3,10 @@ get_header();
 ?>
 
 <main>
+
     <section class="section text-page archive">
         <div class="section__container _container">
             <div class="section__body">
-                <div class="breadcrumbs text-m">
-                    <ul class="breadcrumb">
-                        <li>
-                            <a href="/">Главная</a>
-                            <div class="sep"></div>
-                        </li>
-                        <li>
-                            <span>Публикации</span>
-                        </li>
-                    </ul>
-                </div>
                 <div class="section__top">
                     <h1 class="h2">Публикации</h1>
                     <div class="line"></div>
