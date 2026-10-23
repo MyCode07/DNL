@@ -2,6 +2,7 @@ import { gsap } from '../core/gsap.js';
 
 const DISTANCE_REM = 5;
 const DURATION = 0.8;
+const POST_ITEM_STAGGER = 0.12;
 const TARGETS = [
     'main .hero__content > *',
     'main .section__top > *',
@@ -43,7 +44,7 @@ export function initElementReveal(root) {
                 else span.style.removeProperty('max-width');
             });
         };
-        const show = (element, immediate = false) => {
+        const show = (element, immediate = false, delay = 0) => {
             const state = states.get(element);
             if (disposed || !state || revealed.has(element)) return;
             if (!immediate && view.framePageTransition?.pending) {
@@ -52,19 +53,33 @@ export function initElementReveal(root) {
             }
             observer.unobserve(element);
             if (immediate) state.tween.progress(1);
-            else state.tween.play();
+            else state.tween.delay(delay).restart(true);
+        };
+        const showBatch = (targets) => {
+            const groups = new Map();
+            targets.forEach((element) => {
+                let delay = 0;
+                if (element.matches('.post-item')) {
+                    const group =
+                        element.closest('.grid, .swiper-wrapper') || element.parentElement;
+                    const index = groups.get(group) || 0;
+                    delay = index * POST_ITEM_STAGGER;
+                    groups.set(group, index + 1);
+                }
+                show(element, false, delay);
+            });
         };
         const observer = new view.IntersectionObserver(
             (entries) => {
+                const visible = [];
                 entries.forEach(({ target, isIntersecting, boundingClientRect }) => {
                     // Restored scroll positions must not leave earlier content hidden.
-                    if (
-                        isIntersecting ||
-                        (boundingClientRect.height > 0 && boundingClientRect.bottom <= 0)
-                    ) {
-                        show(target);
+                    if (isIntersecting) visible.push(target);
+                    else if (boundingClientRect.height > 0 && boundingClientRect.bottom <= 0) {
+                        show(target, true);
                     }
                 });
+                showBatch(visible);
             },
             { rootMargin: '0px 0px -10% 0px', threshold: 0 },
         );
@@ -117,7 +132,7 @@ export function initElementReveal(root) {
         };
         root.addEventListener('focusin', focus);
         const resume = () => {
-            waiting.forEach((element) => show(element));
+            showBatch([...waiting]);
             waiting.clear();
         };
         root.addEventListener('frame:page-reveal', resume);
