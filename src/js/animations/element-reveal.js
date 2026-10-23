@@ -1,0 +1,119 @@
+import { gsap } from '../core/gsap.js';
+
+const DISTANCE_REM = 5;
+const DURATION = 0.8;
+const TARGETS = [
+    'main .hero__content > *',
+    'main .section__top > *',
+    'main .glass__grid-item',
+    'main ._label',
+    'main .criteria-item',
+    'main .projects-item > *',
+    'main .projects-tabs',
+    'main .seo-text',
+    'main .seo-quote',
+    'main .why-item',
+    'main .post-item',
+    'main .cta .section__body > *',
+    'main .text-box > *',
+].join(', ');
+
+/** JS-only trial: independent translate leaves existing scroll/slider transforms intact. */
+export function initElementReveal(root) {
+    const view = root.defaultView;
+    if (!view?.IntersectionObserver || !view.CSS.supports('translate', '0 1rem')) return;
+    const elements = [...root.querySelectorAll(TARGETS)].filter(
+        (element) => !element.parentElement.closest(TARGETS),
+    );
+    if (!elements.length) return;
+
+    const media = gsap.matchMedia();
+    const revealed = new WeakSet();
+    media.add('(prefers-reduced-motion: no-preference)', (context) => {
+        const states = new Map();
+        let disposed = false;
+        const restore = (element, state) => {
+            for (const [name, value, priority] of state.styles) {
+                if (value) element.style.setProperty(name, value, priority);
+                else element.style.removeProperty(name);
+            }
+        };
+        const show = (element, immediate = false) => {
+            const state = states.get(element);
+            if (disposed || !state) return;
+            observer.unobserve(element);
+            if (state.tween) {
+                if (immediate) state.tween.progress(1);
+                return;
+            }
+            const finish = () => {
+                revealed.add(element);
+                restore(element, state);
+            };
+            if (immediate) {
+                finish();
+                states.delete(element);
+                return;
+            }
+            context.add(() => {
+                // Animate a proxy so CSSPlugin never merges translate into parallax transforms.
+                state.tween = gsap.to(state, {
+                    progress: 1,
+                    duration: DURATION,
+                    ease: 'power3.out',
+                    onUpdate: () => {
+                        element.style.opacity = state.opacity * state.progress;
+                        element.style.translate = `0 ${DISTANCE_REM * (1 - state.progress)}rem`;
+                    },
+                    onComplete: finish,
+                });
+            });
+        };
+        const observer = new view.IntersectionObserver(
+            (entries) => {
+                entries.forEach(({ target, isIntersecting, boundingClientRect }) => {
+                    // Restored scroll positions must not leave earlier content hidden.
+                    if (
+                        isIntersecting ||
+                        (boundingClientRect.height > 0 && boundingClientRect.bottom <= 0)
+                    ) {
+                        show(target);
+                    }
+                });
+            },
+            { rootMargin: '0px 0px -10% 0px', threshold: 0 },
+        );
+
+        elements.forEach((element) => {
+            const computed = view.getComputedStyle(element);
+            if (revealed.has(element) || computed.translate !== 'none') return;
+            const state = {
+                progress: 0,
+                opacity: Number(computed.opacity),
+                styles: ['opacity', 'translate'].map((name) => [
+                    name,
+                    element.style.getPropertyValue(name),
+                    element.style.getPropertyPriority(name),
+                ]),
+            };
+            states.set(element, state);
+            element.style.opacity = '0';
+            element.style.translate = `0 ${DISTANCE_REM}rem`;
+            observer.observe(element);
+        });
+
+        const focus = (event) => {
+            states.forEach((state, element) => {
+                if (element.contains(event.target)) show(element, true);
+            });
+        };
+        root.addEventListener('focusin', focus);
+        return () => {
+            disposed = true;
+            observer.disconnect();
+            root.removeEventListener('focusin', focus);
+            states.forEach((state, element) => restore(element, state));
+        };
+    });
+    return () => media.revert();
+}
