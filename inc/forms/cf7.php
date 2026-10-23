@@ -39,7 +39,7 @@ add_filter('wpcf7_validate', function ($result, $tags) {
     return $result;
 }, 20, 2);
 
-// Preserve checkbox rules; replace only budget's required rule with an OR.
+// Preserve checkbox rules, but allow the optional budget radio group to be empty.
 add_action('wpcf7_init', function () {
     remove_action('wpcf7_swv_create_schema', 'wpcf7_swv_add_checkbox_rules', 10);
     add_action('wpcf7_swv_create_schema', 'frame_cf7_checkbox_rules', 10, 2);
@@ -59,17 +59,7 @@ function frame_cf7_checkbox_rules($schema, $form) {
     }
     foreach ($tags as $tag) {
         if (!in_array($tag->basetype, ['checkbox', 'radio'], true)) continue;
-        if ($tag->name === 'budget') {
-            $either = wpcf7_swv_create_rule('any', [
-                'field' => 'budget', 'error' => wpcf7_get_message('invalid_required'),
-            ]);
-            foreach (['budget', 'budget_custom'] as $name) {
-                $either->addRule(wpcf7_swv_create_rule('required', [
-                    'field' => $name, 'error' => wpcf7_get_message('invalid_required'),
-                ]));
-            }
-            $schema->add_rule($either);
-        } elseif ($tag->is_required() || $tag->type === 'radio') {
+        if ($tag->name !== 'budget' && ($tag->is_required() || $tag->type === 'radio')) {
             $schema->add_rule(wpcf7_swv_create_rule('required', [
                 'field' => $tag->name, 'error' => wpcf7_get_message('invalid_required'),
             ]));

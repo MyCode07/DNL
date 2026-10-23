@@ -33,11 +33,7 @@ export function getBudgetFields(form) {
 
 export function isFieldValid(field, fields, budget) {
     const value = field.value.trim();
-    if (budget && (field === budget.custom || budget.radios.includes(field))) {
-        if (!budget.radios.some((radio) => radio.checked) && !budget.custom.value.trim())
-            return false;
-        if (field.type === 'radio') return true;
-    }
+    if (budget?.radios.includes(field)) return true;
     if (['checkbox', 'radio'].includes(field.type)) {
         const group = fields.filter((item) => item.name === field.name && item.type === field.type);
         const acceptance = field.closest('.wpcf7-acceptance');

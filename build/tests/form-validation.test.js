@@ -86,13 +86,13 @@ test('CF7 acceptance honors optional and inverted settings', () => {
     assert.equal(isFieldValid(input, [input]), true);
 });
 
-test('budget accepts radio or custom text and rejects neither or short custom text', () => {
+test('budget is optional, accepts either value and rejects short custom text', () => {
     const radio = field({ type: 'radio', name: 'budget', value: '100000', checked: false });
     const custom = field({ name: 'budget_custom' });
     const budget = { radios: [radio], custom };
     const valid = () =>
         [radio, custom].every((input) => isFieldValid(input, [radio, custom], budget));
-    assert.equal(valid(), false);
+    assert.equal(valid(), true);
     radio.checked = true;
     assert.equal(valid(), true);
     radio.checked = false;
