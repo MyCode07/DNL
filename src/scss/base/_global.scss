@@ -741,23 +741,6 @@ picture {
         picture {
             margin-bottom: 0;
         }
-
-        & + h1,
-        & + h2,
-        & + h3,
-        & + h4,
-        & + h5,
-        & + h6,
-        & + table,
-        & + p,
-        & + ol,
-        & + ul,
-        & + b,
-        & + strong,
-        & + em,
-        & + i {
-            margin-top: 0 !important;
-        }
     }
 
     .table {

@@ -568,7 +568,7 @@ get_header();
                     <p>Рассматриваем инвестиционные возможности в недвижимости в США — от готовых cash-flow активов до
                         value-add и проектов с development potential.</p>
                 </div>
-                <button class="_btn _btn-white primary-button" data-open-popup="contact-me">
+                <button class="_btn _btn-white primary-button" data-open-popup="propose">
                     Предложить<br>проект
                 </button>
             </div>

@@ -32,7 +32,7 @@ $is_glass_menu = is_front_page();
                     <li><a href="/publications/">Публикации</a></li>
                 </ul>
             </nav>
-            <button class="menu-btn text-m">
+            <button class="menu-btn text-m" data-open-popup="contact-me">
                 Оставить контакт
                 <svg width="13" height="10" viewBox="0 0 13 10">
                     <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#menu-btn-arrow')); ?>' />
