@@ -37,6 +37,10 @@ export function initElementReveal(root) {
                 if (value) element.style.setProperty(name, value, priority);
                 else element.style.removeProperty(name);
             }
+            state.lines.forEach(([span, value, priority]) => {
+                if (value) span.style.setProperty('max-width', value, priority);
+                else span.style.removeProperty('max-width');
+            });
         };
         const show = (element, immediate = false) => {
             const state = states.get(element);
@@ -57,7 +61,8 @@ export function initElementReveal(root) {
             }
             context.add(() => {
                 // Animate a proxy so CSSPlugin never merges translate into parallax transforms.
-                state.tween = gsap.to(state, {
+                state.tween = gsap.timeline({ onComplete: finish });
+                state.tween.to(state, {
                     progress: 1,
                     duration: DURATION,
                     ease: 'power3.out',
@@ -65,8 +70,14 @@ export function initElementReveal(root) {
                         element.style.opacity = state.opacity * state.progress;
                         element.style.translate = `0 ${DISTANCE_REM * (1 - state.progress)}rem`;
                     },
-                    onComplete: finish,
                 });
+                if (state.lines.length) {
+                    state.tween.to(
+                        state.lines.map(([span]) => span),
+                        { maxWidth: '100%', duration: DURATION, ease: 'power3.out' },
+                        0,
+                    );
+                }
             });
         };
         const observer = new view.IntersectionObserver(
@@ -95,10 +106,21 @@ export function initElementReveal(root) {
                     element.style.getPropertyValue(name),
                     element.style.getPropertyPriority(name),
                 ]),
+                lines: [...element.querySelectorAll('.line > span')].map((span) => [
+                    span,
+                    span.style.getPropertyValue('max-width'),
+                    span.style.getPropertyPriority('max-width'),
+                ]),
             };
             states.set(element, state);
             element.style.opacity = '0';
             element.style.translate = `0 ${DISTANCE_REM}rem`;
+            if (state.lines.length) {
+                gsap.set(
+                    state.lines.map(([span]) => span),
+                    { maxWidth: '0%' },
+                );
+            }
             observer.observe(element);
         });
 
