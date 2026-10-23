@@ -11,6 +11,10 @@ export function initPopupResults(root, media) {
         const context = gsap.context(() => {}, popup);
         let timeline;
         let transitioning = false;
+        let sourceForm;
+        scope.on(popup, 'popup:request-open', (event) => {
+            sourceForm = event.detail.form;
+        });
 
         function reset() {
             timeline?.kill();
@@ -76,6 +80,13 @@ export function initPopupResults(root, media) {
         scope.on(popup, 'click', (event) => {
             if (!(event.target instanceof Element) || !event.target.closest('[data-popup-retry]'))
                 return;
+            if (sourceForm) {
+                popup.dispatchEvent(new CustomEvent('popup:request-close', { bubbles: true }));
+                sourceForm
+                    .querySelector('input:not([type="hidden"])')
+                    ?.focus({ preventScroll: true });
+                return;
+            }
             reset();
             (form.querySelector('input') || popup).focus({ preventScroll: true });
             popup.dispatchEvent(new CustomEvent('popup:retry', { bubbles: true }));

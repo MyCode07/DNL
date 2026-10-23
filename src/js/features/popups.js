@@ -78,13 +78,29 @@ export function initPopups(root, scrollLock, media) {
         releaseScroll = releaseNext;
         popup.inert = false;
         if (!popup.hasAttribute('aria-label') && !popup.hasAttribute('aria-labelledby')) {
-            popup.setAttribute('aria-label', trigger.innerText.trim().replace(/\s+/g, ' '));
+            popup.setAttribute(
+                'aria-label',
+                trigger.innerText?.trim().replace(/\s+/g, ' ') || 'Form result',
+            );
         }
         popup.classList.add('_open');
         popup.dispatchEvent(new CustomEvent('popup:open', { bubbles: true }));
         (getFocusableElements(popup)[0] || popup).focus({ preventScroll: true });
     }
 
+    scope.on(root, 'popup:request-open', (event) => {
+        if (!popups.includes(event.target)) return;
+        open(event.target, event.detail.trigger);
+        if (event.detail.result)
+            event.target.dispatchEvent(
+                new CustomEvent('popup:result', {
+                    detail: event.detail.result,
+                }),
+            );
+    });
+    scope.on(root, 'popup:request-close', (event) => {
+        if (event.target === active) close();
+    });
     scope.on(root, 'click', (event) => {
         if (!(event.target instanceof Element)) return;
         const trigger = event.target.closest('[data-open-popup]');
