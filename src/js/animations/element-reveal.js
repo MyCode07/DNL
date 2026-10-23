@@ -29,7 +29,7 @@ export function initElementReveal(root) {
 
     const media = gsap.matchMedia();
     const revealed = new WeakSet();
-    media.add('(prefers-reduced-motion: no-preference)', (context) => {
+    media.add('(prefers-reduced-motion: no-preference)', () => {
         const states = new Map();
         const waiting = new Set();
         let disposed = false;
@@ -45,45 +45,14 @@ export function initElementReveal(root) {
         };
         const show = (element, immediate = false) => {
             const state = states.get(element);
-            if (disposed || !state) return;
+            if (disposed || !state || revealed.has(element)) return;
             if (!immediate && view.framePageTransition?.pending) {
                 waiting.add(element);
                 return;
             }
             observer.unobserve(element);
-            if (state.tween) {
-                if (immediate) state.tween.progress(1);
-                return;
-            }
-            const finish = () => {
-                revealed.add(element);
-                restore(element, state);
-            };
-            if (immediate) {
-                finish();
-                states.delete(element);
-                return;
-            }
-            context.add(() => {
-                // Animate a proxy so CSSPlugin never merges translate into parallax transforms.
-                state.tween = gsap.timeline({ onComplete: finish });
-                state.tween.to(state, {
-                    progress: 1,
-                    duration: DURATION,
-                    ease: 'power3.out',
-                    onUpdate: () => {
-                        element.style.opacity = state.opacity * state.progress;
-                        element.style.translate = `0 ${DISTANCE_REM * (1 - state.progress)}rem`;
-                    },
-                });
-                if (state.lines.length) {
-                    state.tween.to(
-                        state.lines.map(([span]) => span),
-                        { maxWidth: '100%', duration: DURATION, ease: 'power3.out' },
-                        0,
-                    );
-                }
-            });
+            if (immediate) state.tween.progress(1);
+            else state.tween.play();
         };
         const observer = new view.IntersectionObserver(
             (entries) => {
@@ -104,8 +73,6 @@ export function initElementReveal(root) {
             const computed = view.getComputedStyle(element);
             if (revealed.has(element) || computed.translate !== 'none') return;
             const state = {
-                progress: 0,
-                opacity: Number(computed.opacity),
                 styles: ['opacity', 'translate'].map((name) => [
                     name,
                     element.style.getPropertyValue(name),
@@ -118,12 +85,26 @@ export function initElementReveal(root) {
                 ]),
             };
             states.set(element, state);
-            element.style.opacity = '0';
-            element.style.translate = `0 ${DISTANCE_REM}rem`;
+            state.tween = gsap.timeline({
+                paused: true,
+                defaults: { duration: DURATION, ease: 'power3.out' },
+                onComplete: () => {
+                    revealed.add(element);
+                    restore(element, state);
+                },
+            });
+            state.tween.fromTo(
+                element,
+                { opacity: 0, translate: `0 ${DISTANCE_REM}rem` },
+                { opacity: Number(computed.opacity), translate: '0 0rem', immediateRender: true },
+                0,
+            );
             if (state.lines.length) {
-                gsap.set(
+                state.tween.fromTo(
                     state.lines.map(([span]) => span),
                     { maxWidth: '0%' },
+                    { maxWidth: '100%', immediateRender: true },
+                    0,
                 );
             }
             observer.observe(element);
