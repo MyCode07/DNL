@@ -79,12 +79,17 @@ get_header();
                         </div>
                     </div>
                     <div class="single-content">
-                        <div class="img">
-                            <figure>
-                                <img src="<?php echo esc_url(frame_asset('img/post-inner-1.png')); ?>" alt="">
-                                <figcaption>Первый инвестиционный объект DNL Capital</figcaption>
-                            </figure>
-                        </div>
+                        <?php if (has_post_thumbnail()): ?>
+                            <?php $thumbnail_caption = wp_get_attachment_caption(get_post_thumbnail_id()); ?>
+                            <div class="img">
+                                <figure>
+                                    <?php the_post_thumbnail('full'); ?>
+                                    <?php if ($thumbnail_caption): ?>
+                                        <figcaption><?php echo esc_html($thumbnail_caption); ?></figcaption>
+                                    <?php endif; ?>
+                                </figure>
+                            </div>
+                        <?php endif; ?>
                         <div class="text-box">
                             <h3>Выясняем, как ИИ‑технологии уже сейчас трансформируют рынок недвижимости, делая его
                                 менее восприимчивым к внешним обстоятельствамz</h3>
