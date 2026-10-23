@@ -3,6 +3,7 @@ import { createMediaQueries } from './core/media.js';
 import { createScrollLock } from './core/scroll-lock.js';
 import { ScrollTrigger } from './core/gsap.js';
 import { initAnimations } from './animations/index.js';
+import { initPageTransition } from './animations/page-transition.js';
 import { initSmoothScroll } from './features/smooth-scroll.js';
 import { initMenu } from './features/menu.js';
 import { initHeader } from './features/header.js';
@@ -43,6 +44,7 @@ export function initApp(root = document) {
         scope.add(initProjectDescriptions(root));
         scope.add(initPageList(root));
         scope.add(initAnimations(root));
+        scope.add(initPageTransition(root));
         ScrollTrigger.refresh();
     } catch (error) {
         try {

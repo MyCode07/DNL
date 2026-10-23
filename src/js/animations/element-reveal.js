@@ -31,6 +31,7 @@ export function initElementReveal(root) {
     const revealed = new WeakSet();
     media.add('(prefers-reduced-motion: no-preference)', (context) => {
         const states = new Map();
+        const waiting = new Set();
         let disposed = false;
         const restore = (element, state) => {
             for (const [name, value, priority] of state.styles) {
@@ -45,6 +46,10 @@ export function initElementReveal(root) {
         const show = (element, immediate = false) => {
             const state = states.get(element);
             if (disposed || !state) return;
+            if (!immediate && view.framePageTransition?.pending) {
+                waiting.add(element);
+                return;
+            }
             observer.unobserve(element);
             if (state.tween) {
                 if (immediate) state.tween.progress(1);
@@ -130,10 +135,16 @@ export function initElementReveal(root) {
             });
         };
         root.addEventListener('focusin', focus);
+        const resume = () => {
+            waiting.forEach((element) => show(element));
+            waiting.clear();
+        };
+        root.addEventListener('frame:page-reveal', resume);
         return () => {
             disposed = true;
             observer.disconnect();
             root.removeEventListener('focusin', focus);
+            root.removeEventListener('frame:page-reveal', resume);
             states.forEach((state, element) => restore(element, state));
         };
     });
