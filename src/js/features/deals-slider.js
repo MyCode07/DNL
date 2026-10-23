@@ -63,7 +63,8 @@ export function initDealsSlider(section, media) {
         track.classList.add('is-measuring');
         activate(index);
         const slide = slides[index];
-        const width = viewport.clientWidth;
+        // Cards use the track's content width; viewport padding is the outer gutter.
+        const width = track.clientWidth;
         const end = slides.at(-1).offsetLeft + slides.at(-1).offsetWidth;
         const target = getDealsOffset(offset, slide.offsetLeft, slide.offsetWidth, width, end);
         if (animate) {
