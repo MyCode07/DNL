@@ -24,6 +24,35 @@ function nav_css_filter($classes)
 // remove  archive title prefix
 add_filter('get_the_archive_title_prefix', '__return_empty_string');
 
+add_filter('the_content', 'frame_wrap_content_tables', 20);
+function frame_wrap_content_tables($content)
+{
+    if (!in_array(get_post_type(), ['post', 'publication'], true)) {
+        return $content;
+    }
+
+    $parts = wp_html_split($content);
+    $protected = [];
+    foreach ($parts as &$part) {
+        if (preg_match('~^<(/?)(script|style|pre|code|textarea)\b~i', $part, $tag)) {
+            if ($tag[1] === '/') {
+                if (end($protected) === strtolower($tag[2])) array_pop($protected);
+            } else {
+                $protected[] = strtolower($tag[2]);
+            }
+        }
+        if ($protected) continue;
+        if (preg_match('~^<table\b~i', $part)) {
+            $part = '<div class="table">' . $part;
+        } elseif (preg_match('~^</table\s*>$~i', $part)) {
+            $part .= '</div>';
+        }
+    }
+    unset($part);
+
+    return implode('', $parts);
+}
+
 
 add_filter('wp_title', 'decode_html_chars', 10, 3);
 function decode_html_chars($title, $sep, $seplocation)
