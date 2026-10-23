@@ -4,6 +4,7 @@ import {
     getBudgetFields,
     getFieldContainer,
     isFieldValid,
+    getFieldErrorMessage,
 } from '../utils/form-validation.js';
 
 /** CF7 owns transport; this module owns validation and result presentation. */
@@ -38,8 +39,37 @@ export function initContactForms(root) {
                 containers.set(container, containers.get(container) || showError);
                 if (touched.has(field)) field.setAttribute('aria-invalid', String(invalid));
             }
-            for (const [container, error] of containers)
+            const message = getFieldErrorMessage(root.documentElement.lang);
+            for (const [container, error] of containers) {
                 container?.classList.toggle('error', error);
+                if (!container) continue;
+                const tips = [...container.querySelectorAll('.wpcf7-not-valid-tip')];
+                if (error) {
+                    if (tips.some((tip) => !tip.hasAttribute('data-contact-form-error'))) {
+                        tips.filter((tip) => tip.hasAttribute('data-contact-form-error')).forEach(
+                            (tip) => tip.remove(),
+                        );
+                    }
+                    if (!tips.length) {
+                        const tip = root.createElement('span');
+                        tip.className = 'wpcf7-not-valid-tip';
+                        tip.dataset.contactFormError = '';
+                        tip.setAttribute('role', 'status');
+                        container.append(tip);
+                        tips.push(tip);
+                    }
+                    tips.forEach((tip) => {
+                        tip.textContent = message;
+                    });
+                } else {
+                    tips.filter((tip) => tip.hasAttribute('data-contact-form-error')).forEach(
+                        (tip) => tip.remove(),
+                    );
+                }
+            }
+            for (const item of wrapper.querySelectorAll('.screen-reader-response li')) {
+                (item.querySelector('a') || item).textContent = message;
+            }
             const busy = pending || ['submitting', 'resetting'].includes(form.dataset.status);
             buttons.forEach((button) => {
                 button.disabled = !valid || busy;
@@ -177,6 +207,7 @@ export function initContactForms(root) {
         update();
         scope.add(() => {
             disposed = true;
+            form.querySelectorAll('[data-contact-form-error]').forEach((tip) => tip.remove());
             buttons.forEach((button, index) => {
                 button.disabled = originalDisabled[index];
             });

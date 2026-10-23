@@ -1,5 +1,11 @@
 const requiredSelector = '[required], [aria-required="true"], .wpcf7-validates-as-required';
 
+export function getFieldErrorMessage(language) {
+    return /^ru(?:-|$)/i.test(language)
+        ? 'Поле заполнено неверно'
+        : 'The field is filled out incorrectly';
+}
+
 export function getFormFields(form) {
     return [...form.querySelectorAll('input, textarea, select')].filter(
         (field) =>

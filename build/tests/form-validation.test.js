@@ -4,7 +4,15 @@ import {
     isFieldValid,
     isRequiredField,
     getFormFields,
+    getFieldErrorMessage,
 } from '../../src/js/utils/form-validation.js';
+
+test('field errors use Russian only for the Russian HTML language', () => {
+    for (const language of ['ru', 'ru-RU', 'RU-ru'])
+        assert.equal(getFieldErrorMessage(language), 'Поле заполнено неверно');
+    for (const language of ['en', 'en-US', 'hy', 'de', ''])
+        assert.equal(getFieldErrorMessage(language), 'The field is filled out incorrectly');
+});
 
 function field(overrides = {}) {
     const { required = false, acceptance, ...attributes } = overrides;
