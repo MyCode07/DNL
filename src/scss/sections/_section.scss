@@ -973,6 +973,7 @@
             width: 100vw;
             margin-left: -1.6rem;
             padding-inline: 1.6rem;
+            overflow: clip;
             overflow-x: auto;
             scrollbar-width: none;
             margin-top: 6rem;
@@ -1157,7 +1158,6 @@
 
         @media (max-width:767px) {
             grid-template-columns: 1fr;
-            row-gap: 4rem;
         }
     }
 

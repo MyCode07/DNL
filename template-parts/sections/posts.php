@@ -13,7 +13,7 @@
                         </a>
                     <?php endif; ?>
                 </div>
-                <div class="line"></div>
+                <div class="line"><span></span></div>
             </div>
             <div class="swiper">
                 <div class="swiper-wrapper">
