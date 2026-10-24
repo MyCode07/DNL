@@ -39,7 +39,7 @@
         <header class="header white _fixed <?php echo $header_class ?>">
             <div class="header__container _container">
                 <div class="header__body">
-                    <a href="/" class="header__logo">
+                    <a href="<?php echo get_home_page_url() ?>" class="header__logo">
                         <img src="<?php echo esc_url(frame_asset('img/logo.svg')); ?>" class="_desktop" alt="DNL Capital — главная">
                         <img src="<?php echo esc_url(frame_asset('img/logo-mb.svg')); ?>" class="_mobile" alt="DNL Capital — главная">
                     </a>

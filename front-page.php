@@ -12,8 +12,8 @@ get_header();
             <div class="hero__body">
                 <div class="hero__content">
                     <h1>Инвестиции<br>в недвижимость<br>США</h1>
-                    <p class="h1-subtitle">DNL Capital — инвестиционная компания всфере недвижимостиСША.
-                        Мыинвестируем капитал компании впроекты спонятной экономикой ипотенциалом роста стоимости.
+                    <p class="h1-subtitle">DNL Capital — инвестиционная компания в сфере недвижимости США.
+                        Мы инвестируем капитал компании впроекты спонятной экономикой ипотенциалом роста стоимости.
                     </p>
                     <div class="hero__button">
                         <button class="_btn _btn-white primary-button" data-open-popup="propose">

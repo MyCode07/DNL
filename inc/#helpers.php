@@ -46,32 +46,19 @@ function get_phone_link($phone)
 }
 
 
-// header menu
-function get_header_menu($id)
+// get ,emu by location + polylang
+function get_locate_menu($location = 'primary')
 {
     $menu_args = [
-        'menu'            => $id,
+        'theme_location' => $location,
         'container'       => 'nav',
-        'container_class' => 'nav',
-        'menu_class'      => '',
-        'items_wrap'      => '<ul>%3$s</ul>',
-    ];
-    return wp_nav_menu($menu_args);
-}
-
-
-// footer menu
-function get_footer_menu($id)
-{
-    $menu_args = [
-        'menu'            => $id,
-        'container'       => '',
         'container_class' => '',
         'menu_class'      => '',
         'items_wrap'      => '<ul>%3$s</ul>',
     ];
     return wp_nav_menu($menu_args);
 }
+
 
 
 // custom menu
@@ -400,4 +387,16 @@ function get_chipsa_project_url()
         ),
         $base_url
     );
+}
+
+function get_home_page_url()
+{
+
+    $home_url = home_url();
+
+    if (function_exists('pll_home_url')) {
+        $home_url = pll_home_url();
+    }
+
+    return esc_url($home_url);
 }

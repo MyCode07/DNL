@@ -1,14 +1,20 @@
 <?php
 $is_glass_menu = is_front_page();
+
+$menu_open = get_localized_field('menyu_otkryt');
+$menu_close = get_localized_field('menyu_zakryt');
+$menu_btn = get_localized_field('knopka_menyu');
+$menu_social = get_localized_field('menyu_soczseti');
+$global_btn = get_localized_field('globalnaya_knopka');
 ?>
 <div class="menu">
     <div class="menu-surface">
         <div class="menu-heading">
-            <a href="/" class="menu-logo" aria-label="DNL Capital" inert>
+            <a href="<?php echo get_home_page_url() ?>" class="menu-logo" aria-label="DNL Capital" inert>
                 <img src="<?php echo esc_url(frame_asset('img/logo-mb.svg')); ?>" width="50" height="20" alt="DNL Capital">
             </a>
             <button class="menu-toggle" aria-expanded="false" aria-controls="menu-body">
-                <span class="label-m" data-text-open="Меню" data-text-close="Закрыть">Меню</span>
+                <span class="label-m" data-text-open="<?php echo $menu_open ?>" data-text-close="<?php echo $menu_close ?>"><?php echo $menu_open ?></span>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <rect x="2" y="2" width="4" height="4" rx="1" fill="white" fill-opacity="0.2" />
                     <rect x="10" y="2" width="4" height="4" rx="1" fill="white" />
@@ -23,45 +29,29 @@ $is_glass_menu = is_front_page();
             </button>
         </div>
         <div class="menu-body" id="menu-body" inert>
-            <nav>
-                <ul>
-                    <li><a href="/#criteria">О DNL capital</a></li>
-                    <li><a href="/#projects">Проекты</a></li>
-                    <li><a href="/#seo">Основатель</a></li>
-                    <li><a href="/#deals">Подход</a></li>
-                    <li><a href="/publikaczii/">Публикации</a></li>
-                </ul>
-            </nav>
+            <?php echo get_locate_menu('primary'); ?>
+
             <button class="menu-btn text-m" data-open-popup="contact-me">
-                Оставить контакт
+                <?php echo $menu_btn ?>
                 <svg width="13" height="10" viewBox="0 0 13 10">
                     <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#menu-btn-arrow')); ?>' />
                 </svg>
             </button>
             <div class="lang menu-line">
-                <li class="lang-item current-lang"><a href="">RU</a></li>
-                <li class="lang-item"><a href="">EN</a></li>
+                <?php pll_the_languages(); ?>
             </div>
             <div class="menu-soc ">
-                <span class="label-m">Соцсети</span>
+                <span class="label-m"><?php echo $menu_social ?></span>
                 <div class="menu-line _social _social-border">
-                    <a href="" target="_blank" rel="nofollow">
-                        <svg width="20" height="20" viewBox="0 0 20 20">
-                            <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#insta')); ?>' />
-                        </svg>
-                    </a>
-                    <a href="" target="_blank" rel="nofollow">
-                        <svg width="20" height="20" viewBox="0 0 20 20">
-                            <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#linkedin')); ?>' />
-                        </svg>
-                    </a>
+                    <?php get_template_part('template-parts/social-links') ?>
                 </div>
             </div>
+
         </div>
     </div>
     <div class="menu-project" <?php echo $is_glass_menu ? '' : 'style="height:0px"' ?> inert>
         <button class="_btn _btn-<?php echo ($is_glass_menu || is_404()) ? 'white' : 'black' ?> primary-button" data-open-popup="propose">
-            Предложить<br>проект
+            <?php echo $global_btn ?>
         </button>
     </div>
 </div>

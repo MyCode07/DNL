@@ -411,6 +411,14 @@
         @media (max-width:767px) {
             margin-bottom: 1.6rem;
         }
+
+        a {
+            transition: opacity 0.3s ease 0s;
+
+            &:hover {
+                opacity: 0.6;
+            }
+        }
     }
 
     // .post-item__labels
