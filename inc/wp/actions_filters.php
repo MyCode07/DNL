@@ -1,14 +1,5 @@
 <?php
 
-// editor styles
-add_action('after_setup_theme', 'cssstyle_setup');
-function cssstyle_setup()
-{
-    add_theme_support('editor-styles');
-    add_editor_style('assets/style-editor.css');
-}
-
-
 // remove body svg
 remove_action('wp_body_open', 'wp_global_styles_render_svg_filters');
 
@@ -111,4 +102,19 @@ function fix_all_short_words($text)
     unset($part);
 
     return implode('', $parts);
+}
+
+
+
+
+// placeholder image for posts
+// add_action('save_post', 'custom_template_thumbnail');
+function custom_template_thumbnail($post_id)
+{
+    $post_thumbnail = get_post_meta($post_id, $key = '_thumbnail_id', $single = true);
+    if (!wp_is_post_revision($post_id)) :
+        if (empty($post_thumbnail)) {
+            update_post_meta($post_id, $meta_key = '_thumbnail_id', $meta_value = '191');
+        }
+    endif;
 }

@@ -10,7 +10,7 @@
 // только в метаданных вложения. Без width/height страница ловит CLS 0.44.
 // ---------------------------------------------------------------------------
 
-function lagutenko_media_dims($media)
+function media_dims($media)
 {
     if (!is_array($media)) {
         return '';
@@ -23,20 +23,6 @@ function lagutenko_media_dims($media)
         $h = !empty($meta['height']) ? (int) $meta['height'] : 0;
     }
     return ($w && $h) ? ' width="' . $w . '" height="' . $h . '"' : '';
-}
-
-// Постер ищем рядом с видеофайлом: {file}.webp (генерируются ffmpeg-ом).
-// До постеров плитки с preload="none" стояли пустыми до инициализации JS.
-function lagutenko_video_poster($media)
-{
-    if (!is_array($media) || empty($media['ID'])) {
-        return '';
-    }
-    $file = get_attached_file($media['ID']);
-    if ($file && file_exists($file . '.webp')) {
-        return $media['url'] . '.webp';
-    }
-    return '';
 }
 
 // ---------------------------------------------------------------------------

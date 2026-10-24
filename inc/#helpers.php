@@ -189,6 +189,7 @@ function get_posts_custom($args)
         'meta_query' =>  $args['meta_query'] ??  null,
         'orderby' =>  $args['orderby'] ?? null,
         'order' =>  $args['order'] ?? null,
+        'no_found_rows'  => true,
     );
 
     $count = 1;

@@ -12,11 +12,21 @@ get_header();
                     <div class="line"><span></span></div>
                 </div>
 
-                <div class="grid grid-3" data-post-container data-post-type="publications" data-count="6">
-                    <?php get_template_part('template-parts/post-cards/post'); ?>
-                </div>
-                <button class="arrow-btn load-more text-m" data-text-static="Загрузить ещё" data-text-loading="Загрузка...">Загрузить
-                    ещё</button>
+                <?php if (have_posts()): ?>
+                    <div class="grid grid-3" data-post-container data-post-type="<?php echo get_post_type() ?>" data-count="6">
+                        <?php
+                        while (have_posts()) {
+                            the_post();
+                            get_template_part('template-parts/post-cards/post');
+                        }
+                        ?>
+                    </div>
+                    <!-- <php if ($posts->found_posts > 6): ?> для глобал квери -->
+                    <?php get_template_part('template-parts/load-more-btn') ?>
+                    <!-- <php endif; ?> -->
+                <?php else:
+                    get_template_part('template-parts/content-none');
+                endif; ?>
             </div>
         </div>
     </section>
