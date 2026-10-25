@@ -218,3 +218,32 @@
         }
     }
 }
+
+.copy-url {
+    * {
+        pointer-events: none;
+    }
+}
+
+.copied-text {
+    position: fixed;
+    right: 4rem;
+    bottom: 4rem;
+    z-index: 5;
+    transition: opacity 0.3s ease-in-out 0s, transform 0.3s ease-in-out 0s;
+
+    &:not(._active) {
+        opacity: 0;
+        transform: translate(2rem, 0);
+    }
+
+    @media (max-width:1280px) {
+        right: 3rem;
+        bottom: 3rem;
+    }
+
+    @media (max-width:1024px) {
+        right: 1.6rem;
+        bottom: 2.4rem;
+    }
+}

@@ -1,16 +1,106 @@
 <?php
 
-add_filter( 'wpseo_sitemap_entry', 'exclude_yoast_sitemap_by_template', 10, 3 );
-function exclude_yoast_sitemap_by_template( $url, $type, $post ) {
-    if ( isset( $post->ID ) ) {
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-        $current_template = get_page_template_slug( $post->ID );
-        $target_template = 'pages/acf-options-page.php';
+// DEMO DATA: replace all six values with confirmed company data before publishing.
+// Empty values preserve Yoast's data; name, logo and sameAs stay in its UI.
+add_filter('wpseo_schema_organization', 'frame_yoast_organization_data');
+function frame_yoast_organization_data($data)
+{
+    $details = [
+        'description' => 'Демонстрационное описание DNL Capital. Замените на описание организации.',
+        'email' => 'demo@example.com', // Публичный email.
+        'telephone' => '+1-202-555-0100', // Демонстрационный номер.
+        'legalName' => 'ДЕМО — юридическое название организации',
+        'foundingDate' => '2000-01-01', // Демо: YYYY-MM-DD.
+        'numberOfEmployees' => 10, // Демонстрационное число сотрудников.
+    ];
 
-        if ( $current_template === $target_template ) {
-            return array(); // Удаляет страницу из карты сайта
+    foreach ($details as $property => $value) {
+        if ($value === '' || $value === null) {
+            continue;
+        }
+
+        if ($property === 'numberOfEmployees') {
+            $data[$property] = [
+                '@type' => 'QuantitativeValue',
+                'value' => (int) $value,
+            ];
+        } else {
+            $data[$property] = $value;
         }
     }
 
-    return $url;
+    return $data;
+}
+
+// Match the author information displayed in single-post/author.php.
+add_filter('wpseo_schema_person_data', 'frame_yoast_author_data', 10, 2);
+function frame_yoast_author_data($data, $user_id)
+{
+    unset($data['image'], $data['url']);
+
+    if (!function_exists('get_field')) {
+        return $data;
+    }
+
+    foreach (['jobTitle' => 'dolzhnost', 'description' => 'opisanie'] as $property => $field) {
+        $value = trim(wp_strip_all_tags((string) get_field($field, 'user_' . $user_id)));
+        if ($value !== '') {
+            $data[$property] = $value;
+        }
+    }
+
+    return $data;
+}
+
+// A text ACF field can describe a reviewer without a WordPress account.
+add_filter('wpseo_schema_webpage', 'frame_yoast_reviewer');
+function frame_yoast_reviewer($data)
+{
+    if (!is_singular('post') || !function_exists('get_field')) {
+        return $data;
+    }
+
+    $name = trim(wp_strip_all_tags((string) get_field('ekspert', get_queried_object_id())));
+    if ($name !== '') {
+        $data['reviewedBy'] = [
+            '@type' => 'Person',
+            'name' => $name,
+        ];
+    }
+
+    return $data;
+}
+
+// Publications have no comment form; reject comments and pingbacks as well.
+add_filter('comments_open', 'frame_post_comments_closed', 20, 2);
+add_filter('pings_open', 'frame_post_comments_closed', 20, 2);
+function frame_post_comments_closed($open, $post_id)
+{
+    return get_post_type($post_id) === 'post' ? false : $open;
+}
+
+add_filter('wpseo_schema_article', 'frame_yoast_article_without_comments');
+function frame_yoast_article_without_comments($data)
+{
+    if (!is_singular('post')) {
+        return $data;
+    }
+
+    unset($data['commentCount'], $data['comment']);
+    if (isset($data['potentialAction'])) {
+        $actions = array_values(array_filter($data['potentialAction'], static function ($action) {
+            return !in_array('CommentAction', (array) ($action['@type'] ?? []), true);
+        }));
+        if ($actions) {
+            $data['potentialAction'] = $actions;
+        } else {
+            unset($data['potentialAction']);
+        }
+    }
+
+    return $data;
 }

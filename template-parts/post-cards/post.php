@@ -1,10 +1,19 @@
 <?php
 $categories = get_the_category();
+$author_id = get_the_author_meta('ID');
+$publish_date = get_the_date('d M. Y');
+$post_meta = $publish_date;
+
+if ($author_id) {
+    $author_name = get_the_author_meta('display_name', $author_id);
+    $post_meta = get_the_author_meta('display_name', $author_id) . ' — ' . $publish_date;
+}
+
 ?>
 <article class="post-item">
     <div class="post-item__data label-m">
         <div>
-            <span class="post-item__author label-m">Мария Орлова — 24 Сен. 2026</span>
+            <span class="post-item__author label-m"><?php echo esc_html($post_meta); ?></span>
         </div>
     </div>
     <h4><a href="<?php the_permalink() ?>"><?php the_title() ?></a></h4>
