@@ -1,5 +1,26 @@
 <?php
 
+// Author profiles are not public, including feeds and ?author=ID URLs.
+add_action('template_redirect', 'frame_disable_author_archives', 0);
+function frame_disable_author_archives()
+{
+    if (!is_author()) {
+        return;
+    }
+
+    global $wp_query;
+    $wp_query->set_404();
+    status_header(404);
+    nocache_headers();
+    remove_action('template_redirect', 'redirect_canonical');
+}
+
+// Keep disabled author URLs out of WordPress and Yoast sitemaps.
+add_filter('wp_sitemaps_add_provider', static function ($provider, $name) {
+    return $name === 'users' ? false : $provider;
+}, 10, 2);
+add_filter('wpseo_sitemap_exclude_author', '__return_empty_array');
+
 // remove body svg
 remove_action('wp_body_open', 'wp_global_styles_render_svg_filters');
 
