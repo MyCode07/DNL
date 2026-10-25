@@ -14,6 +14,7 @@ import { initTabs } from './features/tabs.js';
 import { initPageList } from './features/page-list.js';
 import { initPostTitleHeight } from './features/postTitleHeight.js';
 import { initAuthor } from './features/author.js';
+import { initCopyLinks } from './features/copy-link.js';
 import { initPopupResults } from './features/popup-results.js';
 import { initContactForms } from './features/contact-forms.js';
 
@@ -40,6 +41,7 @@ export function initApp(root = document) {
         scope.add(initSliders(root, media));
         scope.add(initPostTitleHeight(root));
         scope.add(initAuthor(root, media));
+        scope.add(initCopyLinks(root));
         scope.add(initTabs(root));
         scope.add(initProjectDescriptions(root));
         scope.add(initPageList(root));
