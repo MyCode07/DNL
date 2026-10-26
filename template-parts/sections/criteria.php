@@ -2,7 +2,7 @@
 $criteria = get_field('kriterii');
 $list = $criteria['spisok'];
 ?>
-<section class="section criteria pb0" id="criteria" data-dark>
+<section class="section criteria" id="criteria" data-dark>
     <div class="section__container _container">
         <div class="section__body">
             <div class="section__top">

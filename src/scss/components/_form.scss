@@ -278,6 +278,10 @@
     }
 }
 
+[class *="iti"] {
+    @include type.typography("primary-button");
+}
+
 .dnd-progress-bar + span,
 .wpcf7-response-output,
 .dnd-upload-image,
