@@ -39,7 +39,7 @@ if (!$list) return;
                                         </div>
                                         <div class="deals-slide__layer deals-slide__layer--detail" aria-hidden="false">
                                             <div class="deals-slide__head">
-                                                <span class="primary-button">01</span>
+                                                <span class="primary-button">0<?php echo $key + 1 ?></span>
                                                 <h3><?php echo $item['zagolovok'] ?></h3>
                                             </div>
                                             <p class="primary-button"><?php echo $item['tekst'] ?></p>

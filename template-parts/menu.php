@@ -31,12 +31,17 @@ $global_btn = get_localized_field('globalnaya_knopka');
         <div class="menu-body" id="menu-body" inert>
             <?php echo get_locate_menu('primary'); ?>
 
-            <button class="menu-btn text-m" data-open-popup="contact-me">
-                <?php echo $menu_btn ?>
-                <svg width="13" height="10" viewBox="0 0 13 10">
-                    <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#menu-btn-arrow')); ?>' />
-                </svg>
-            </button>
+            <?php if ($menu_btn['ssylka'] && $menu_btn['ssylka']['url']):
+                echo get_link_info($menu_btn['ssylka'], 'menu-btn text-m');
+            else: ?>
+                <button class="menu-btn text-m" data-open-popup="popup-<?php echo $menu_btn['popap'] ?>">
+                    <?php echo $menu_btn['tekst'] ?>
+                    <svg width="13" height="10" viewBox="0 0 13 10">
+                        <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#menu-btn-arrow')); ?>' />
+                    </svg>
+                </button>
+            <?php endif; ?>
+
             <div class="lang menu-line">
                 <?php pll_the_languages(); ?>
             </div>
@@ -46,12 +51,18 @@ $global_btn = get_localized_field('globalnaya_knopka');
                     <?php get_template_part('template-parts/social-links') ?>
                 </div>
             </div>
-
         </div>
     </div>
     <div class="menu-project" <?php echo $is_glass_menu ? '' : 'style="height:0px"' ?> inert>
-        <button class="_btn _btn-<?php echo ($is_glass_menu || is_404()) ? 'white' : 'black' ?> primary-button" data-open-popup="propose">
-            <?php echo $global_btn ?>
-        </button>
+        <?php
+        $btn_class = '_btn-' . (($is_glass_menu || is_404()) ? 'white' : 'black');
+
+        if ($global_btn['ssylka'] && $global_btn['ssylka']['url']):
+            echo get_link_info($global_btn['ssylka'], '_btn ' . $btn_class . ' primary-button');
+        else: ?>
+            <button class="_btn <?php echo esc_attr($btn_class); ?> primary-button" data-open-popup="popup-<?php echo $global_btn['popap'] ?>">
+                <?php echo $global_btn['tekst'] ?>
+            </button>
+        <?php endif; ?>
     </div>
 </div>

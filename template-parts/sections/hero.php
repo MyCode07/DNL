@@ -26,13 +26,7 @@ $list = $hero['spisok'];
                 <h1><?php echo $hero['zagolovok'] ?></h1>
                 <p class="h1-subtitle"><?php echo $hero['podzagolovok'] ?></p>
                 <div class="hero__button">
-                    <?php if ($btn['ssylka'] && $btn['ssylka']['url']):
-                        echo get_link_info($btn['ssylka'], '_btn _btn-white primary-button');
-                    else: ?>
-                        <button class="_btn _btn-white primary-button" data-open-popup="popup-<?php echo $btn['popap'] ?>">
-                            <?php echo $btn['tekst'] ?>
-                        </button>
-                    <?php endif; ?>
+                    <?php get_template_part('template-parts/_btn', null, ['btn' => $btn]) ?>
                 </div>
             </div>
             <?php if ($list): ?>

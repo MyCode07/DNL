@@ -1,4 +1,4 @@
-<div class="popup _fixed" id="contact-form-result" aria-label="Результат отправки формы">
+<div class="popup _fixed" id="contact-form-result">
     <div class="popup-body">
         <?php get_template_part('template-parts/popups/result'); ?>
         <button type="button" class="popup-close">

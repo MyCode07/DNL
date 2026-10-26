@@ -230,7 +230,7 @@
         min-height: 100%;
     }
 
-    &#contact-me {
+    &:has(._centered) {
         .form {
             display: flex;
             flex-direction: column;

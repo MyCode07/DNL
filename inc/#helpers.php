@@ -142,8 +142,15 @@ function get_link_info($link, $class = '', $attrs = '')
         $rel = 'rel="nofollow"';
     }
 
+    $svg = '';
+    if (in_array('menu-btn', preg_split('/\s+/', trim($class)), true)) {
+        $svg = '<svg width="13" height="10" viewBox="0 0 13 10">
+                    <use xlink:href="' . esc_url(frame_asset('img/svg/icons.svg#menu-btn-arrow')) . '" />
+                </svg>';
+    }
 
-    return '<a href="' . $link_url . '" target="' . $link_target . '" ' . $rel . ' class="' . $class . '" ' . $attrs . ' >' . $link_text . '</a>';
+
+    return '<a href="' . $link_url . '" target="' . $link_target . '" ' . $rel . ' class="' . $class . '" ' . $attrs . ' >' . $link_text . $svg . '</a>';
 }
 
 // get link text and url with icon
@@ -190,6 +197,7 @@ function get_posts_custom($args)
         'orderby' =>  $args['orderby'] ?? null,
         'order' =>  $args['order'] ?? null,
         'no_found_rows'  => true,
+        'suppress_filters'  => false,
     );
 
     $count = 1;
