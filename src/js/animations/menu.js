@@ -167,7 +167,7 @@ export function createMenuAnimation(menu, { media, toggle }) {
 
     function reset() {
         timeline?.kill();
-        if (media.mobile.matches) surface.append(project);
+        if (media.mobile.matches) body.append(project);
         else projectParent.insertBefore(project, projectNextSibling);
         context.add(() => {
             gsap.set([menu, surface, body], {
