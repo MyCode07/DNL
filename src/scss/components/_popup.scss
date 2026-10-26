@@ -222,6 +222,13 @@
     }
 
     &#contact-me {
+        .form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
         form {
             justify-content: center;
             gap: 12rem;
@@ -247,4 +254,8 @@
             }
         }
     }
+}
+
+.wpcf7 {
+    flex: 0 0 auto;
 }

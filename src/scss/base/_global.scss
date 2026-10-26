@@ -47,7 +47,7 @@ main {
 ._container {
     width: 100%;
     margin-inline: auto;
-    max-width: $container + px;
+    max-width: $container + rem;
 
     @media (max-width: $containerWithPadding + rem) {
         max-width: none;
@@ -363,9 +363,11 @@ svg {
         transform-origin: center;
     }
 
-    &:hover {
-        &:before {
-            transform: scale(80);
+    @media (any-hover: hover) {
+        &:hover {
+            &:before {
+                transform: scale(80);
+            }
         }
     }
 
@@ -373,10 +375,12 @@ svg {
     &-white {
         background-color: $white;
         color: $black;
-        border-color: $white;
+        border-color: $white-30;
 
-        &:hover {
-            color: $white;
+        @media (any-hover: hover) {
+            &:hover {
+                color: $white;
+            }
         }
     }
 
@@ -384,14 +388,16 @@ svg {
     &-black {
         background-color: $black;
         color: $white;
-        border-color: $black;
+        border-color: $black-20;
 
         &:before {
             background-color: $white;
         }
 
-        &:hover {
-            color: $black;
+        @media (any-hover: hover) {
+            &:hover {
+                color: $black;
+            }
         }
     }
 }
@@ -939,5 +945,11 @@ input[type="checkbox"] {
 
     &[data-direction="up"] {
         top: -0.1rem;
+    }
+}
+
+@supports (corner-shape: superellipse(2)) {
+    * {
+        corner-shape: superellipse(2);
     }
 }

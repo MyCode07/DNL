@@ -101,15 +101,16 @@
             height: 0;
         }
 
+        @media (max-width:1024px) {
+            height: auto !important;
+        }
+
         ._btn {
             width: 100%;
             margin-top: 1.6rem;
 
             @media (max-width:1024px) {
-                margin-top: 0;
-                height: 9rem;
-                border-radius: 0;
-                min-width: 0;
+                margin-top: 2.4rem;
             }
         }
     }
