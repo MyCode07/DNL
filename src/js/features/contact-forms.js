@@ -5,7 +5,9 @@ import {
     getFieldContainer,
     isFieldValid,
     getFieldErrorMessage,
+    isAlphabeticField,
 } from '../utils/form-validation.js';
+import { initPhoneInputs } from './phone-inputs.js';
 
 /** CF7 owns transport; this module owns validation and result presentation. */
 export function initContactForms(root) {
@@ -24,6 +26,15 @@ export function initContactForms(root) {
         const serverErrors = new Set();
         let pending = false;
         let disposed = false;
+        for (const field of getFormFields(form).filter(isAlphabeticField)) {
+            const original = field.getAttribute('maxlength');
+            field.setAttribute('maxlength', '40');
+            scope.add(() => {
+                if (original === null) field.removeAttribute('maxlength');
+                else field.setAttribute('maxlength', original);
+            });
+        }
+        scope.add(initPhoneInputs(form, update));
 
         function update() {
             if (disposed) return false;
@@ -36,11 +47,14 @@ export function initContactForms(root) {
                 valid &&= !invalid;
                 const container = getFieldContainer(field);
                 const showError = touched.has(field) && invalid;
-                containers.set(container, containers.get(container) || showError);
+                if (!containers.has(container) || showError)
+                    containers.set(container, showError ? field : null);
                 if (touched.has(field)) field.setAttribute('aria-invalid', String(invalid));
             }
             const message = getFieldErrorMessage(root.documentElement.lang);
-            for (const [container, error] of containers) {
+            for (const [container, errorField] of containers) {
+                const error = Boolean(errorField);
+                const fieldMessage = getFieldErrorMessage(root.documentElement.lang, errorField);
                 container?.classList.toggle('error', error);
                 if (!container) continue;
                 const tips = [...container.querySelectorAll('.wpcf7-not-valid-tip')];
@@ -59,7 +73,7 @@ export function initContactForms(root) {
                         tips.push(tip);
                     }
                     tips.forEach((tip) => {
-                        tip.textContent = message;
+                        tip.textContent = fieldMessage;
                     });
                 } else {
                     tips.filter((tip) => tip.hasAttribute('data-contact-form-error')).forEach(
@@ -133,6 +147,7 @@ export function initContactForms(root) {
         }
         scope.on(form, 'input', changed);
         scope.on(form, 'change', changed);
+        scope.on(form, 'countrychange', changed);
         scope.on(
             form,
             'submit',

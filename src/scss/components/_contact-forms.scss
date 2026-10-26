@@ -2,3 +2,27 @@
 .wpcf7-form-control-wrap {
     display: contents;
 }
+
+.form__item .iti {
+    width: 100%;
+}
+
+.iti {
+    --iti-font-family: inherit;
+    --iti-border-color: #cccccc;
+    --iti-country-selector-bg: #ffffff;
+    --iti-text-color: #000000;
+}
+
+.iti__country-selector {
+    max-width: calc(100vw - 3.2rem);
+    font-size: 1.6rem;
+    line-height: 1.4;
+    color: #000000;
+}
+
+.iti__search-input {
+    font: inherit;
+    background-color: #ffffff;
+    color: #000000;
+}
