@@ -18,6 +18,7 @@ import { initCopyLinks } from './features/copy-link.js';
 import { initPopupResults } from './features/popup-results.js';
 import { initContactForms } from './features/contact-forms.js';
 import { initLoadMorePosts } from './features/load-more-posts.js';
+import { initCookies } from './features/cookies.js';
 
 let destroyCurrentApp;
 
@@ -39,6 +40,7 @@ export function initApp(root = document) {
         scope.add(initPopups(root, scrollLock, media));
         scope.add(initPopupResults(root, media));
         scope.add(initContactForms(root));
+        scope.add(initCookies(root));
         scope.add(initSliders(root, media));
         scope.add(initPostTitleHeight(root));
         scope.add(initLoadMorePosts(root, { onLoaded: () => ScrollTrigger.refresh() }));

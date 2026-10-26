@@ -3,44 +3,38 @@
 class Cookies
 {
 
-    // $time = 60*60*24*30;
+    public const LIFETIME = 60 * 60 * 24 * 30;
 
-    static function set($name, $value, $time = 60 * 60 * 24 * 30)
+    static function set($name, $value, $time = self::LIFETIME): bool
     {
-        setcookie($name, $value, time() + $time, '/');
+        $value = is_bool($value) ? ($value ? '1' : '0') : (string) $value;
+        $saved = setcookie($name, $value, [
+            'expires' => time() + $time,
+            'path' => '/',
+            'secure' => is_ssl(),
+            'httponly' => false,
+            'samesite' => 'Lax',
+        ]);
+        if ($saved) {
+            if ($time > 0) $_COOKIE[$name] = $value;
+            else unset($_COOKIE[$name]);
+        }
+        return $saved;
     }
 
-    static function delete($name)
+    static function delete($name): bool
     {
-        setcookie($name, "", time() - 3600, "/");
+        return self::set($name, '', -3600);
     }
 
-    static function update($name, $value)
+    static function update($name, $value): bool
     {
         return self::set($name, $value);
     }
 
-    static function get($name)
+    static function get($name): ?string
     {
-        if (isset($_COOKIE[$name])) {
-            return $_COOKIE[$name];
-        } else {
-            return null;
-        }
+        $value = $_COOKIE[$name] ?? null;
+        return is_string($value) ? $value : null;
     }
-}
-
-add_action('wp_ajax_cookie_action', 'cookie_action');
-add_action('wp_ajax_nopriv_cookie_action', 'cookie_action');
-function cookie_action()
-{
-
-    Cookies::set('cookie', true);
-    $clicked = true;
-
-    echo json_encode([
-        'Cookies' => Cookies::get('cookie')
-    ]);
-
-    exit();
 }
