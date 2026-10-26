@@ -4,7 +4,7 @@ $page = max(1, (int) $query->get('paged'));
 if ($page >= (int) $query->max_num_pages) {
     return;
 }
-$config = frame_load_more_config($query, $args['template'] ?? 'post');
+$config = frame_load_more_posts_config($query, $args['template'] ?? 'post');
 $static = get_localized_field('knopka_zagruzit_eshhe');
 $loading = get_localized_field('knopka_zagruzit_zagruzka');
 $error = str_starts_with(get_bloginfo('language'), 'ru')

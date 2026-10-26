@@ -13,4 +13,5 @@ require_once 'inc/ajax/cookies.php';
 require_once 'inc/ajax/load-more.php';
 require_once 'inc/wp/actions_filters.php';
 require_once 'inc/wp/post_types.php';
+require_once 'inc/wp/shortcodes.php';
 require_once 'inc/forms/cf7.php';

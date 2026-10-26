@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { initLoadMore } from '../../src/js/features/load-more.js';
+import { initLoadMorePosts } from '../../src/js/features/load-more-posts.js';
 
 const settle = () => new Promise((resolve) => setImmediate(resolve));
 
@@ -57,7 +57,7 @@ function fixture(fetch) {
                   }
                 : { setAttribute() {}, remove() {} },
     };
-    const destroy = initLoadMore(root, { onLoaded: () => refreshed++ });
+    const destroy = initLoadMorePosts(root, { onLoaded: () => refreshed++ });
     return {
         button,
         container,

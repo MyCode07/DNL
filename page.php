@@ -4,7 +4,7 @@ get_header();
 
 <main>
 
-    <section class="section text-page">
+    <section class="section text-page" id="page-<?php the_ID() ?>">
         <div class="section__container _container">
             <div class="section__body">
                 <div class="section__top">

@@ -18,8 +18,6 @@ get_header();
                 </div>
 
                 <?php if (have_posts()): ?>
-                    <input type="hidden" name="post_type" value="post">
-                    <input type="hidden" name="posts_per_page" value="<?php echo $posts_per_page ?>">
                     <div class="grid grid-3" data-posts-container>
                         <?php
 

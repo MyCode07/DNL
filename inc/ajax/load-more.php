@@ -4,15 +4,44 @@ if (!defined('ABSPATH')) {
 }
 
 /** Reuse the same query for archives and custom page loops. */
-function frame_load_more_config(WP_Query $query, string $template = 'post'): array
+function frame_load_more_posts_config(WP_Query $query, string $template = 'post'): array
 {
     $keys = [
-        'post_type', 'posts_per_page', 'order', 'orderby', 'ignore_sticky_posts',
-        'cat', 'category_name', 'category__in', 'category__not_in', 'category__and',
-        'tag', 'tag_id', 'tag__in', 'tag__not_in', 'tag__and', 'tag_slug__in', 'tag_slug__and',
-        'taxonomy', 'term', 'tax_query', 'author', 'author_name', 'author__in', 'author__not_in',
-        'year', 'monthnum', 'day', 'm', 'date_query', 's', 'post__in', 'post__not_in',
-        'meta_key', 'meta_value', 'meta_query',
+        'post_type',
+        'posts_per_page',
+        'order',
+        'orderby',
+        'ignore_sticky_posts',
+        'cat',
+        'category_name',
+        'category__in',
+        'category__not_in',
+        'category__and',
+        'tag',
+        'tag_id',
+        'tag__in',
+        'tag__not_in',
+        'tag__and',
+        'tag_slug__in',
+        'tag_slug__and',
+        'taxonomy',
+        'term',
+        'tax_query',
+        'author',
+        'author_name',
+        'author__in',
+        'author__not_in',
+        'year',
+        'monthnum',
+        'day',
+        'm',
+        'date_query',
+        's',
+        'post__in',
+        'post__not_in',
+        'meta_key',
+        'meta_value',
+        'meta_query',
     ];
     $args = array_intersect_key($query->query_vars, array_flip($keys));
     $args['post_type'] = $args['post_type'] ?: 'post';
@@ -42,10 +71,10 @@ function frame_load_more_config(WP_Query $query, string $template = 'post'): arr
     ];
 }
 
-add_action('wp_ajax_frame_load_more', 'frame_ajax_load_more');
-add_action('wp_ajax_nopriv_frame_load_more', 'frame_ajax_load_more');
+add_action('wp_ajax_frame_load_more_posts', 'frame_ajax_load_more_posts');
+add_action('wp_ajax_nopriv_frame_load_more_posts', 'frame_ajax_load_more_posts');
 
-function frame_ajax_load_more(): void
+function frame_ajax_load_more_posts(): void
 {
     $payload = isset($_POST['query']) && is_string($_POST['query']) ? wp_unslash($_POST['query']) : '';
     $signature = isset($_POST['signature']) && is_string($_POST['signature']) ? $_POST['signature'] : '';

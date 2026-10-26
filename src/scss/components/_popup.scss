@@ -76,6 +76,15 @@
     // .cookies-checkbox
     &-checkbox {
         max-width: none;
+        margin: 10rem 0;
+
+        @media (max-width:1280px) {
+            margin: 8rem 0;
+        }
+
+        @media (max-width:767px) {
+            margin: 6rem 0;
+        }
 
         label {
             &:before {

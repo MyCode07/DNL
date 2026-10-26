@@ -17,7 +17,7 @@ import { initAuthor } from './features/author.js';
 import { initCopyLinks } from './features/copy-link.js';
 import { initPopupResults } from './features/popup-results.js';
 import { initContactForms } from './features/contact-forms.js';
-import { initLoadMore } from './features/load-more.js';
+import { initLoadMorePosts } from './features/load-more-posts.js';
 
 let destroyCurrentApp;
 
@@ -41,7 +41,7 @@ export function initApp(root = document) {
         scope.add(initContactForms(root));
         scope.add(initSliders(root, media));
         scope.add(initPostTitleHeight(root));
-        scope.add(initLoadMore(root, { onLoaded: () => ScrollTrigger.refresh() }));
+        scope.add(initLoadMorePosts(root, { onLoaded: () => ScrollTrigger.refresh() }));
         scope.add(initAuthor(root, media));
         scope.add(initCopyLinks(root));
         scope.add(initTabs(root));

@@ -1,6 +1,6 @@
 import { createScope } from '../core/lifecycle.js';
 
-export function initLoadMore(root, { onLoaded = () => {} } = {}) {
+export function initLoadMorePosts(root, { onLoaded = () => {} } = {}) {
     const scope = createScope();
     const view = root.defaultView;
     for (const button of root.querySelectorAll('.load-more[data-load-more]')) {
@@ -27,7 +27,7 @@ export function initLoadMore(root, { onLoaded = () => {} } = {}) {
             status.hidden = true;
             try {
                 const body = new URLSearchParams({
-                    action: 'frame_load_more',
+                    action: 'frame_load_more_posts',
                     query: config.query,
                     signature: config.signature,
                     page: String(config.page + 1),

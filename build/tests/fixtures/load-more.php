@@ -39,7 +39,7 @@ function request($config, $page, $overrides = []) {
         'signature' => $config['signature'],
         'page' => (string) $page,
     ], $overrides);
-    try { frame_ajax_load_more(); }
+    try { frame_ajax_load_more_posts(); }
     catch (AjaxResult $result) { return $result; }
     throw new RuntimeException('Request did not return JSON');
 }
@@ -48,7 +48,7 @@ $query = new WP_Query([
     'category_name' => 'investments', 'tax_query' => [['taxonomy' => 'post_tag', 'terms' => [7]]],
     'order' => 'DESC', 'orderby' => 'date', 'post_status' => 'private',
 ]);
-$config = frame_load_more_config($query);
+$config = frame_load_more_posts_config($query);
 $result = request($config, 2);
 check($result->result['success'] === true, 'Page two must succeed');
 check($result->result['data']['has_more'] === true, 'Page two has another page');
@@ -66,10 +66,10 @@ check(request($config, '2.5')->status === 400, 'Reject fractional page');
 check(request($config, 2, ['signature' => 'tampered'])->status === 400, 'Reject invalid signature');
 check(request($config, 2, ['query' => addslashes(str_replace('investments', 'other', $config['query']))])->status === 400, 'Reject altered query');
 $query->query_vars['post_type'] = 'any';
-check(request(frame_load_more_config($query), 2)->result['success'] === true, 'Resolve public types for taxonomy archives');
+check(request(frame_load_more_posts_config($query), 2)->result['success'] === true, 'Resolve public types for taxonomy archives');
 $query->query_vars['lang'] = 'en';
-request(frame_load_more_config($query), 2);
+request(frame_load_more_posts_config($query), 2);
 check($GLOBALS['last_query']['lang'] === 'en', 'Keep explicit custom query language');
 $query->query_vars['post_type'] = 'private_type';
-check(request(frame_load_more_config($query), 2)->status === 400, 'Reject nonpublic types');
+check(request(frame_load_more_posts_config($query), 2)->status === 400, 'Reject nonpublic types');
 echo "AJAX contract passed: paging, rendering, filters, language, public status and tamper protection.\n";
