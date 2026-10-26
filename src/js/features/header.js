@@ -6,6 +6,15 @@ export function initHeader(root, menu) {
     if (!header) return;
     const menuBtn = root.querySelector('.menu ._btn');
     const sections = [...root.querySelectorAll('[data-dark]')];
+    const blocks = [...root.querySelectorAll('section, footer, [data-dark]')];
+    const transitions = [...root.querySelectorAll('[data-pixelated-scroll-transition]')].map(
+        (element) => {
+            const owner = element.closest('section, footer, [data-dark]');
+            const index = blocks.indexOf(owner);
+            const neighbor = blocks[index + (element.dataset.direction === 'up' ? -1 : 1)];
+            return { element, neighbor: index >= 0 ? neighbor : undefined };
+        },
+    );
     const scope = createScope();
     const originalClasses = header.className;
     let frame = 0;
@@ -20,12 +29,21 @@ export function initHeader(root, menu) {
         previousScrollY = scrollY;
         const headerRect = header.getBoundingClientRect();
         const position = scrollingDown ? headerRect.bottom : headerRect.top;
-        const dark = sections.some((section) => {
-            const rect = section.getBoundingClientRect();
+        const containsPosition = (rect) => {
             return scrollingDown
                 ? rect.top <= position && rect.bottom > position
                 : rect.top < position && rect.bottom >= position;
-        });
+        };
+        let dark = sections.some((section) => containsPosition(section.getBoundingClientRect()));
+        // Edge pixels show the adjacent section's background before its actual boundary.
+        for (const { element, neighbor } of transitions) {
+            if (!neighbor) continue;
+            const rect = element.getBoundingClientRect();
+            if (rect.bottom > rect.top && containsPosition(rect)) {
+                dark = neighbor.hasAttribute('data-dark');
+                break;
+            }
+        }
         header.classList.toggle('header-scrolled', window.scrollY >= window.innerHeight);
 
         if (window.innerWidth > 1024 && !header.classList.contains('header-page') && menuBtn) {
