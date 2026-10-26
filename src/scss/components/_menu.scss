@@ -240,6 +240,20 @@
             color: $white-60;
             display: flex;
             align-items: center;
+
+            &:not(:last-child) {
+                gap: 0.4rem;
+
+                &:after {
+                    flex: 0 0 auto;
+                    display: block;
+                    width: 0.1rem;
+                    height: 1rem;
+                    content: '';
+                    background-color: currentColor;
+                    margin-bottom: 0.2rem;
+                }
+            }
         }
 
         a {
@@ -253,22 +267,12 @@
         }
 
         .current-lang {
-            gap: 0.4rem;
             color: $white;
 
             a {
                 &:hover {
                     color: $gray-300;
                 }
-            }
-
-            &:after {
-                flex: 0 0 auto;
-                display: block;
-                width: 0.1rem;
-                height: 1rem;
-                content: '';
-                background-color: currentColor;
             }
         }
     }
