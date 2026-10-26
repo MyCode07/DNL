@@ -26,7 +26,10 @@ if (!$list) return;
                             </div>
                         </div>
                         <div class="img">
-                            <img src="<?php echo esc_url($item['foto']['url']); ?>" alt="<?php echo $item['foto']['alt'] ?>">
+                            <?php echo wp_get_attachment_image(
+                                $item['foto']['id'],
+                                'large'
+                            ); ?>
                         </div>
                     </div>
                 <?php endforeach; ?>

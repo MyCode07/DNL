@@ -10,8 +10,8 @@ $global_btn = get_localized_field('globalnaya_knopka');
 <div class="menu">
     <div class="menu-surface">
         <div class="menu-heading">
-            <a href="<?php echo get_home_page_url() ?>" class="menu-logo" aria-label="DNL Capital" inert>
-                <img src="<?php echo esc_url(frame_asset('img/logo-mb.svg')); ?>" width="50" height="20" alt="DNL Capital">
+            <a href="<?php echo get_home_page_url() ?>" class="menu-logo">
+                <img src="<?php echo esc_url(frame_asset('img/logo-mb.svg')); ?>" width="50" height="20" alt="<?php echo bloginfo('name') ?>">
             </a>
             <button class="menu-toggle" aria-expanded="false" aria-controls="menu-body">
                 <span class="label-m" data-text-open="<?php echo $menu_open ?>" data-text-close="<?php echo $menu_close ?>"><?php echo $menu_open ?></span>

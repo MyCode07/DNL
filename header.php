@@ -40,8 +40,8 @@
             <div class="header__container _container">
                 <div class="header__body">
                     <a href="<?php echo get_home_page_url() ?>" class="header__logo">
-                        <img src="<?php echo esc_url(frame_asset('img/logo.svg')); ?>" class="_desktop" alt="DNL Capital — главная">
-                        <img src="<?php echo esc_url(frame_asset('img/logo-mb.svg')); ?>" class="_mobile" alt="DNL Capital — главная">
+                        <img src="<?php echo esc_url(frame_asset('img/logo.svg')); ?>" class="_desktop" width="128" height="24" alt="<?php echo bloginfo('name') ?>">
+                        <img src="<?php echo esc_url(frame_asset('img/logo-mb.svg')); ?>" class="_mobile" width="50" height="20" alt="<?php echo bloginfo('name') ?>">
                     </a>
                     <?php get_template_part('template-parts/menu') ?>
                 </div>

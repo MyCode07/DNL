@@ -409,3 +409,87 @@ function get_home_page_url()
 
     return esc_url($home_url);
 }
+
+
+
+/*
+для hero:
+echo theme_image(
+    'assets/img/hero.webp',
+    [
+        'alt'           => 'Hero',
+        'loading'       => 'eager',
+        'fetchpriority' => 'high',
+    ]
+);
+
+для остальных
+echo theme_image(
+    'assets/img/about.webp',
+    ['alt' => 'About company']
+);
+*/
+function theme_image(
+    string $path,
+    array $attr = []
+): string {
+    $relative = ltrim($path, '/');
+
+    $root = realpath(get_stylesheet_directory());
+    $file = $root
+        ? realpath($root . '/' . $relative)
+        : false;
+
+    // Разрешаем только файлы внутри активной темы.
+    if (
+        !$root ||
+        !$file ||
+        !str_starts_with($file, $root . DIRECTORY_SEPARATOR) ||
+        !is_file($file)
+    ) {
+        return '';
+    }
+
+    // Не читаем размеры одного файла повторно за запрос.
+    static $dimensions = [];
+
+    if (!array_key_exists($file, $dimensions)) {
+        $dimensions[$file] = wp_getimagesize($file);
+    }
+
+    $size = $dimensions[$file];
+
+    $defaults = [
+        'src'      => get_stylesheet_directory_uri()
+            . '/' . implode(
+                '/',
+                array_map('rawurlencode', explode('/', $relative))
+            ),
+        'alt'      => '',
+        'loading'  => 'lazy',
+        'decoding' => 'async',
+    ];
+
+    if ($size) {
+        $defaults['width']  = $size[0];
+        $defaults['height'] = $size[1];
+    }
+
+    $attr = array_merge($defaults, $attr);
+
+    $html = '<img';
+
+    foreach ($attr as $name => $value) {
+        if ($value === false || $value === null) {
+            continue;
+        }
+
+        $html .= sprintf(
+            ' %s="%s"',
+            esc_attr($name),
+            esc_attr((string) $value)
+        );
+    }
+
+    return $html . '>';
+}

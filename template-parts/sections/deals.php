@@ -17,7 +17,10 @@ if (!$list) return;
                         <div class="deals-collection">
                             <div class="deals-media">
                                 <div class="deals-media__inner">
-                                    <img src="<?php echo esc_url($item['foto']['url']); ?>" alt="<?php echo $item['foto']['alt'] ?>">
+                                    <?php echo wp_get_attachment_image(
+                                        $item['foto']['id'],
+                                        'full'
+                                    ); ?>
                                 </div>
                             </div>
                         </div>

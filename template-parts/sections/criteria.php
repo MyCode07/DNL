@@ -18,7 +18,10 @@ $list = $criteria['spisok'];
                             <span class="medium-nums">0<?php echo $key + 1 ?></span>
                             <h3><?php echo $item['zagolovok'] ?></h3>
                             <div class="img">
-                                <img src="<?php echo esc_url($item['foto']['url']); ?>" alt="<?php echo $item['foto']['alt'] ?>">
+                                <?php echo wp_get_attachment_image(
+                                    $item['foto']['id'],
+                                    'large'
+                                );  ?>
                             </div>
                         </div>
                     <?php endforeach; ?>

@@ -35,7 +35,10 @@ $params = get_field('parametry');
             <div class="swiper-wrapper">
                 <?php foreach ($gallery as $item): ?>
                     <div class="swiper-slide">
-                        <img src="<?php echo esc_url($item['url']); ?>" alt="<?php echo $item['alt'] ?>">
+                        <?php echo wp_get_attachment_image(
+                            $item['id'],
+                            'large'
+                        );  ?>
                     </div>
                 <?php endforeach; ?>
             </div>
