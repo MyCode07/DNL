@@ -9,7 +9,7 @@ if ($publications) {
         'posts__in' => $publications['spisok'] ?? false,
         'orderby' => $publications['spisok'] ? 'posts__in' : 'menu_order',
         'order' => 'ASC',
-        'count' => count($publications['spisok']) ?? 6,
+        'count' => $publications['spisok'] ? count($publications['spisok']) : 6,
         'slide' => true,
     ]);
 }
