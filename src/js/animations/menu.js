@@ -24,6 +24,8 @@ export function createMenuAnimation(menu, { media, toggle }) {
     const body = menu.querySelector('.menu-body');
     const surface = menu.querySelector('.menu-surface');
     const project = menu.querySelector('.menu-project');
+    const projectParent = project.parentNode;
+    const projectNextSibling = project.nextSibling;
     const outerLogo = menu.closest('.header')?.querySelector('.header__logo');
     const innerLogo = menu.querySelector('.menu-logo');
     const logos = [outerLogo, innerLogo].filter(Boolean);
@@ -142,9 +144,7 @@ export function createMenuAnimation(menu, { media, toggle }) {
                         padding: open ? padding : mobile ? 0 : '1.4rem',
                         ...(mobile
                             ? {
-                                  height: open
-                                      ? `calc(100dvh - ${project.scrollHeight}px)`
-                                      : '4.4rem',
+                                  height: open ? '100dvh' : '4.4rem',
                                   borderRadius: open ? 0 : '1.4rem',
                               }
                             : {}),
@@ -167,6 +167,8 @@ export function createMenuAnimation(menu, { media, toggle }) {
 
     function reset() {
         timeline?.kill();
+        if (media.mobile.matches) surface.append(project);
+        else projectParent.insertBefore(project, projectNextSibling);
         context.add(() => {
             gsap.set([menu, surface, body], {
                 clearProps: 'width,height,padding,transform,top,right,borderRadius',
@@ -190,6 +192,7 @@ export function createMenuAnimation(menu, { media, toggle }) {
         destroy() {
             timeline?.kill();
             context.revert();
+            projectParent.insertBefore(project, projectNextSibling);
             logos.forEach((logo, index) => {
                 logo.inert = originalLogoInert[index];
             });
