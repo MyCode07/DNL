@@ -10,18 +10,26 @@ export function initHeader(root, menu) {
     const originalClasses = header.className;
     let frame = 0;
     let initialized = false;
+    let previousScrollY = window.scrollY;
+    let scrollingDown = true;
 
     function update() {
         frame = 0;
-        const position = header.getBoundingClientRect().top + header.offsetHeight;
+        const scrollY = window.scrollY;
+        if (scrollY !== previousScrollY) scrollingDown = scrollY > previousScrollY;
+        previousScrollY = scrollY;
+        const headerRect = header.getBoundingClientRect();
+        const position = scrollingDown ? headerRect.bottom : headerRect.top;
         const dark = sections.some((section) => {
             const rect = section.getBoundingClientRect();
-            return rect.top <= position && rect.bottom > position;
+            return scrollingDown
+                ? rect.top <= position && rect.bottom > position
+                : rect.top < position && rect.bottom >= position;
         });
         header.classList.toggle('header-scrolled', window.scrollY >= window.innerHeight);
 
         if (window.innerWidth > 1024 && !header.classList.contains('header-page') && menuBtn) {
-            if (header.classList.contains('dark')) {
+            if (dark) {
                 menuBtn.classList.remove('_btn-white');
                 menuBtn.classList.add('_btn-black');
             } else {
