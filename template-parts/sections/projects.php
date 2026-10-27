@@ -3,6 +3,7 @@ $projects = get_field('proekty');
 $selected_projects = new WP_Query([
     'post_type' => 'project',
     'posts__in' => $projects['spisok'] ?? [],
+    'posts_per_page' => $projects['spisok'] ? count($projects['spisok']) : 3,
     'orderby' => 'posts__in',
     'order' => 'ASC',
 ]);
