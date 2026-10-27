@@ -7,7 +7,7 @@ import {
     getFieldErrorMessage,
     isAlphabeticField,
 } from '../utils/form-validation.js';
-import { initPhoneInputs } from './phone-inputs.js';
+import { initPlainPhoneInputs } from './plain-phone-inputs.js';
 
 /** CF7 owns transport; this module owns validation and result presentation. */
 export function initContactForms(root) {
@@ -34,7 +34,8 @@ export function initContactForms(root) {
                 else field.setAttribute('maxlength', original);
             });
         }
-        scope.add(initPhoneInputs(form, update));
+        // Country-aware formatting remains in phone-inputs.js for a possible return.
+        scope.add(initPlainPhoneInputs(form));
 
         function update() {
             if (disposed) return false;

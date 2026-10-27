@@ -14,7 +14,7 @@ test('country selection prefers a saved choice, then an explicit browser region,
     assert.equal(initialPhoneCountry(['es-419']), '');
 });
 
-test('PHP applies the 40-character rule and validates normalized international phone numbers', (t) => {
+test('PHP applies the 40-character rule and accepts phone digits with an optional leading plus', (t) => {
     const php = spawnSync('php', ['--version'], { encoding: 'utf8' });
     if (php.error?.code === 'ENOENT') return t.skip('PHP CLI is unavailable');
     const script = fileURLToPath(new URL('./fixtures/cf7-validation.php', import.meta.url));

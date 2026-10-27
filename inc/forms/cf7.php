@@ -33,9 +33,6 @@ add_filter('wpcf7_posted_data', function ($data) {
     foreach ($form->scan_form_tags() as $tag) {
         if (frame_cf7_is_user_text($tag) && isset($data[$tag->name]) && is_string($data[$tag->name])) {
             $data[$tag->name] = preg_replace('/^\s+|\s+$/u', '', $data[$tag->name]);
-            if ($tag->basetype === 'tel') {
-                $data[$tag->name] = preg_replace('/[\s().-]+/u', '', $data[$tag->name]);
-            }
         }
     }
     return $data;
@@ -63,7 +60,7 @@ add_filter('wpcf7_validate', function ($result, $tags) {
                     ? 'Допустимы буквы, пробелы, дефисы и апострофы'
                     : 'Use letters, spaces, hyphens and apostrophes');
             }
-        } elseif ($tag->basetype === 'tel' && $value !== '' && !preg_match('/^\+[1-9][0-9]{6,14}$/D', $value)) {
+        } elseif ($tag->basetype === 'tel' && $value !== '' && !preg_match('/^\+?[0-9]+$/D', $value)) {
             $result->invalidate($tag, wpcf7_get_message('invalid_tel'));
         }
     }

@@ -29,8 +29,8 @@ export function getFieldErrorMessage(language, field) {
     }
     if (field?.type === 'tel') {
         return russian
-            ? 'Введите корректный номер с кодом страны'
-            : 'Enter a valid phone number with country code';
+            ? 'Допустимы только цифры и + в начале'
+            : 'Use only digits and an optional leading +';
     }
     return /^ru(?:-|$)/i.test(language)
         ? 'Поле заполнено неверно'
@@ -77,8 +77,7 @@ export function isFieldValid(field, fields, budget) {
         return false;
     if (field.type === 'tel') {
         const validate = phoneValidators.get(field);
-        if (validate ? !validate() : !/^\+[1-9]\d{6,14}$/.test(value.replace(/[\s().-]/g, '')))
-            return false;
+        if (validate ? !validate() : !/^\+?[0-9]+$/.test(value)) return false;
     }
     if (['text', 'search', 'tel', 'url', 'textarea'].includes(field.type) && [...value].length < 2)
         return false;

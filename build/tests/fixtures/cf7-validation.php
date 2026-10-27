@@ -49,9 +49,12 @@ foreach (['cname', 'location'] as $name) {
     check(validate($name, '', 'text', false) === [], 'Allow an empty optional field');
     check(isset(validate($name, ' ')[$name]), 'Reject a blank required field');
 }
-check(validate('phone', '+44 (20) 7946-0018', 'tel') === [], 'Accept and normalize international formatting');
-check(WPCF7_Submission::$data['phone'] === '+442079460018', 'Send the canonical number to mail');
-foreach (['123', '4155552671', '+00000000000', '+1234567890123456', '+1 letters'] as $value) {
+foreach (['123', '4155552671', '+00000000000', '+1234567890123456'] as $value) {
+    check(validate('phone', $value, 'tel') === [], 'Accept digits with optional leading plus');
+    check(WPCF7_Submission::$data['phone'] === $value, 'Keep the entered number unchanged');
+}
+check(validate('phone', '', 'tel', false) === [], 'Allow an empty optional phone');
+foreach (['+', '12+34', '++123', '+44 (20) 7946-0018', '+1 letters'] as $value) {
     check(isset(validate('phone', $value, 'tel')['phone']), 'Reject malformed phone: ' . $value);
 }
 check(validate('company', 'Studio 54') === [], 'Do not restrict company names');

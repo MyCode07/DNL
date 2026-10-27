@@ -151,14 +151,18 @@ for (const name of ['cname', 'location']) {
     });
 }
 
-test('telephone validation uses its country-aware validator and reverts to international syntax on cleanup', () => {
-    const input = field({ type: 'tel', value: '+1 (415) 555-2671' });
+test('telephone accepts digits and an optional leading plus without requiring a country code', () => {
+    const input = field({ type: 'tel', value: '+14155552671' });
     assert.equal(isFieldValid(input, [input]), true);
     const unregister = registerPhoneValidator(input, () => false);
     assert.equal(isFieldValid(input, [input]), false);
     unregister();
     assert.equal(isFieldValid(input, [input]), true);
-    for (const value of ['123', '4155552671', '+00000000000', '+1234567890123456', '+1 letters']) {
+    for (const value of ['123', '4155552671', '+00000000000', '+1234567890123456']) {
+        input.value = value;
+        assert.equal(isFieldValid(input, [input]), true, value);
+    }
+    for (const value of ['+', '12+34', '++123', '+1 letters', '+1 (415) 555-2671']) {
         input.value = value;
         assert.equal(isFieldValid(input, [input]), false, value);
     }
