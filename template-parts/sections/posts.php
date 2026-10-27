@@ -1,5 +1,6 @@
 <?php
 $publications = get_field('publikaczii');
+
 if ($publications) {
     $all_publications = $publications['ssylka'];
     $title = $publications['zagolovok'];

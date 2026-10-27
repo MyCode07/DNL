@@ -347,7 +347,7 @@
         position: relative;
 
         &[data-direction="down"] {
-            @media (max-width:767px) {
+            @media (max-width:1024px) {
                 display: none;
             }
         }
@@ -1089,8 +1089,11 @@
         flex-direction: column;
         justify-content: space-between;
 
-        @media (max-width:767px) {
+        @media (max-width:1024px) {
             justify-content: flex-start;
+        }
+
+        @media (max-width:767px) {
             padding-top: 12rem;
             padding-bottom: 12rem;
             min-height: 86rem;

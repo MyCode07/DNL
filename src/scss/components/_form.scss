@@ -75,10 +75,6 @@
                 color: $gray-600;
             }
         }
-
-        .iti {
-            width: 100%;
-        }
     }
 
     // .form__upload
@@ -256,30 +252,6 @@
         cursor: no-drop;
         pointer-events: none;
     }
-
-    .iti {
-        --iti-font-family: inherit;
-        --iti-border-color: #cccccc;
-        --iti-country-selector-bg: #ffffff;
-        --iti-text-color: #000000;
-    }
-
-    .iti__country-selector {
-        max-width: calc(100vw - 3.2rem);
-        font-size: 1.6rem;
-        line-height: 1.4;
-        color: #000000;
-    }
-
-    .iti__search-input {
-        font: inherit;
-        background-color: #ffffff;
-        color: #000000;
-    }
-}
-
-[class *="iti"] {
-    @include type.typography("primary-button");
 }
 
 .dnd-progress-bar + span,
@@ -430,4 +402,34 @@
             }
         }
     }
+}
+
+// iti
+.iti {
+    width: 100%;
+    max-width: 66.5rem;
+
+    @media (max-width:1280px) {
+        max-width: 52rem;
+    }
+
+    @media (max-width:1024px) {
+        max-width: 57rem;
+    }
+}
+
+.iti__country-selector {
+    width: 100% !important;
+}
+
+.iti--detached-country-selector {
+    top: calc(anchor(bottom) + 10px);
+}
+
+.iti__search-input {}
+
+[class *="iti"] {
+    @include type.typography("primary-button");
+    box-shadow: unset !important;
+    border-color: $gray-300 !important;
 }

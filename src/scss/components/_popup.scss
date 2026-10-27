@@ -7,9 +7,10 @@
     transform: translate(-50%, 0);
     z-index: 10;
     width: 100%;
-    max-width: 68rem;
+    max-width: 69rem;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 2.4rem;
     padding: 1.6rem;
     background-color: $white;
@@ -23,6 +24,7 @@
     }
 
     @media (max-width:1280px) {
+        max-width: 62.5rem;
         bottom: 3rem;
     }
 
@@ -39,10 +41,15 @@
     }
 
     p {
-        max-width: 48rem;
+        max-width: 51rem;
 
         a {
             text-decoration: underline;
+            transition: opacity 0.3s ease 0s;
+
+            &:hover {
+                opacity: 0.6;
+            }
         }
     }
 

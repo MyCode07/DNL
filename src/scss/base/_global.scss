@@ -938,11 +938,11 @@ input[type="checkbox"] {
     position: relative;
 
     &[data-direction="down"] {
-        bottom: -0.1rem;
+        bottom: -0.2rem;
     }
 
     &[data-direction="up"] {
-        top: -0.1rem;
+        top: -0.2rem;
     }
 }
 

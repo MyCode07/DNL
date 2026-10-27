@@ -6,14 +6,14 @@ $post_meta = $publish_date;
 
 if ($author_id) {
     $author_name = get_the_author_meta('display_name', $author_id);
-    $post_meta = get_the_author_meta('display_name', $author_id) . ' — ' . $publish_date;
+    $post_meta = get_the_author_meta('display_name', $author_id) . '<span> — ' . $publish_date . '</span>';
 }
 
 ?>
 <article class="post-item">
     <div class="post-item__data label-m">
         <div>
-            <span class="post-item__author label-m"><?php echo esc_html($post_meta); ?></span>
+            <span class="post-item__author label-m"><?php echo $post_meta; ?></span>
         </div>
     </div>
     <h4><a href="<?php the_permalink() ?>"><?php the_title() ?></a></h4>
