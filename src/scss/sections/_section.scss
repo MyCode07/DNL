@@ -279,10 +279,12 @@
                 z-index: 1;
 
                 @media (max-width:767px) {
-                    width: 120vw;
-                    height: 100%;
                     filter: blur(2rem);
-                    background: linear-gradient(180deg, rgba(162, 162, 162, 0.00) 52%, #A2A2A2 50%, #000 80%);
+                    background: linear-gradient(#a2a2a200 55%, #606060 53%, #000 80%);
+                    width: 120vw;
+                    left: 50%;
+                    transform: translate(-50%, 0);
+                    height: 100%;
                 }
             }
         }
@@ -334,9 +336,12 @@
                 // Compensate for the 16px transparent right margin in the 774 x 2560 image.
                 --seo-mobile-image-width: min(100vw, calc(max(100vh, 137rem) * 774 / 2560));
                 background-position: right calc(var(--seo-mobile-image-width) * -16 / 774) top;
+                max-height: 127rem;
                 top: 13rem;
-                max-height: 137rem;
-                left: 3rem;
+            }
+
+            @media (max-width:425px) {
+                // background-size: cover;
             }
         }
     }
@@ -659,7 +664,7 @@
         display: flex;
         flex-direction: column;
         cursor: pointer;
-        height: 18rem;
+        height: 21rem;
 
         @media (max-width:1440px) {
             height: 15rem;

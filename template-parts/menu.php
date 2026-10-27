@@ -47,7 +47,7 @@ $global_btn = get_localized_field('globalnaya_knopka');
             </div>
             <div class="menu-soc">
                 <span class="label-m" style="display: none;"><?php echo $menu_social ?></span>
-                <div class="menu-line _social _social-border">
+                <div class="_social _social-border">
                     <?php get_template_part('template-parts/social-links') ?>
                 </div>
             </div>
