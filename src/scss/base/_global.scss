@@ -54,7 +54,7 @@ main {
         padding-inline: $padding + rem;
     }
 
-    @media (max-width:1280px) {
+    @media (max-width:1440px) {
         padding-inline: 3rem;
     }
 
@@ -93,7 +93,7 @@ label {
         gap: 0.8rem;
         margin-top: 6rem;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             margin-top: 4rem;
         }
 
@@ -109,7 +109,7 @@ label {
             transition: background-color 0.3s ease 0s;
             background-color: $black;
 
-            @media (max-width:1280px) {
+            @media (max-width:1440px) {
                 width: 4rem;
                 height: 4rem;
             }
@@ -171,7 +171,7 @@ label {
         background-color: $black-10;
         backdrop-filter: blur(4rem);
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             bottom: 2rem;
         }
 
@@ -310,7 +310,7 @@ svg {
         pointer-events: none;
     }
 
-    @media (max-width:1280px) {
+    @media (max-width:1440px) {
         min-width: 28.2rem;
         height: 9rem;
         border-radius: 2rem;
@@ -412,7 +412,7 @@ svg {
     border-radius: 1.4rem;
     transition: all 0.3s ease 0s;
 
-    @media (max-width:1280px) {
+    @media (max-width:1440px) {
         height: 4.4rem;
         padding: 1rem 2rem;
     }
@@ -544,7 +544,7 @@ picture {
     z-index: 11;
     max-width: 72%;
 
-    @media (max-width:1280px) {
+    @media (max-width:1440px) {
         margin-bottom: 12rem;
         padding-top: 3rem;
     }
@@ -603,7 +603,7 @@ picture {
         &:not(:first-child) {
             margin-top: 10rem;
 
-            @media (max-width:1280px) {
+            @media (max-width:1440px) {
                 margin-top: 8rem;
             }
 
@@ -629,7 +629,7 @@ picture {
     i {
         margin-bottom: 3rem;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             margin-bottom: 2.4rem;
         }
 
@@ -660,7 +660,7 @@ picture {
         flex-direction: column;
         gap: 1.6rem;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             gap: 1.2rem;
         }
 
@@ -732,7 +732,7 @@ picture {
         height: auto;
         border-radius: 2.8rem;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             border-radius: 2rem;
             margin: 6rem 0;
         }
@@ -801,7 +801,7 @@ picture {
             padding: 1.5rem 3rem;
             text-align: left;
 
-            @media (max-width:1280px) {
+            @media (max-width:1440px) {
                 padding: 1.5rem 2rem;
             }
         }
@@ -837,7 +837,7 @@ figcaption {
     margin-top: 2.4rem;
     @include type.typography("text-m");
 
-    @media (max-width:1280px) {
+    @media (max-width:1440px) {
         margin-top: 2rem;
     }
 

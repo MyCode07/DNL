@@ -6,7 +6,7 @@
     padding-bottom: 4rem;
     background-color: $white;
 
-    @media (max-width:1280px) {
+    @media (max-width:1440px) {
         padding-top: 12rem;
         padding-bottom: 3rem;
     }
@@ -27,7 +27,7 @@
         grid-template-columns: 0.611fr 0.399fr;
         gap: 4rem;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             grid-template-columns: 1fr 1fr;
         }
 
@@ -42,7 +42,7 @@
     &__top {
         margin-bottom: 36rem;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             margin-bottom: 15rem;
         }
 
@@ -56,7 +56,7 @@
             gap: 3rem;
             max-width: 71.2rem;
 
-            @media (max-width:1280px) {
+            @media (max-width:1440px) {
                 flex-direction: column;
             }
         }
@@ -65,7 +65,7 @@
         .h4 {
             max-width: 26rem;
 
-            @media (max-width:1280px) {
+            @media (max-width:1440px) {
                 max-width: 24rem;
             }
         }
@@ -75,7 +75,7 @@
             max-width: 33.6rem;
             position: relative;
 
-            @media (max-width:1280px) {
+            @media (max-width:1440px) {
                 max-width: 31.3rem;
             }
 
@@ -149,7 +149,7 @@
                     text-wrap: initial;
                     max-width: 28rem;
 
-                    @media (max-width:1280px) {
+                    @media (max-width:1440px) {
                         max-width: 26rem;
                     }
                 }
@@ -181,7 +181,7 @@
                 flex-direction: column;
                 gap: 0.6rem;
 
-                @media (max-width:1280px) {
+                @media (max-width:1440px) {
                     gap: 0.6rem;
                 }
 
@@ -220,7 +220,7 @@
         flex-direction: column;
         gap: 1.6rem;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             gap: 1rem;
         }
 
@@ -246,7 +246,7 @@
                 gap: 2rem;
                 align-items: flex-end;
 
-                @media (max-width:1280px) {
+                @media (max-width:1440px) {
                     margin-top: 3rem;
                     padding-top: 3rem;
                 }
@@ -266,7 +266,7 @@
         height: 8rem;
         display: block;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             width: 27rem;
             height: 5rem;
         }
@@ -288,7 +288,7 @@
         max-width: 57rem;
         margin-bottom: 2.4rem;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             margin-bottom: 2rem;
         }
 

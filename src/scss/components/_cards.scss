@@ -12,7 +12,7 @@
     background: $black-10;
     backdrop-filter: blur(8rem);
 
-    @media (max-width:1280px) {
+    @media (max-width:1440px) {
         padding: 2.4rem 2rem;
         border-radius: 2rem;
     }
@@ -33,7 +33,7 @@
     gap: 1.6rem;
     height: 85rem;
 
-    @media (max-width:1280px) {
+    @media (max-width:1440px) {
         padding: 3rem;
         border-radius: 2rem;
         height: 58rem;
@@ -63,7 +63,7 @@
         position: relative;
         z-index: 1;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             width: 30rem;
         }
     }
@@ -94,7 +94,7 @@
 .projects-item {
     min-height: 60rem;
 
-    @media (max-width:1280px) {
+    @media (max-width:1440px) {
         min-height: 45rem;
     }
 
@@ -116,7 +116,7 @@
         border-radius: 2.8rem;
         color: $white;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             padding: 3rem;
             border-radius: 2rem;
             gap: 1.6rem;
@@ -215,7 +215,7 @@
             border-radius: 1.4rem;
             background-color: $white-20;
 
-            @media (max-width:1280px) {
+            @media (max-width:1440px) {
                 gap: 0.6rem;
                 padding: 0.8rem 1.2rem;
                 border-radius: 1rem;
@@ -262,7 +262,7 @@
             overflow: hidden;
             position: relative;
 
-            @media (max-width:1280px) {
+            @media (max-width:1440px) {
                 border-radius: 2rem;
             }
 
@@ -296,7 +296,7 @@
         background-color: $black;
         color: $white;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             border-radius: 2rem;
         }
 
@@ -313,7 +313,7 @@
             border-radius: 2.4rem;
             gap: 3.2rem;
 
-            @media (max-width:1280px) {
+            @media (max-width:1440px) {
                 padding: 2.4rem 2rem 2rem 2rem;
                 border-radius: 1.6rem;
             }
@@ -353,7 +353,7 @@
         display: flex;
         gap: 1.6rem;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             margin-bottom: 3rem;
         }
 
@@ -405,7 +405,7 @@
         max-width: 40rem;
         min-height: calc(var(--title-height) / 10 * 1rem);
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             max-width: 30rem;
             margin-bottom: 2rem;
         }
@@ -456,7 +456,7 @@
         background-color: $black;
         display: block;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             border-radius: 2rem;
         }
 
@@ -490,7 +490,7 @@
         max-width: 40rem;
         color: $gray-600;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             max-width: 34rem;
             margin-top: 2rem;
         }
@@ -512,7 +512,7 @@
     overflow: hidden;
     flex: 0 0 auto;
 
-    @media (max-width:1280px) {
+    @media (max-width:1440px) {
         width: 59.5rem;
         height: 46rem;
         border-radius: 2rem;
@@ -535,13 +535,13 @@
         padding: 4rem 4rem 2.5rem 4rem;
         flex: 1 1 auto;
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             gap: 8rem;
             justify-content: unset;
             padding: 3rem 3rem 2rem 3rem;
         }
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             padding: 2.4rem 2.4rem 2rem 2.4rem;
         }
 
@@ -564,7 +564,7 @@
                 width: 60%;
             }
 
-            @media (max-width:1280px) {
+            @media (max-width:1440px) {
                 gap: 2rem;
             }
 
