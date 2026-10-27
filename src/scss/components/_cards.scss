@@ -336,6 +336,17 @@
             & > :last-child {
                 flex: 0 0 auto;
             }
+
+            sup {
+                display: inline-block;
+                vertical-align: bottom;
+                font-size: 0.75em;
+                margin-left: 0.5rem;
+
+                @media (max-width:767px) {
+                    margin-left: 0.3rem;
+                }
+            }
         }
     }
 }

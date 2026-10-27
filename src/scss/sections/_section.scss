@@ -460,9 +460,10 @@
         flex-direction: column;
         margin-top: 32rem;
         gap: 4rem;
-        max-width: 78rem;
+        max-width: 65rem;
         position: relative;
         z-index: 1;
+        text-wrap: wrap;
 
         @media (max-width:1440px) {
             margin-top: 24rem;
