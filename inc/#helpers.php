@@ -282,17 +282,30 @@ function my_pagenavi()
 }
 
 
-// substring experct
-function custom_excerpt($text, $limit = 6)
+// Выводит обрезанный excerpt с проверкой длины.
+function get_loop_custom_excerpt($post = null, $limit = 12, $more = '...')
 {
-    $word_arr = explode(" ", $text);
-    if (count($word_arr) > $limit) {
-        $words = implode(" ", array_slice($word_arr, 0, $limit)) . ' ...';
-        return $words;
-    }
-    return $text;
-}
+    // get_post() не делает запросов к БД, если пост уже в памяти (кэширован циклом)
+    $post = get_post($post);
 
+    if (! $post) {
+        return '';
+    }
+
+    if (! empty($post->post_excerpt)) {
+        $text = $post->post_excerpt;
+    } else {
+        $text = $post->post_content;
+    }
+
+    $text = strip_shortcodes($text);
+    if (function_exists('excerpt_remove_blocks')) {
+        $text = excerpt_remove_blocks($text);
+    }
+    $text = wp_strip_all_tags($text);
+
+    return wp_trim_words($text, $limit, $more);
+}
 
 // first sentece
 function get_first_sentence($str)

@@ -35,7 +35,12 @@ get_header();
                                     </figure>
                                 </div>
                             <?php endif; ?>
-                            <div class="text-box"><?php the_content() ?></div>
+                            <div class="text-box">
+                                <?php if (has_excerpt(get_the_ID())): ?>
+                                    <div class="project-name"><?php echo get_the_excerpt(); ?></div>
+                                <?php endif; ?>
+                                <?php the_content() ?>
+                            </div>
                             <?php get_template_part('template-parts/single-post/share', null, ['class' => '_mobile']) ?>
                         </div>
                     </div>

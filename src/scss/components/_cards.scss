@@ -339,12 +339,11 @@
 
             sup {
                 display: inline-block;
-                vertical-align: bottom;
-                font-size: 0.75em;
-                margin-left: 0.5rem;
+                font-size: 0.6em;
+                margin-left: 0.7rem;
 
                 @media (max-width:767px) {
-                    margin-left: 0.3rem;
+                    margin-left: 0.5rem;
                 }
             }
         }

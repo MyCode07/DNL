@@ -31,5 +31,5 @@ if ($author_id) {
             <img src="<?php echo esc_url(frame_asset('img/post-default.png')); ?>" alt="<?php the_title() ?>">
         <?php endif; ?>
     </a>
-    <p><?php the_excerpt() ?></p>
+    <p><?php echo get_loop_custom_excerpt() ?></p>
 </article>

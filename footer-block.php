@@ -12,25 +12,9 @@ $cookies = get_localized_field('footer_kuki');
                 <div class="footer__left">
                     <h4><?php echo $form_title ?></h4>
 
-                    <!-- не сделано -->
-                    <form action="">
-                        <div class="subs-input">
-                            <input type="email" placeholder="Ваш email">
-                            <button>
-                                <svg width="13" height="10" viewBox="0 0 13 10">
-                                    <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#menu-btn-arrow')); ?>' />
-                                </svg>
-                            </button>
-                        </div>
-                        <label>
-                            <input type="checkbox">
-                            <p>Даю Согласие на получение рассылки в соответствии <a href="/text.html" target="_blank">с
-                                    Политикой
-                                    конфиденциальности.</a></p>
-                        </label>
-
-                    </form>
-
+                    <div class="form">
+                        <?php echo do_shortcode('[contact-form-7 id="dac4f0e"]') ?>
+                    </div>
                 </div>
                 <div class="footer__right">
                     <?php echo get_locate_menu('primary'); ?>

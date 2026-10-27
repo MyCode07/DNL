@@ -70,22 +70,13 @@
             }
         }
 
-        form {
+        .form {
             width: 100%;
             max-width: 33.6rem;
             position: relative;
 
             @media (max-width:1440px) {
                 max-width: 31.3rem;
-            }
-
-            .subs-input {
-                input {
-                    display: block;
-                    width: 100%;
-                    border-bottom: .1rem solid $black;
-                    padding-bottom: 0.8rem;
-                }
             }
 
             button {
@@ -103,46 +94,16 @@
                     width: 1.3rem;
                     height: 1rem;
                     flex: 0 0 auto;
-                    fill: $gray-300;
+                    fill: $black;
                 }
             }
 
-            label {
-                display: flex;
-                gap: 1.4rem;
-                cursor: pointer;
+            .wpcf7-not-valid-tip {
+                position: static;
+            }
+
+            .form__privacy {
                 margin-top: 1.6rem;
-                color: $gray-600;
-
-                &:before {
-                    content: '';
-                    display: block;
-                    width: 2.2rem;
-                    height: 2.2rem;
-                    flex: 0 0 auto;
-                    border-radius: 0.6rem;
-                    border: 1px solid $gray-300;
-                    background-position: center;
-                    background-repeat: no-repeat;
-                    background-size: 1.6rem;
-                    transition: border-color 0.3s ease 0s, background-color 0.3s ease 0s;
-                }
-
-                &:has(input:checked) {
-                    &:before {
-                        border-color: $black;
-                        background-color: $black;
-                        background-image: url('@img/icons/check.svg');
-                    }
-                }
-
-                &:hover:before {
-                    border-color: $black;
-                }
-
-                input {
-                    display: none;
-                }
 
                 p {
                     @include type.typography("text-s");
@@ -151,14 +112,6 @@
 
                     @media (max-width:1440px) {
                         max-width: 26rem;
-                    }
-                }
-
-                a {
-                    color: $black;
-
-                    &:hover {
-                        text-decoration: underline;
                     }
                 }
             }
