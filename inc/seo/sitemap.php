@@ -77,6 +77,7 @@ function dnl_html_sitemap_entry_title($entry, $type, $object)
 
     if ($type === 'post') {
         $entry['title'] = get_the_title($object);
+        $entry['post_type'] = $object->post_type;
     } elseif ($type === 'term') {
         $entry['title'] = $object->name;
     } elseif ($type === 'user') {
@@ -98,8 +99,9 @@ function dnl_html_sitemap_title($entry, $type)
         } elseif (untrailingslashit($entry['loc']) === untrailingslashit(home_url('/'))) {
             $title = get_bloginfo('name');
         } elseif (get_post_type_archive_link($type) === $entry['loc']) {
+            $posts_page = $type === 'post' ? (int) get_option('page_for_posts') : 0;
             $post_type = get_post_type_object($type);
-            $title = $post_type->labels->name ?? '';
+            $title = $posts_page ? get_the_title($posts_page) : ($post_type->labels->name ?? '');
         }
     }
 
@@ -112,7 +114,7 @@ function dnl_html_sitemap_group_title($type)
     $titles = [
         'page' => __('Страницы', 'frame'),
         'category' => __('Категории', 'frame'),
-        'post' => __('Статьи', 'frame'),
+        'post' => __('Публикации', 'frame'),
         'post_tag' => __('Метки', 'frame'),
         'author' => __('Авторы', 'frame'),
     ];
@@ -199,11 +201,27 @@ function dnl_read_sitemap()
                     );
 
                     foreach ($entries as $entry) {
-                        if (!empty($entry['loc']) && (!isset($urls[$entry['loc']]) || $type === 'page')) {
+                        if (empty($entry['loc'])) {
+                            continue;
+                        }
+
+                        $entry_type = $entry['post_type'] ?? $type;
+                        // The blog index is a page even though Yoast lists it in post-sitemap.xml.
+                        if ($type === 'post' && !isset($entry['post_type'])) {
+                            $post_id = url_to_postid($entry['loc']);
+                            if (
+                                ($post_id && get_post_type($post_id) === 'page')
+                                || untrailingslashit($entry['loc']) === untrailingslashit((string) get_post_type_archive_link('post'))
+                            ) {
+                                $entry_type = 'page';
+                            }
+                        }
+
+                        if (!isset($urls[$entry['loc']]) || $entry_type === 'page') {
                             $urls[$entry['loc']] = [
                                 'loc' => $entry['loc'],
                                 'title' => dnl_html_sitemap_title($entry, $type),
-                                'type' => $type,
+                                'type' => $entry_type,
                             ];
                         }
                     }
@@ -250,8 +268,9 @@ add_action('template_redirect', function () {
     echo '<meta charset="UTF-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
     echo '<title>Карта сайта</title>';
+    printf('<link rel="stylesheet" href="%s">', esc_url(get_theme_file_uri('dist/css/style.min.css')));
     echo '</head>';
-    echo '<body>';
+    echo '<body class="sitemap">';
 
     echo '<main>';
     echo '<h1>Карта сайта / Sitemap</h1>';

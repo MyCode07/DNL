@@ -17,7 +17,9 @@ test('HTML sitemap renders page titles, translated homepages, taxonomy and archi
     );
     assert.deepEqual(links, [
         ['https://example.test/', 'Главная'],
+        ['https://example.test/blog/', 'Блог'],
         ['https://example.test/en/', 'Home'],
+        ['https://example.test/en/blog/', 'Blog'],
         ['https://example.test/category/news/', 'News &amp; analysis'],
         ['https://example.test/article/', 'Рынок &amp; инвестиции'],
         ['https://example.test/second/', 'Second page'],
@@ -29,8 +31,15 @@ test('HTML sitemap renders page titles, translated homepages, taxonomy and archi
     ];
     assert.deepEqual(
         sections.map(([, title]) => title),
-        ['Страницы', 'Категории', 'Статьи', 'Авторы', 'Books'],
+        ['Страницы', 'Категории', 'Публикации', 'Авторы', 'Books'],
     );
     assert.match(sections[0][2], /href="https:\/\/example.test\/"/);
     assert.doesNotMatch(sections[2][2], /href="https:\/\/example.test\/"/);
+    assert.match(sections[0][2], /href="https:\/\/example.test\/blog\/"/);
+    assert.match(sections[0][2], /href="https:\/\/example.test\/en\/blog\/"/);
+    assert.doesNotMatch(sections[2][2], /\/blog\//);
+    assert.match(
+        result.stdout,
+        /<link rel="stylesheet" href="https:\/\/example.test\/wp-content\/themes\/frame\/dist\/css\/style.min.css">/,
+    );
 });
