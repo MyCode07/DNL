@@ -108,3 +108,5 @@ function frame_yoast_article_without_comments($data)
 
     return $data;
 }
+
+
