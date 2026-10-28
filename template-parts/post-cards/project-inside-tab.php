@@ -2,6 +2,7 @@
 $labels = get_field('tegi');
 $gallery = get_field('galereya');
 $params = get_field('parametry');
+$description_id = wp_unique_id('project-description-');
 ?>
 <div class="projects-item grid grid-3">
     <div class="projects-item__content">
@@ -18,12 +19,12 @@ $params = get_field('parametry');
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
-        <div class="projects-item__description" id="project-description-1">
+        <div class="projects-item__description" id="<?php echo esc_attr($description_id); ?>">
             <p><?php the_field('opisanie') ?></p>
         </div>
         <button type="button" class="projects-item__description-toggle"
             data-text-open="Читать описание" data-text-close="Скрыть" aria-expanded="true"
-            aria-controls="project-description-1" hidden>
+            aria-controls="<?php echo esc_attr($description_id); ?>" hidden>
             <span data-description-label class="text-m"></span>
             <svg width="16" height="12" viewBox="0 0 16 12">
                 <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#description-toggle')); ?>' />

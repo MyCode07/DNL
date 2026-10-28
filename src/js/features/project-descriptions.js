@@ -1,4 +1,4 @@
-﻿import { gsap, ScrollTrigger } from '../core/gsap.js';
+import { gsap, ScrollTrigger } from '../core/gsap.js';
 import { createScope } from '../core/lifecycle.js';
 
 /** Each project keeps its own disclosure state while switching tabs. */
@@ -13,9 +13,16 @@ export function initProjectDescriptions(root) {
             if (!context.conditions.mobile) return;
             const scope = createScope();
             for (const button of root.querySelectorAll('.projects-item__description-toggle')) {
-                const description = root.getElementById(button.getAttribute('aria-controls'));
+                const description = button
+                    .closest('.projects-item')
+                    ?.querySelector('.projects-item__description');
                 const label = button.querySelector('[data-description-label]');
-                if (!description || !label) continue;
+                if (
+                    !description ||
+                    !label ||
+                    description.id !== button.getAttribute('aria-controls')
+                )
+                    continue;
                 const original = {
                     hidden: button.hidden,
                     expanded: button.getAttribute('aria-expanded'),
