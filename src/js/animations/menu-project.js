@@ -5,6 +5,7 @@ import { isProjectVisible } from '../utils/menu-visibility.js';
 export function createProjectAnimation(header, media) {
     const project = header.querySelector('.menu-project');
     const menu = header.querySelector('.menu');
+    if (!project || !menu) return { sync() {}, destroy() {} };
     const context = gsap.context(() => {}, header);
     const originalInert = project.inert;
     let visible;

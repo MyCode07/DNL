@@ -24,8 +24,8 @@ export function createMenuAnimation(menu, { media, toggle }) {
     const body = menu.querySelector('.menu-body');
     const surface = menu.querySelector('.menu-surface');
     const project = menu.querySelector('.menu-project');
-    const projectParent = project.parentNode;
-    const projectNextSibling = project.nextSibling;
+    const projectParent = project?.parentNode;
+    const projectNextSibling = project?.nextSibling;
     const outerLogo = menu.closest('.header')?.querySelector('.header__logo');
     const innerLogo = menu.querySelector('.menu-logo');
     const logos = [outerLogo, innerLogo].filter(Boolean);
@@ -154,29 +154,32 @@ export function createMenuAnimation(menu, { media, toggle }) {
             }
             if (compact && heroButton)
                 timeline.to(heroButton, { height: open ? 0 : 'auto' }, expandAt);
-            timeline.to(
-                items,
-                {
-                    filter: open ? 'blur(0px)' : 'blur(0.2rem)',
-                    duration: reducedMotion ? 0 : 0.3,
-                },
-                expandAt + (!reducedMotion && open ? 0.3 : 0),
-            );
+            if (items.length)
+                timeline.to(
+                    items,
+                    {
+                        filter: open ? 'blur(0px)' : 'blur(0.2rem)',
+                        duration: reducedMotion ? 0 : 0.3,
+                    },
+                    expandAt + (!reducedMotion && open ? 0.3 : 0),
+                );
         });
     }
 
     function reset() {
         timeline?.kill();
-        if (media.mobile.matches) body.append(project);
-        else projectParent.insertBefore(project, projectNextSibling);
+        if (project) {
+            if (media.mobile.matches) body.append(project);
+            else projectParent.insertBefore(project, projectNextSibling);
+        }
         context.add(() => {
             gsap.set([menu, surface, body], {
                 clearProps: 'width,height,padding,transform,top,right,borderRadius',
             });
-            gsap.set(items, { clearProps: 'filter' });
+            if (items.length) gsap.set(items, { clearProps: 'filter' });
             gsap.set(toggle, { clearProps: 'padding' });
             if (label) gsap.set(label, { clearProps: 'opacity,visibility,transform' });
-            gsap.set(logos, { clearProps: 'opacity,visibility' });
+            if (logos.length) gsap.set(logos, { clearProps: 'opacity,visibility' });
             if (heroButton) gsap.set(heroButton, { clearProps: 'height' });
         });
         body.inert = true;
@@ -192,7 +195,7 @@ export function createMenuAnimation(menu, { media, toggle }) {
         destroy() {
             timeline?.kill();
             context.revert();
-            projectParent.insertBefore(project, projectNextSibling);
+            if (project) projectParent.insertBefore(project, projectNextSibling);
             logos.forEach((logo, index) => {
                 logo.inert = originalLogoInert[index];
             });

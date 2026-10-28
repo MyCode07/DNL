@@ -90,7 +90,8 @@ export function initDealsSlider(section, media) {
                 clipPath: i === index ? 'inset(0% 0% 0% 0%)' : 'inset(0% 0% 100% 0%)',
                 zIndex: i === index ? 2 : 0,
             });
-            gsap.set(image.querySelector('.deals-media__inner'), { yPercent: 0 });
+            const inner = image.querySelector('.deals-media__inner');
+            if (inner) gsap.set(inner, { yPercent: 0 });
         });
     }
 
@@ -131,19 +132,16 @@ export function initDealsSlider(section, media) {
                     clipPath: forward ? 'inset(100% 0% 0% 0%)' : 'inset(0% 0% 100% 0%)',
                 });
                 const inner = incoming.querySelector('.deals-media__inner');
-                gsap.set(inner, { yPercent: forward ? 10 : -10 });
+                if (inner) gsap.set(inner, { yPercent: forward ? 10 : -10 });
                 timeline.to(incoming, { clipPath: 'inset(0% 0% 0% 0%)' }, 0);
-                timeline.to(inner, { yPercent: 0 }, 0);
+                if (inner) timeline.to(inner, { yPercent: 0 }, 0);
                 timeline.to(
                     outgoing,
                     { clipPath: forward ? 'inset(0% 0% 100% 0%)' : 'inset(100% 0% 0% 0%)' },
                     0,
                 );
-                timeline.to(
-                    outgoing.querySelector('.deals-media__inner'),
-                    { yPercent: forward ? -10 : 10 },
-                    0,
-                );
+                const outgoingInner = outgoing.querySelector('.deals-media__inner');
+                if (outgoingInner) timeline.to(outgoingInner, { yPercent: forward ? -10 : 10 }, 0);
             } else timeline.to({}, { duration });
         });
     }

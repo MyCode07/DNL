@@ -13,7 +13,7 @@ export function initPopupResults(root, media) {
         let transitioning = false;
         let sourceForm;
         scope.on(popup, 'popup:request-open', (event) => {
-            sourceForm = event.detail.form;
+            sourceForm = event.detail?.form;
         });
 
         function reset() {
@@ -35,7 +35,7 @@ export function initPopupResults(root, media) {
                 return;
             transitioning = true;
             form.inert = true;
-            popup.querySelector('.popup-close').focus({ preventScroll: true });
+            popup.querySelector('.popup-close')?.focus({ preventScroll: true });
             const duration = media.reducedMotion.matches ? 0 : 0.35;
             const content = result.querySelector('.popup-result__content');
             const background = result.querySelector('.popup-result__background');
@@ -45,7 +45,7 @@ export function initPopupResults(root, media) {
                         transitioning = false;
                         if (popup.classList.contains('_open')) {
                             result.inert = false;
-                            content.focus({ preventScroll: true });
+                            (content || result).focus({ preventScroll: true });
                         }
                     },
                 });
@@ -57,18 +57,20 @@ export function initPopupResults(root, media) {
                     popup.classList.add('_result', `_${event.detail}`);
                 });
                 timeline.fromTo(result, { opacity: 0 }, { opacity: 1, duration });
-                timeline.fromTo(
-                    background,
-                    { opacity: 0, scale: media.reducedMotion.matches ? 1 : 1.06 },
-                    { opacity: 1, scale: 1, duration: duration * 2.5, ease: 'power2.out' },
-                    '<',
-                );
-                timeline.fromTo(
-                    content,
-                    { autoAlpha: 0, y: 20 },
-                    { autoAlpha: 1, y: 0, duration: duration * 1.5, ease: 'power2.out' },
-                    duration * 2,
-                );
+                if (background)
+                    timeline.fromTo(
+                        background,
+                        { opacity: 0, scale: media.reducedMotion.matches ? 1 : 1.06 },
+                        { opacity: 1, scale: 1, duration: duration * 2.5, ease: 'power2.out' },
+                        '<',
+                    );
+                if (content)
+                    timeline.fromTo(
+                        content,
+                        { autoAlpha: 0, y: 20 },
+                        { autoAlpha: 1, y: 0, duration: duration * 1.5, ease: 'power2.out' },
+                        duration * 2,
+                    );
             });
         }
 

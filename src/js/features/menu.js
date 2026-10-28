@@ -7,7 +7,9 @@ export function initMenu(root, { media, scrollLock }) {
     const menu = root.querySelector('.menu');
     const toggle = menu?.querySelector('.menu-toggle');
     const header = menu?.closest('.header');
-    if (!menu || !toggle || !header) return;
+    const body = menu?.querySelector('.menu-body');
+    const surface = menu?.querySelector('.menu-surface');
+    if (!menu || !toggle || !header || !body || !surface) return;
     const label = toggle.querySelector('span');
     const scope = createScope();
     const animation = createMenuAnimation(menu, { media, toggle });
@@ -43,7 +45,7 @@ export function initMenu(root, { media, scrollLock }) {
 
     reset();
     scope.on(toggle, 'click', () => setOpen(!menu.classList.contains('_open')));
-    scope.on(menu.querySelector('.menu-surface'), 'click', (event) => {
+    scope.on(surface, 'click', (event) => {
         if (toggle.contains(event.target) || menu.classList.contains('_open')) return;
         setOpen(true);
     });
