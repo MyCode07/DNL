@@ -270,53 +270,51 @@ add_action('template_redirect', function () {
         <title>Карта сайта</title>
         <link rel="stylesheet" href="<?php echo esc_url(get_theme_file_uri('dist/css/style.min.css')); ?>">
         <style>
-            main {
-                width: 100%;
-                max-width: 90rem;
-                margin-inline: auto;
-                padding: 8rem 1.6rem;
-            }
+            section {
+                &:not(:last-child) {
+                    margin-bottom: 10rem;
 
-            h1 {
-                margin-bottom: 6rem;
-            }
-
-            h1,
-            h1.h2,
-            h2.h3,
-            h2 {
-                text-transform: none;
-            }
-
-            ul {
-                padding-left: 1.5em;
-                margin: 2rem 0 4rem 0;
-
-                li {
-                    list-style: disc;
-
-                    &:not(:last-child) {
-                        margin-bottom: 0.6rem;
+                    @media (max-width:1440px) {
+                        margin-bottom: 8rem;
                     }
+
+                    @media (max-width:767px) {
+                        margin-bottom: 6rem;
+                    }
+                }
+
+                h2 {
+                    text-transform: none;
                 }
             }
         </style>
     </head>
 
     <body class="sitemap">
-        <main>
-            <h1 class="h2">Карта сайта / Sitemap</h1>
-            <?php foreach ($groups as $type => $entries): ?>
-                <?php if (!$entries) continue; ?>
-                <section>
-                    <h2 class="h3"><?php echo esc_html(dnl_html_sitemap_group_title($type)); ?></h2>
-                    <ul>
-                        <?php foreach ($entries as $entry): ?>
-                            <li><a href="<?php echo esc_url($entry['loc']); ?>"><?php echo esc_html($entry['title']); ?></a></li>
+        <main class="section text-page">
+            <div class="section__container _container">
+                <div class="breadcrumbs"></div>
+                <div class="section__body">
+                    <div class="section__top">
+                        <h1 class="h2">Карта сайта / Sitemap</h1>
+                        <div class="line"><span></span></div>
+                    </div>
+
+                    <div class="text-box">
+                        <?php foreach ($groups as $type => $entries): ?>
+                            <?php if (!$entries) continue; ?>
+                            <section>
+                                <h2 class="h4"><?php echo esc_html(dnl_html_sitemap_group_title($type)); ?></h2>
+                                <ul>
+                                    <?php foreach ($entries as $entry): ?>
+                                        <li><a href="<?php echo esc_url($entry['loc']); ?>"><?php echo esc_html($entry['title']); ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </section>
                         <?php endforeach; ?>
-                    </ul>
-                </section>
-            <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
         </main>
     </body>
 
