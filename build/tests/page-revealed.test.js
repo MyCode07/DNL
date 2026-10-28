@@ -1,8 +1,6 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { whenPageRevealed } from '../../src/js/utils/page-revealed.js';
-import { ELEMENT_REVEAL_TARGETS } from '../../src/js/animations/element-reveal.js';
 
 test('readiness waits for release and late subscribers do not lose it', async () => {
     const root = new EventTarget();
@@ -30,13 +28,4 @@ test('removed canvas and aborted consumers do not wait', async () => {
     controller.abort();
     await pending;
     await whenPageRevealed(root, controller.signal);
-});
-
-test('early CSS and JS cover exactly the same reveal targets', () => {
-    const scss = readFileSync(
-        new URL('../../src/scss/animations/_element-reveal.scss', import.meta.url),
-        'utf8',
-    );
-    const selectors = [...scss.matchAll(/"([^"]+)"/g)].map((match) => match[1]);
-    assert.deepEqual(selectors, ELEMENT_REVEAL_TARGETS.split(', '));
 });

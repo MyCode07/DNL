@@ -13,7 +13,7 @@ export function svgSpritePlugin({ projectRoot, srcRoot }) {
     async function buildSprite() {
         const files = await fg('*.svg', {
             cwd: svgSourceDir,
-            absolute: true
+            absolute: true,
         });
 
         const symbols = [];
@@ -25,15 +25,13 @@ export function svgSpritePlugin({ projectRoot, srcRoot }) {
                 path: file,
                 multipass: true,
                 // SVGO 4 preserves viewBox in preset-default.
-                plugins: ['preset-default']
+                plugins: ['preset-default'],
             }).data;
 
             const id = basename(file, '.svg');
 
             const viewBoxMatch = optimized.match(/viewBox="([^"]+)"/);
-            const viewBox = viewBoxMatch
-                ? ` viewBox="${viewBoxMatch[1]}"`
-                : '';
+            const viewBox = viewBoxMatch ? ` viewBox="${viewBoxMatch[1]}"` : '';
 
             const content = optimized
                 .replace(/<\?xml.*?\?>/g, '')
@@ -42,9 +40,7 @@ export function svgSpritePlugin({ projectRoot, srcRoot }) {
                 .replace('</svg>', '')
                 .trim();
 
-            symbols.push(
-                `<symbol id="${id}"${viewBox}>${content}</symbol>`
-            );
+            symbols.push(`<symbol id="${id}"${viewBox}>${content}</symbol>`);
         }
 
         devSprite =
@@ -59,7 +55,7 @@ export function svgSpritePlugin({ projectRoot, srcRoot }) {
         const sprite = await buildSprite();
 
         await fs.mkdir(resolve(projectRoot, 'dist/img/svg'), {
-            recursive: true
+            recursive: true,
         });
 
         await fs.writeFile(spriteOutput, sprite, 'utf8');
@@ -77,31 +73,23 @@ export function svgSpritePlugin({ projectRoot, srcRoot }) {
         },
 
         configureServer(server) {
-            server.middlewares.use(
-                '/img/svg/icons.svg',
-                async (req, res) => {
-                    if (!devSprite) {
-                        await buildSprite();
-                    }
-
-                    res.statusCode = 200;
-                    res.setHeader(
-                        'Content-Type',
-                        'image/svg+xml; charset=utf-8'
-                    );
-
-                    res.end(devSprite);
+            server.middlewares.use('/img/svg/icons.svg', async (req, res) => {
+                if (!devSprite) {
+                    await buildSprite();
                 }
-            );
+
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+
+                res.end(devSprite);
+            });
 
             server.watcher.add(resolve(svgSourceDir, '**/*.svg'));
 
             let pending = Promise.resolve();
             const update = (file) => {
-                if (
-                    !file.startsWith(svgSourceDir + '/') &&
-                    !file.startsWith(svgSourceDir + '\\')
-                ) return;
+                if (!file.startsWith(svgSourceDir + '/') && !file.startsWith(svgSourceDir + '\\'))
+                    return;
                 if (!file.endsWith('.svg')) return;
 
                 pending = pending
@@ -133,6 +121,6 @@ export function svgSpritePlugin({ projectRoot, srcRoot }) {
 
         async closeBundle() {
             if (isBuild) await writeSprite();
-        }
+        },
     };
 }

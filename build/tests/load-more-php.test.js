@@ -5,7 +5,8 @@ import test from 'node:test';
 
 test('PHP AJAX preserves the query and validates pagination and signatures', (t) => {
     const php = spawnSync('php', ['--version'], { encoding: 'utf8' });
-    if (php.error?.code === 'ENOENT') return t.skip('PHP CLI is unavailable');
+    if (php.error?.code === 'ENOENT' && !process.env.CI) return t.skip('PHP CLI is unavailable');
+    assert.equal(php.status, 0, 'PHP CLI is required in CI');
     const fixture = fileURLToPath(new URL('./fixtures/load-more.php', import.meta.url));
     const handler = fileURLToPath(new URL('../../inc/ajax/load-more.php', import.meta.url));
     const result = spawnSync('php', [fixture, handler], { encoding: 'utf8' });

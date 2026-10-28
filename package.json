@@ -5,18 +5,20 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "test": "node --test",
+    "test": "node --test \"build/tests/*.test.js\"",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --port 4040",
     "sprite": "node build/scripts/sprite.js",
-    "lint": "eslint src/js build/tests/runtime.test.js",
-    "format": "prettier --write src/js eslint.config.js .prettierrc.json build/tests/runtime.test.js",
-    "format:check": "prettier --check src/js eslint.config.js .prettierrc.json build/tests/runtime.test.js",
-    "check": "npm run lint && npm run format:check && npm test"
+    "lint": "eslint src/js build vite.config.js playwright.config.js eslint.config.js",
+    "format": "prettier --write src/js build .github/workflows vite.config.js playwright.config.js eslint.config.js package.json .prettierrc.json",
+    "format:check": "prettier --check src/js build .github/workflows vite.config.js playwright.config.js eslint.config.js package.json .prettierrc.json",
+    "check": "npm run lint && npm run format:check && npm test",
+    "test:dev": "node --test \"build/tests/*.integration.js\"",
+    "test:browser": "playwright test"
   },
   "engines": {
-    "node": ">=20.19.0"
+    "node": ">=24.0.0"
   },
   "browserslist": [
     "last 3 versions"
@@ -33,6 +35,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
     "autoprefixer": "^10.4.21",
     "eslint": "^10.12.0",
     "fast-glob": "^3.3.3",

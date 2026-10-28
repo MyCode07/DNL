@@ -1,27 +1,23 @@
-name: Frame staging deploy
+name: Frame checks and staging deploy
 
 on:
     push:
+        branches: ['**']
+    pull_request:
         branches: [main]
     workflow_dispatch:
 
 permissions:
     contents: read
 
-concurrency:
-    group: frame-staging
-    cancel-in-progress: false
-
 defaults:
     run:
         shell: bash
 
 jobs:
-    staging:
-        if: github.ref == 'refs/heads/main'
+    checks:
         runs-on: ubuntu-24.04
         timeout-minutes: 30
-        environment: staging
         steps:
             - name: Checkout
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -34,21 +30,6 @@ jobs:
                   node-version: '24'
                   cache: npm
                   cache-dependency-path: package-lock.json
-
-            - name: Install dependencies
-              run: npm ci
-
-            - name: Lint, formatting and existing tests
-              run: npm run check
-
-            - name: Build assets
-              run: npm run build
-
-            - name: Verify required CSS and JS
-              run: |
-                  set -euo pipefail
-                  test -s dist/css/style.min.css
-                  test -s dist/js/app.min.js
 
             - name: Set up PHP 8.3
               uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
@@ -63,6 +44,39 @@ jobs:
               run: |
                   php -r 'if (version_compare(PHP_VERSION, "8.3.36", "<")) { fwrite(STDERR, "CI requires PHP 8.3.36 or newer\n"); exit(1); } echo "CI PHP: ", PHP_VERSION, "\n";'
 
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Lint, formatting and unit tests
+              run: npm run check
+
+            - name: Build assets
+              run: npm run build
+
+            - name: Install Chromium
+              run: npx playwright install --with-deps chromium
+
+            - name: Browser regression tests
+              run: npm run test:browser
+
+            - name: Save browser failure traces
+              if: failure()
+              uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+              with:
+                  name: browser-failures
+                  path: test-results
+                  if-no-files-found: ignore
+                  retention-days: 3
+
+            - name: Vite integration tests
+              run: npm run test:dev
+
+            - name: Verify required CSS and JS
+              run: |
+                  set -euo pipefail
+                  test -s dist/css/style.min.css
+                  test -s dist/js/app.min.js
+
             - name: Check theme PHP syntax
               run: |
                   set -euo pipefail
@@ -72,6 +86,36 @@ jobs:
 
             - name: Package runtime theme
               run: node build/scripts/package-theme.mjs "$RUNNER_TEMP/frame-package"
+
+            - name: Save verified runtime package
+              if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+              uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+              with:
+                  name: frame-package
+                  path: ${{ runner.temp }}/frame-package
+                  if-no-files-found: error
+                  retention-days: 3
+
+    staging:
+        needs: checks
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+        environment: staging
+        concurrency:
+            group: frame-staging
+            cancel-in-progress: false
+        steps:
+            - name: Checkout
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Download verified runtime package
+              uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+              with:
+                  name: frame-package
+                  path: ${{ runner.temp }}/frame-package
 
             - name: Deploy staging and verify remote files
               env:

@@ -4,15 +4,25 @@ import { defineConfig } from 'eslint/config';
 
 export default defineConfig([
     {
-        files: ['src/js/**/*.js', 'build/tests/runtime.test.js'],
+        files: ['**/*.js', '**/*.mjs'],
         extends: [js.configs.recommended],
         rules: {
             'no-var': 'error',
             'prefer-const': 'error',
             eqeqeq: ['error', 'always'],
-            'no-console': 'error',
         },
     },
-    { files: ['src/js/**/*.js'], languageOptions: { globals: globals.browser } },
-    { files: ['build/tests/runtime.test.js'], languageOptions: { globals: globals.node } },
+    {
+        files: ['src/js/**/*.js'],
+        languageOptions: { globals: globals.browser },
+        rules: { 'no-console': 'error' },
+    },
+    {
+        files: ['build/**/*.js', 'build/**/*.mjs', '*.config.js'],
+        languageOptions: { globals: globals.node },
+    },
+    {
+        files: ['build/browser/**/*.js'],
+        languageOptions: { globals: { ...globals.node, ...globals.browser } },
+    },
 ]);

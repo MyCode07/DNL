@@ -2,5 +2,13 @@
     "singleQuote": true,
     "tabWidth": 4,
     "printWidth": 100,
-    "trailingComma": "all"
+    "trailingComma": "all",
+    "overrides": [
+        {
+            "files": ["package.json", "package-lock.json"],
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ]
 }

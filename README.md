@@ -4,7 +4,7 @@ WordPress формирует страницы из PHP-шаблонов. Vite с
 
 ## Требования
 
-- Node.js 20.19+ или 22.12+
+- Node.js 24+
 - npm
 
 ## Запуск
@@ -208,13 +208,26 @@ npm run build
 
 ## Cache busting
 
-WordPress versions CSS and JS via `filemtime()` in `inc/enqueue.php`. HTML version injection and `build/version.json` have been removed.
+WordPress versions CSS and JS via `filemtime()` in `inc/wp/enqueue.php`. HTML version injection and `build/version.json` have been removed.
 
 ## Проверки
 
 ```bash
-npm test
+npm ci
+npm run check
 npm run build
+npx playwright install chromium
+npm run test:browser
 ```
 
-Validate the built site through WordPress with `WP_VITE_DEV = false`. The same dist is promoted to staging and production without rebuilding.
+`npm run check` проверяет JS, сборочные скрипты, тесты и форматирование workflow, затем запускает unit-тесты и PHP-контракты. PHP CLI обязателен в CI; локально PHP-тесты пропускаются только при его отсутствии. Эти команды не запускают dev-сервер.
+
+Браузерные проверки в `build/browser` используют настоящее PHP-меню и карточки проектов, GSAP и CSS из production-сборки. Они проверяют вкладки, клавиатуру, блокировку прокрутки, отправку форм и восстановление после ошибок. WordPress/ACF-данные фиксированы; транспорт CF7 подменён, письма не отправляются. HTTP-запросы обслуживает Playwright без отдельного сервера и базы. Это проверки компонентов, а не полного WordPress-сайта.
+
+Для уже установленного Edge можно задать `PLAYWRIGHT_CHANNEL=msedge` вместо установки Chromium.
+
+`npm run test:dev` отдельно запускает три интеграционных теста Vite во временных каталогах на случайных портах. Запускайте их локально только когда разрешён запуск тестовых серверов; CI выполняет их автоматически.
+
+Workflow проверяет ветки и pull request. Деплой доступен только из `main` после всех проверок и использует сохранённый пакет без повторной сборки. При ошибках браузерных тестов сохраняются trace-артефакты.
+
+Полный сайт проверяйте через WordPress с `WP_VITE_DEV = false`: главную, статью, архив, обычную страницу, 404 и языковые версии. Компонентные тесты не заменяют проверку настроек и совместимости установленных плагинов.
