@@ -1,14 +1,20 @@
+import { createScope } from '../core/lifecycle.js';
+
 export function initPostTitleHeight(root, selector = '.swiper') {
-    const destroyGridHeights = initGridTitleHeight(root);
+    const scope = createScope();
+    scope.add(initGridTitleHeight(root));
+    let destroyed = false;
     const sliders = root.querySelectorAll(selector);
-    if (!sliders) return;
 
     sliders.forEach((slider) => {
         const titles = [...slider.querySelectorAll('.post-item h4')];
 
         if (!titles.length) return;
+        const originalHeight = slider.style.getPropertyValue('--title-height');
+        const originalPriority = slider.style.getPropertyPriority('--title-height');
 
         const update = () => {
+            if (destroyed) return;
             slider.style.removeProperty('--title-height');
 
             const maxHeight = Math.max(
@@ -21,12 +27,21 @@ export function initPostTitleHeight(root, selector = '.swiper') {
         const observer = new ResizeObserver(update);
 
         titles.forEach((title) => observer.observe(title));
+        scope.add(() => {
+            observer.disconnect();
+            if (originalHeight)
+                slider.style.setProperty('--title-height', originalHeight, originalPriority);
+            else slider.style.removeProperty('--title-height');
+        });
 
         root.fonts.ready.then(update);
         update();
     });
 
-    return destroyGridHeights;
+    return () => {
+        destroyed = true;
+        scope.destroy();
+    };
 }
 
 function initGridTitleHeight(root) {
