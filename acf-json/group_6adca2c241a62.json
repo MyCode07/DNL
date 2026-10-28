@@ -277,6 +277,32 @@
             "append": ""
         },
         {
+            "key": "field_6ae18a30f1c4e",
+            "label": "Форма",
+            "name": "footer_form",
+            "aria-label": "",
+            "type": "post_object",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "wpcf7_contact_form"
+            ],
+            "post_status": [
+                "publish"
+            ],
+            "taxonomy": "",
+            "return_format": "id",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 1
+        },
+        {
             "key": "field_6adca466bcdce",
             "label": "Информация",
             "name": "footer_informacziya",
@@ -791,5 +817,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1793021930
+    "modified": 1793165908
 }

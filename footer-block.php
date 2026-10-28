@@ -4,6 +4,8 @@ $info = get_localized_field('footer_informacziya');
 $copyright = get_localized_field('footer_kopirajt');
 $privacy = get_localized_field('footer_politika');
 $cookies = get_localized_field('footer_kuki');
+$footer_form_id = get_localized_field('footer_form');
+
 ?>
 <footer class="footer" data-dark>
     <div class="footer__container _container">
@@ -13,8 +15,9 @@ $cookies = get_localized_field('footer_kuki');
                     <h4><?php echo $form_title ?></h4>
 
                     <div class="form">
-                        <!-- dac4f0e -->
-                        <?php echo do_shortcode('[contact-form-7 id="18288ed"]') ?>
+                        <?php if ($footer_form_id) {
+                            echo do_shortcode('[contact-form-7 id="' . $footer_form_id . '"]');
+                        } ?>
                     </div>
                 </div>
                 <div class="footer__right">
