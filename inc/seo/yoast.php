@@ -4,18 +4,22 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// DEMO DATA: replace all six values with confirmed company data before publishing.
 // Empty values preserve Yoast's data; name, logo and sameAs stay in its UI.
 add_filter('wpseo_schema_organization', 'frame_yoast_organization_data');
 function frame_yoast_organization_data($data)
 {
+    $organization = get_localized_field('organization');
+
+    if (!$organization) return $data;
+
+
     $details = [
-        'description' => 'Демонстрационное описание DNL Capital. Замените на описание организации.',
-        'email' => 'demo@example.com', // Публичный email.
-        'telephone' => '+1-202-555-0100', // Демонстрационный номер.
-        'legalName' => 'ДЕМО — юридическое название организации',
-        'foundingDate' => '2000-01-01', // Демо: YYYY-MM-DD.
-        'numberOfEmployees' => 10, // Демонстрационное число сотрудников.
+        'description' => $organization['description'] ?? '',
+        'email' => $organization['email'] ?? '',
+        'telephone' => $organization['telephone'] ?? '',
+        'legalName' => $organization['legalname'] ?? '',
+        'foundingDate' => $organization['foundingdate'] ?? '',
+        'numberOfEmployees' => $organization['numberofemployees'] ?? 1,
     ];
 
     foreach ($details as $property => $value) {

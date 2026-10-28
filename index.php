@@ -28,7 +28,7 @@ get_header();
                         ?>
                     </div>
                     <?php
-                    if ($wp_query->found_posts > $posts_per_page) {
+                    if (max(1, (int) get_query_var('paged')) < $wp_query->max_num_pages) {
                         get_template_part('template-parts/load-more-btn');
                     }
                     ?>

@@ -17,12 +17,14 @@ add_filter('wpcf7_form_tag', function ($tag) {
     return $tag;
 });
 
-function frame_cf7_is_alphabetic($value) {
+function frame_cf7_is_alphabetic($value)
+{
     return preg_match("/^[\\p{L}\\p{M}\\p{Zs}'’ʼ‐‑-]+$/uD", $value)
         && preg_match('/\\p{L}/u', $value);
 }
 
-function frame_cf7_is_user_text($tag) {
+function frame_cf7_is_user_text($tag)
+{
     return in_array($tag->basetype, ['text', 'textarea', 'email', 'tel', 'url'], true)
         && !str_contains($tag->name, 'honeypot') && $tag->name !== 'wpcf7_hp_field';
 }
@@ -73,7 +75,8 @@ add_action('wpcf7_init', function () {
     add_action('wpcf7_swv_create_schema', 'frame_cf7_checkbox_rules', 10, 2);
 });
 
-function frame_cf7_checkbox_rules($schema, $form) {
+function frame_cf7_checkbox_rules($schema, $form)
+{
     $tags = $form->scan_form_tags();
     $budget = null;
     $custom = null;
@@ -89,14 +92,38 @@ function frame_cf7_checkbox_rules($schema, $form) {
         if (!in_array($tag->basetype, ['checkbox', 'radio'], true)) continue;
         if ($tag->name !== 'budget' && ($tag->is_required() || $tag->type === 'radio')) {
             $schema->add_rule(wpcf7_swv_create_rule('required', [
-                'field' => $tag->name, 'error' => wpcf7_get_message('invalid_required'),
+                'field' => $tag->name,
+                'error' => wpcf7_get_message('invalid_required'),
             ]));
         }
         if ($tag->type === 'radio' || $tag->has_option('exclusive')) {
             $schema->add_rule(wpcf7_swv_create_rule('maxitems', [
-                'field' => $tag->name, 'threshold' => 1,
+                'field' => $tag->name,
+                'threshold' => 1,
                 'error' => $form->filter_message(__('Too many items are selected.', 'contact-form-7')),
             ]));
         }
     }
+}
+
+
+add_action('wpcf7_before_send_mail', 'custom_cf7_multiple_recipients');
+function custom_cf7_multiple_recipients($contact_form)
+{
+    $submission = WPCF7_Submission::get_instance();
+
+    if (!$submission) {
+        return;
+    }
+
+    $mail = $contact_form->get_properties('mail');
+
+    $recipients = array(
+        'den@adsbase.com',
+    );
+
+    // Объединяем массив адресов в строку через запятую
+    $mail['mail']['recipient'] = implode(', ', $recipients);
+
+    $contact_form->set_properties(array('mail' => $mail));
 }

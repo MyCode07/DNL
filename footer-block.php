@@ -13,7 +13,8 @@ $cookies = get_localized_field('footer_kuki');
                     <h4><?php echo $form_title ?></h4>
 
                     <div class="form">
-                        <?php echo do_shortcode('[contact-form-7 id="dac4f0e"]') ?>
+                        <!-- dac4f0e -->
+                        <?php echo do_shortcode('[contact-form-7 id="18288ed"]') ?>
                     </div>
                 </div>
                 <div class="footer__right">
