@@ -27,7 +27,9 @@ test('HTML sitemap renders page titles, translated homepages, taxonomy and archi
         ['https://example.test/books/', 'Books'],
     ]);
     const sections = [
-        ...result.stdout.matchAll(/<section><h2>([^<]+)<\/h2><ul>(.*?)<\/ul><\/section>/g),
+        ...result.stdout.matchAll(
+            /<section>\s*<h2\b[^>]*>([^<]+)<\/h2>\s*<ul>(.*?)<\/ul>\s*<\/section>/gs,
+        ),
     ];
     assert.deepEqual(
         sections.map(([, title]) => title),

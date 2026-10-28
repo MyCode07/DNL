@@ -1,58 +1,49 @@
 <?php
 
-add_filter('wp_sitemaps_posts_entry', function ($entry, $post) {
-    if ((float) ($entry['priority'] ?? 0) === 0.5) {
-        $entry['priority'] = '0.7';
+add_filter('wpseo_sitemap_url', function ($output, $url) {
+
+    if (empty($url['loc'])) {
+        return $output;
     }
 
-    if ((int) get_option('page_on_front') === $post->ID) {
-        $entry['priority'] = '1.0';
-    }
+    $loc  = $url['loc'];
+    $path = wp_parse_url($loc, PHP_URL_PATH);
 
-    return $entry;
-}, 999, 2);
+    // Default priority
+    $priority = '0.7';
 
+    // Homepage
+    $homepages = [
+        home_url('/'),
+        home_url('/en/'),
+    ];
 
-add_filter('wp_sitemaps_taxonomies_entry', function ($entry, $term_id, $taxonomy, $term) {
-    if (!in_array($taxonomy, ['category', 'product_cat'], true)) {
-        return $entry;
-    }
+    if (in_array(untrailingslashit($loc), array_map('untrailingslashit', $homepages), true)) {
+        $priority = '1.0';
+    } else {
+        // Categories and subcategories
+        $term = null;
 
-    if (!$term instanceof WP_Term) {
-        return $entry;
-    }
+        foreach (['category', 'product_cat'] as $taxonomy) {
+            $candidate = get_term_by('slug', basename(untrailingslashit($path)), $taxonomy);
 
-    $entry['priority'] = (int) $term->parent > 0 ? '0.8' : '0.9';
+            if ($candidate instanceof WP_Term && get_term_link($candidate) === $loc) {
+                $term = $candidate;
+                break;
+            }
+        }
 
-    // Change frequency
-    $entry['changefreq'] = 'monthly';
-
-    // Last modification date
-    $posts = get_posts([
-        'post_type'      => $taxonomy === 'product_cat' ? 'product' : 'post',
-        'post_status'    => 'publish',
-        'posts_per_page' => 1,
-        'orderby'        => 'modified',
-        'order'          => 'DESC',
-        'tax_query'      => [
-            [
-                'taxonomy'         => $taxonomy,
-                'terms'            => [$term_id],
-                'include_children' => true,
-            ],
-        ],
-    ]);
-
-    if (!empty($posts)) {
-        $modified = get_post_modified_time('c', true, $posts[0]);
-
-        if ($modified) {
-            $entry['lastmod'] = $modified;
+        if ($term) {
+            $priority = $term->parent ? '0.8' : '0.9';
         }
     }
 
-    return $entry;
-}, 999, 4);
+    $fields = "\t<changefreq>weekly</changefreq>\n";
+    $fields .= "\t\t<priority>{$priority}</priority>\n";
+
+    return str_replace('</url>', $fields . "\t</url>", $output);
+}, 10, 2);
+
 
 // Register /sitemap.html
 add_action('init', function () {
@@ -262,18 +253,6 @@ add_action('template_redirect', function () {
     nocache_headers();
     header('Content-Type: text/html; charset=UTF-8');
 
-    echo '<!DOCTYPE html>';
-    echo '<html lang="ru">';
-    echo '<head>';
-    echo '<meta charset="UTF-8">';
-    echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
-    echo '<title>Карта сайта</title>';
-    printf('<link rel="stylesheet" href="%s">', esc_url(get_theme_file_uri('dist/css/style.min.css')));
-    echo '</head>';
-    echo '<body class="sitemap">';
-
-    echo '<main>';
-    echo '<h1>Карта сайта / Sitemap</h1>';
     $groups = [];
     foreach ($urls as $entry) {
         $groups[$entry['type']][] = $entry;
@@ -281,24 +260,67 @@ add_action('template_redirect', function () {
 
     // Keep the main content sections first; custom types follow them.
     $groups = array_replace(array_fill_keys(['page', 'category', 'post', 'post_tag', 'author'], []), $groups);
-    foreach ($groups as $type => $entries) {
-        if (!$entries) {
-            continue;
-        }
-        echo '<section>';
-        printf('<h2>%s</h2><ul>', esc_html(dnl_html_sitemap_group_title($type)));
-        foreach ($entries as $entry) {
-            printf(
-                '<li><a href="%s">%s</a></li>',
-                esc_url($entry['loc']),
-                esc_html($entry['title'])
-            );
-        }
-        echo '</ul></section>';
-    }
+?>
+    <!DOCTYPE html>
+    <html lang="ru">
 
-    echo '</main>';
-    echo '</body></html>';
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Карта сайта</title>
+        <link rel="stylesheet" href="<?php echo esc_url(get_theme_file_uri('dist/css/style.min.css')); ?>">
+        <style>
+            main {
+                width: 100%;
+                max-width: 90rem;
+                margin-inline: auto;
+                padding: 8rem 1.6rem;
+            }
 
+            h1 {
+                margin-bottom: 6rem;
+            }
+
+            h1,
+            h1.h2,
+            h2.h3,
+            h2 {
+                text-transform: none;
+            }
+
+            ul {
+                padding-left: 1.5em;
+                margin: 2rem 0 4rem 0;
+
+                li {
+                    list-style: disc;
+
+                    &:not(:last-child) {
+                        margin-bottom: 0.6rem;
+                    }
+                }
+            }
+        </style>
+    </head>
+
+    <body class="sitemap">
+        <main>
+            <h1 class="h2">Карта сайта / Sitemap</h1>
+            <?php foreach ($groups as $type => $entries): ?>
+                <?php if (!$entries) continue; ?>
+                <section>
+                    <h2 class="h3"><?php echo esc_html(dnl_html_sitemap_group_title($type)); ?></h2>
+                    <ul>
+                        <?php foreach ($entries as $entry): ?>
+                            <li><a href="<?php echo esc_url($entry['loc']); ?>"><?php echo esc_html($entry['title']); ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </section>
+            <?php endforeach; ?>
+        </main>
+    </body>
+
+    </html>
+<?php
     exit;
 });
