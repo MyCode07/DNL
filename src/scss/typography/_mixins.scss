@@ -51,7 +51,7 @@
     }
 }
 
-@mixin _group($step, $aliases) {
+@mixin _group($step) {
     $groups: ();
     @each $name, $style in tokens.$styles {
         $declarations: _declarations($name, $step);
@@ -59,9 +59,6 @@
             $selector: map.get(tokens.$selectors, $name);
             @if $selector == null {
                 $selector: '.#{$name}';
-            }
-            @if map.has-key($aliases, $name) {
-                $selector: '#{$selector}, #{map.get($aliases, $name)}';
             }
             $existing: map.get($groups, $declarations);
             @if $existing {
@@ -78,9 +75,9 @@
 }
 
 /// Group identical rules and emit at most one media query per breakpoint.
-/// Aliases reuse generated rules without changing existing HTML.
-@mixin generate($aliases: ()) {
-    @include _group(base, $aliases);
+/// Generate only the selectors defined by the tokens.
+@mixin generate() {
+    @include _group(base);
     @each $step, $query in tokens.$breakpoints {
         $has-changes: false;
         @each $name, $style in tokens.$styles {
@@ -90,7 +87,7 @@
         }
         @if $has-changes {
             @media #{$query} {
-                @include _group($step, $aliases);
+                @include _group($step);
             }
         }
     }

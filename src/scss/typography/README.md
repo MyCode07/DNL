@@ -1,7 +1,7 @@
 ﻿# Typography
 
 `_tokens.scss` is the source of truth for the 18 existing typography styles. `base`
-contains desktop declarations; keys `1280`, `1024`, and `767` contain only changes
+contains desktop declarations; keys `1440` and `767` contain only changes
 at those inclusive maximum widths. Properties inherit independently from the
 preceding breakpoint. The existing 2560px root font-size override still scales
 all rem values.
@@ -21,8 +21,8 @@ All existing names, including `h1`–`h4` element selectors, are preserved:
 ```
 
 `base/_global.scss` calls `generate()` exactly once at the original typography
-position in the cascade. Body text, article captions and table cells are aliases
-of existing styles and share their generated rules. Equal declaration maps share
+position in the cascade, without arguments. Body text, article captions and table
+cells apply existing styles locally with `type.typography()`. Equal declaration maps share
 selectors; each breakpoint produces one media query. Do not call `generate()` in
 components.
 
@@ -59,8 +59,8 @@ Edit its map in `_tokens.scss`. Any CSS property can be responsive, including
 ```
 
 The class `.example` is generated automatically. Add an entry to `$selectors`
-only when a style also needs element selectors. To reuse generated rules in more
-selectors, add aliases to the existing `generate()` call. Keep breakpoint order
+only when a style also needs element selectors. To apply a style to component
+selectors, use `type.typography()` inside those selectors. Keep breakpoint order
 from larger to smaller widths. To reset a property, use a CSS value such as
 `normal`, `inherit`, or `unset`; null values produce no declaration.
 
