@@ -1,6 +1,7 @@
 <?php
 $current_url   = urlencode(get_permalink());
 $current_title = urlencode(get_the_title());
+$raw_url       = get_permalink();
 
 // Ссылки для соцсетей
 $share_links = [
@@ -9,7 +10,7 @@ $share_links = [
     'linkedin'  => 'https://www.linkedin.com/sharing/share-offsite/?url=' . $current_url,
     // Для Instagram прямой ссылки-шеринга нет (он не поддерживает веб-публикацию по ссылке),
     // поэтому обычно туда ставят ссылку на профиль сайта или оставляют как есть / скрывают
-    'instagram' => 'https://instagram.com/#',
+    'instagram' => '#',
 ];
 ?>
 

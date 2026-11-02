@@ -1,3 +1,8 @@
+<?php
+$thanks = get_localized_field('uspeshnaya_otpravka');
+$error = get_localized_field('oshibka_otpravki');
+?>
+
 <div class="popup-result popup-result--success" data-popup-result="success" hidden inert>
     <div class="popup-result__background" aria-hidden="true">
         <picture>
@@ -7,9 +12,13 @@
         </picture>
     </div>
     <div class="popup-result__content" role="status" tabindex="-1">
-        <h3 class="h4">Заявка успешно<br>отправлена</h3>
-        <p class="text-s">Мы рассмотрим вашу заявку<br>и свяжемся с вами по указанным контактам</p>
-        <a href="/" class="arrow-btn arrow-btn__white text-m">Вернуться на главную</a>
+        <h3 class="h4"><?php echo $thanks['zagolovok'] ?></h3>
+        <?php if ($thanks['tekst']): ?>
+            <p class="text-s"><?php echo $thanks['tekst'] ?></p>
+        <?php endif; ?>
+        <a href="<?php echo get_home_page_url() ?>" class="arrow-btn arrow-btn__white text-m">
+            <?php echo $thanks['knopka'] ?>
+        </a>
     </div>
 </div>
 <div class="popup-result popup-result--error" data-popup-result="error" hidden inert>
@@ -21,7 +30,10 @@
         </picture>
     </div>
     <div class="popup-result__content" role="status" tabindex="-1">
-        <h3 class="h4">Не удалось<br>отправить заявку</h3>
-        <button type="button" class="arrow-btn arrow-btn__white text-m" data-popup-retry>Попробовать снова</button>
+        <h3 class="h4"><?php echo $error['zagolovok'] ?></h3>
+        <?php if ($error['tekst']): ?>
+            <p class="text-s"><?php echo $error['tekst'] ?></p>
+        <?php endif; ?>
+        <button type="button" class="arrow-btn arrow-btn__white text-m" data-popup-retry><?php echo $error['knopka'] ?></button>
     </div>
 </div>
