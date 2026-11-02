@@ -153,7 +153,7 @@ add_filter('mce_buttons_2', function ($buttons) {
 // Подключаем модуль таблиц TinyMCE.
 add_filter('mce_external_plugins', function ($plugins) {
     $plugins['table'] = get_template_directory_uri()
-        . '/assets/js/tinymce/table.min.js';
+        . '/assets/admin/js/tinymce/table.min.js';
 
     return $plugins;
 });
