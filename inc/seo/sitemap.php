@@ -1,5 +1,6 @@
 <?php
 
+// change yoast sitemap items defalt values
 add_filter('wpseo_sitemap_url', function ($output, $url) {
 
     if (empty($url['loc'])) {
@@ -44,6 +45,9 @@ add_filter('wpseo_sitemap_url', function ($output, $url) {
     return str_replace('</url>', $fields . "\t</url>", $output);
 }, 10, 2);
 
+
+
+/*----------------- Rendering /sitemap.html ------------------*/
 
 // Register /sitemap.html
 add_action('init', function () {
