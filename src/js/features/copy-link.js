@@ -37,7 +37,6 @@ export function initCopyLinks(root = document) {
     return scope.destroy;
 }
 
-
 export function initCopyLinksInstagramTiktok(root = document) {
     const scope = createScope();
     const view = root.defaultView ?? root.ownerDocument?.defaultView ?? window;
@@ -45,11 +44,11 @@ export function initCopyLinksInstagramTiktok(root = document) {
     let disposed = false;
 
     for (const button of root.querySelectorAll('.js-share-copy-open')) {
-        scope.on(button, 'click', async function (event) {
+        scope.on(button, 'click', async (event) => {
             event.preventDefault();
-            const url = this.getAttribute('data-url');
-            const appUrl = this.getAttribute('data-app');
-            const webUrl = this.getAttribute('data-web');
+            const url = button.getAttribute('data-url')?.trim();
+            const appUrl = button.getAttribute('data-app');
+            const webUrl = button.getAttribute('data-web');
             const startTime = Date.now();
 
             if (!url) return;
@@ -64,18 +63,19 @@ export function initCopyLinksInstagramTiktok(root = document) {
             }
             if (disposed) return;
 
-
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                view.navigator.userAgent,
+            );
 
             if (isMobile) {
                 view.clearTimeout(timer);
                 timer = view.setTimeout(() => {
-                    if (Date.now() - startTime < 2000 && !document.hidden) {
-                        window.open(appUrl, '_blank');
+                    if (Date.now() - startTime < 2000 && !view.document.hidden) {
+                        view.open(appUrl, '_blank');
                     }
                 }, 1500);
             } else {
-                window.open(webUrl, '_blank');
+                view.open(webUrl, '_blank');
             }
         });
     }
