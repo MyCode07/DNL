@@ -134,6 +134,7 @@ function the_field($name)
             </div>
         </div>
     </div>
+    <?php require $root . '/template-parts/popups/form-result.php'; ?>
     <script src="/components.js"></script>
 </body>
 
