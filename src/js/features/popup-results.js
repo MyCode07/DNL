@@ -56,8 +56,7 @@ export function initPopupResults(root, media) {
                         }
                     },
                 });
-                if (form)
-                    timeline.to(form, { autoAlpha: 0, y: -20, duration, ease: 'power2.in' });
+                if (form) timeline.to(form, { autoAlpha: 0, y: -20, duration, ease: 'power2.in' });
                 timeline.add(() => {
                     if (form) form.hidden = true;
                     result.hidden = false;
