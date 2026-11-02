@@ -7,7 +7,7 @@ export function initPopupResults(root, media) {
     for (const popup of root.querySelectorAll('.popup')) {
         const form = popup.querySelector('.form');
         const results = [...popup.querySelectorAll('[data-popup-result]')];
-        if (!form || !results.length) continue;
+        if (!results.length) continue;
         const context = gsap.context(() => {}, popup);
         let timeline;
         let transitioning = false;
@@ -20,8 +20,10 @@ export function initPopupResults(root, media) {
             timeline?.kill();
             context.revert();
             transitioning = false;
-            form.hidden = false;
-            form.inert = false;
+            if (form) {
+                form.hidden = false;
+                form.inert = false;
+            }
             results.forEach((result) => {
                 result.hidden = true;
                 result.inert = true;
@@ -31,10 +33,15 @@ export function initPopupResults(root, media) {
 
         function showResult(event) {
             const result = results.find((item) => item.dataset.popupResult === event.detail);
-            if (!result || !popup.classList.contains('_open') || transitioning || form.hidden)
+            if (
+                !result ||
+                !popup.classList.contains('_open') ||
+                transitioning ||
+                (form && form.hidden)
+            )
                 return;
             transitioning = true;
-            form.inert = true;
+            if (form) form.inert = true;
             popup.querySelector('.popup-close')?.focus({ preventScroll: true });
             const duration = media.reducedMotion.matches ? 0 : 0.35;
             const content = result.querySelector('.popup-result__content');
@@ -49,9 +56,10 @@ export function initPopupResults(root, media) {
                         }
                     },
                 });
-                timeline.to(form, { autoAlpha: 0, y: -20, duration, ease: 'power2.in' });
+                if (form)
+                    timeline.to(form, { autoAlpha: 0, y: -20, duration, ease: 'power2.in' });
                 timeline.add(() => {
-                    form.hidden = true;
+                    if (form) form.hidden = true;
                     result.hidden = false;
                     popup.scrollTop = 0;
                     popup.classList.add('_result', `_${event.detail}`);
@@ -90,7 +98,7 @@ export function initPopupResults(root, media) {
                 return;
             }
             reset();
-            (form.querySelector('input') || popup).focus({ preventScroll: true });
+            (form?.querySelector('input') || popup).focus({ preventScroll: true });
             popup.dispatchEvent(new CustomEvent('popup:retry', { bubbles: true }));
         });
         scope.add(reset);
