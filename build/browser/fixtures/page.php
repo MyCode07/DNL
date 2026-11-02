@@ -45,6 +45,16 @@ function get_localized_field($name)
         'menyu_otkryt' => 'Open menu',
         'menyu_zakryt' => 'Close menu',
         'knopka_menyu', 'globalnaya_knopka' => ['ssylka' => null, 'popap' => 1, 'tekst' => 'Contact'],
+        'uspeshnaya_otpravka' => [
+            'zagolovok' => 'Thank you',
+            'tekst' => 'Your message has been sent.',
+            'knopka' => 'Home',
+        ],
+        'oshibka_otpravki' => [
+            'zagolovok' => 'Error',
+            'tekst' => 'Please try again.',
+            'knopka' => 'Retry',
+        ],
         default => '',
     };
 }
