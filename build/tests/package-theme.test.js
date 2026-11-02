@@ -21,6 +21,8 @@ async function fixture(t) {
         'inc/enqueue.php',
         'template-parts/card.php',
         'acf-json/group.json',
+        'assets/js/tinymce/table.min.js',
+        'assets/admin/editor.css',
         'dist/css/style.min.css',
         'dist/js/app.min.js',
         'dist/img/svg/icons.svg',
@@ -63,6 +65,8 @@ test('runtime package includes theme and assets, excludes secrets and developmen
     assert.equal(result.status, 0, result.stderr);
     assert.deepEqual(await filesIn(destination), [
         'acf-json/group.json',
+        'assets/admin/editor.css',
+        'assets/js/tinymce/table.min.js',
         'dist/css/style.min.css',
         'dist/img/svg/icons.svg',
         'dist/js/app.min.js',

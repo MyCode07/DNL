@@ -67,6 +67,8 @@ async function copyAssetDirectory(directory) {
     }
 }
 
+await copyAssetDirectory('assets');
+
 // Only runtime build outputs; no source tree, tooling, tests or local settings.
 for (const directory of ['css', 'js', 'img', 'fonts', 'files']) {
     const file = `dist/${directory}`;
