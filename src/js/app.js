@@ -14,7 +14,7 @@ import { initTabs } from './features/tabs.js';
 import { initPageList } from './features/page-list.js';
 import { initPostTitleHeight } from './features/postTitleHeight.js';
 import { initAuthor } from './features/author.js';
-import { initCopyLinks } from './features/copy-link.js';
+import { initCopyLinks, initCopyLinksInstagramTiktok } from './features/copy-link.js';
 import { initPopupResults } from './features/popup-results.js';
 import { initContactForms } from './features/contact-forms.js';
 import { initLoadMorePosts } from './features/load-more-posts.js';
@@ -46,6 +46,7 @@ export function initApp(root = document) {
         scope.add(initLoadMorePosts(root, { onLoaded: () => ScrollTrigger.refresh() }));
         scope.add(initAuthor(root, media));
         scope.add(initCopyLinks(root));
+        scope.add(initCopyLinksInstagramTiktok(root));
         scope.add(initTabs(root));
         scope.add(initProjectDescriptions(root));
         scope.add(initPageList(root));

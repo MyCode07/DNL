@@ -230,6 +230,7 @@
     right: 4rem;
     bottom: 4rem;
     z-index: 5;
+    pointer-events: none;
     transition: opacity 0.3s ease-in-out 0s, transform 0.3s ease-in-out 0s;
 
     &:not(._active) {

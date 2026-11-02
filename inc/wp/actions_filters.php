@@ -139,3 +139,32 @@ function custom_template_thumbnail($post_id)
         }
     endif;
 }
+
+
+
+
+// Добавляем таблицы
+add_filter('mce_buttons_2', function ($buttons) {
+    $buttons[] = 'table';
+    return $buttons;
+});
+
+
+// Подключаем модуль таблиц TinyMCE.
+add_filter('mce_external_plugins', function ($plugins) {
+    $plugins['table'] = get_template_directory_uri()
+        . '/assets/js/tinymce/table.min.js';
+
+    return $plugins;
+});
+
+// Настройки таблиц.
+add_filter('tiny_mce_before_init', function ($init) {
+    $init['table_default_attributes'] = json_encode([
+        'class' => 'editor-table',
+    ]);
+
+    $init['table_default_styles'] = '{}';
+
+    return $init;
+});

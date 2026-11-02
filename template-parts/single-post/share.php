@@ -16,11 +16,13 @@ $share_links = [
 <div class="single-data__share <?php echo $args['class'] ?>">
     <span class="text-m"><?php echo get_localized_field('podelitsya') ?></span>
     <div class="_social">
-        <a href="<?php echo esc_url($share_links['instagram']); ?>" target="_blank" rel="nofollow" aria-label="Instagram">
+
+        <button type="button" class="js-share-copy-open" data-url="<?php echo esc_url($raw_url); ?>" data-app="instagram://app" data-web="https://www.instagram.com/" aria-label="Instagram">
             <svg width="20" height="20" viewBox="0 0 20 20">
                 <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#instagram')); ?>' />
             </svg>
-        </a>
+        </button>
+
         <a href="<?php echo esc_url($share_links['facebook']); ?>" target="_blank" rel="nofollow" aria-label="Facebook">
             <svg width="20" height="20" viewBox="0 0 20 20">
                 <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#facebook')); ?>' />
