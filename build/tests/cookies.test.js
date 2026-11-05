@@ -194,12 +194,12 @@ test('malformed cookie values do not break initialization and cleanup removes li
 });
 
 test('PHP helpers and shortcode restore saved preferences and update the current request', (t) => {
-    const php = spawnSync('php', ['--version'], { encoding: 'utf8' });
+    const php = spawnSync('php', ['--version'], { encoding: 'utf8', windowsHide: true });
     if (php.error?.code === 'ENOENT' && !process.env.CI) return t.skip('PHP CLI is unavailable');
     assert.equal(php.status, 0, 'PHP CLI is required in CI');
     const script = fileURLToPath(new URL('./fixtures/cookies.php', import.meta.url));
     const root = fileURLToPath(new URL('../../', import.meta.url));
-    const result = spawnSync('php', [script, root], { encoding: 'utf8' });
+    const result = spawnSync('php', [script, root], { encoding: 'utf8', windowsHide: true });
     assert.equal(result.status, 0, result.stdout + result.stderr);
     assert.match(result.stdout, /Cookie PHP checks passed/);
 });

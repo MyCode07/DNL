@@ -35,13 +35,14 @@ async function fixture(t) {
         await mkdir(join(root, file, '..'), { recursive: true });
         await writeFile(join(root, file), 'fixture content');
     }
-    execFileSync('git', ['init', '--quiet'], { cwd: root });
-    execFileSync('git', ['add', '--all'], { cwd: root, stdio: 'ignore' });
+    execFileSync('git', ['init', '--quiet'], { cwd: root, windowsHide: true });
+    execFileSync('git', ['add', '--all'], { cwd: root, stdio: 'ignore', windowsHide: true });
     await writeFile(join(root, 'inc/untracked-local.php'), 'not a release file');
     const destination = join(temporary, 'package');
     const run = (output = destination) =>
         spawnSync(process.execPath, [script, output], {
             cwd: root,
+            windowsHide: true,
             encoding: 'utf8',
             env: { ...process.env, RUNNER_TEMP: temporary },
         });
@@ -104,8 +105,12 @@ test('runtime package supports moved inc modules and nested page templates', asy
         await mkdir(join(root, file, '..'), { recursive: true });
         await writeFile(join(root, file), '<?php // runtime module');
     }
-    execFileSync('git', ['add', '--update'], { cwd: root, stdio: 'ignore' });
-    execFileSync('git', ['add', '--', ...movedFiles], { cwd: root, stdio: 'ignore' });
+    execFileSync('git', ['add', '--update'], { cwd: root, stdio: 'ignore', windowsHide: true });
+    execFileSync('git', ['add', '--', ...movedFiles], {
+        cwd: root,
+        stdio: 'ignore',
+        windowsHide: true,
+    });
     const result = run();
     assert.equal(result.status, 0, result.stderr);
     const packaged = await filesIn(destination);

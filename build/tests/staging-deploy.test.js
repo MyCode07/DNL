@@ -67,7 +67,7 @@ printf '%s\\0' "$@" > "$MOCK_DIRECTORY/rsync-args"
                 '-c',
                 'export PATH="$MOCK_BIN:/usr/bin:/bin"; exec bash "$TEST_SCRIPT"',
             ],
-            { encoding: 'utf8', env: { ...env, ...extra } },
+            { encoding: 'utf8', env: { ...env, ...extra }, windowsHide: true },
         );
     return { temporary, run };
 }
@@ -80,6 +80,7 @@ test('staging deploy uses checksums and exact target, never deletes, then verifi
         .split('\0')
         .filter(Boolean);
     assert.ok(args.includes('--checksum'));
+    assert.ok(args.includes('--delay-updates'));
     assert.ok(!args.includes('--dry-run'));
     assert.ok(!args.some((arg) => arg.startsWith('--delete') || arg.startsWith('--remove-source')));
     assert.equal(

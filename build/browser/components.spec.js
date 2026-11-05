@@ -23,7 +23,10 @@ const test = base.extend({
 });
 
 test.beforeAll(async () => {
-    html = execFileSync('php', ['build/browser/fixtures/page.php'], { encoding: 'utf8' });
+    html = execFileSync('php', ['build/browser/fixtures/page.php'], {
+        encoding: 'utf8',
+        windowsHide: true,
+    });
     const result = await build({
         configFile: false,
         logLevel: 'error',
@@ -42,8 +45,18 @@ test.beforeAll(async () => {
 test.beforeEach(async ({ page }) => {
     // Requests are served in-process: no dev server, database or external site.
     await page.route('http://frame.test/**', async (route) => {
-        const pathname = new URL(route.request().url()).pathname;
-        if (pathname === '/') return route.fulfill({ contentType: 'text/html', body: html });
+        const url = new URL(route.request().url());
+        const pathname = url.pathname;
+        if (pathname === '/')
+            return route.fulfill({
+                contentType: 'text/html',
+                body: url.searchParams.has('production')
+                    ? html.replace(
+                          '<script src="/components.js"></script>',
+                          '<script type="module" src="/dist/js/app.min.js"></script>',
+                      )
+                    : html,
+            });
         if (pathname === '/components.js')
             return route.fulfill({ contentType: 'text/javascript', body: script });
         const file = resolve(`.${pathname}`);
@@ -58,6 +71,97 @@ test.beforeEach(async ({ page }) => {
     });
     await page.goto('http://frame.test/');
     await expect.poll(() => page.evaluate(() => typeof window.mountComponents)).toBe('function');
+});
+
+test('application remount releases observers, corners and overlay locks', async ({ page }) => {
+    await page.evaluate(() => {
+        const NativeObserver = window.ResizeObserver;
+        window.activeObservers = new Map();
+        window.ResizeObserver = class extends NativeObserver {
+            observe(...args) {
+                if (!window.activeObservers.has(this)) window.activeObservers.set(this, new Set());
+                window.activeObservers.get(this).add(args[0]);
+                super.observe(...args);
+            }
+            unobserve(element) {
+                const targets = window.activeObservers.get(this);
+                targets?.delete(element);
+                if (!targets?.size) window.activeObservers.delete(this);
+                super.unobserve(element);
+            }
+            disconnect() {
+                window.activeObservers.delete(this);
+                super.disconnect();
+            }
+        };
+        window.mountComponents();
+    });
+    const logo = page.locator('.header__logo');
+    await expect.poll(() => logo.evaluate((element) => element.style.clipPath)).toContain('path(');
+    await page.locator('.menu-toggle').click();
+    await expect(page.locator('body')).toHaveClass(/_noscroll/);
+    await page.evaluate(() => {
+        window.destroyComponents();
+        window.destroyComponents();
+    });
+    await expect.poll(() => page.evaluate(() => window.activeObservers.size)).toBe(0);
+    await expect.poll(() => logo.evaluate((element) => element.style.clipPath)).toBe('');
+    await expect(page.locator('body')).not.toHaveClass(/_noscroll/);
+    await page.evaluate(() => window.mountComponents());
+    await page.locator('.menu-toggle').click();
+    await expect(page.locator('.menu-toggle')).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.menu-toggle')).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('production bundle boots and keeps dialogs keyboard accessible', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('http://frame.test/?production');
+    await page.locator('.menu-toggle').click();
+    const opener = page.locator('.menu-body .menu-btn[data-open-popup]');
+    await opener.click();
+    const popup = page.locator('#popup-1');
+    await expect(popup).toHaveClass(/_open/);
+    await page.keyboard.press('Escape');
+    await expect(popup).not.toHaveClass(/_open/);
+    await expect(opener).toBeFocused();
+    await expect(popup).toHaveJSProperty('inert', true);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('body')).not.toHaveClass(/_noscroll/);
+});
+
+test('responsive navigation and project pagination work after tab and viewport changes', async ({
+    page,
+}) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    const slider = page.locator('.why .swiper');
+    for (const [width, slidesPerView] of [
+        [390, 'auto'],
+        [768, 2],
+        [1440, 3],
+    ]) {
+        await page.setViewportSize({ width, height: 900 });
+        await expect
+            .poll(() => slider.evaluate((element) => element.swiper.params.slidesPerView))
+            .toBe(slidesPerView);
+        await page.locator('.why .next').click();
+        await expect.poll(() => slider.evaluate((element) => element.swiper.activeIndex)).toBe(1);
+        await page.locator('.why .prev').click();
+        await expect.poll(() => slider.evaluate((element) => element.swiper.activeIndex)).toBe(0);
+        for (let index = 1; index <= 3; index++) {
+            await page.locator('.deals .next').click();
+            await expect(page.locator('.deals-slide').nth(index)).toHaveClass(/active/);
+            await expect(page.locator('.deals-media').nth(index)).toHaveClass(/active/);
+        }
+        await expect(page.locator('.deals .next')).toBeDisabled();
+        for (let index = 0; index < 3; index++) await page.locator('.deals .prev').click();
+        await expect(page.locator('.deals .prev')).toBeDisabled();
+    }
+    await page.locator('[data-tab="2"]').click();
+    const project = page.locator('[data-tab-content="2"] .swiper');
+    await project.locator('.swiper-pagination-bullet').nth(1).click();
+    await expect.poll(() => project.evaluate((element) => element.swiper.activeIndex)).toBe(1);
+    await expect.poll(() => project.evaluate((element) => element.swiper.width)).toBeGreaterThan(0);
 });
 
 test('every PHP-rendered project has its own description and retains state across tabs', async ({

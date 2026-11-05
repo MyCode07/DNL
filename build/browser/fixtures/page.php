@@ -70,7 +70,32 @@ function get_template_part($path)
 }
 function get_field($name)
 {
+    if ($name === 'galereya') return [['id' => 1], ['id' => 2], ['id' => 3]];
+    if ($name === 'sdelki') return [
+        'zagolovok' => 'Deals',
+        'podzagolovok' => 'Deal stages',
+        'spisok' => array_fill(0, 4, [
+            'zagolovok' => 'Deal stage',
+            'tekst' => 'Stage description',
+            'foto' => ['id' => 1],
+            'foto_mobajl' => ['url' => '/dist/img/project.png'],
+        ]),
+    ];
+    if ($name === 'pochemu') return [
+        'zagolovok' => 'Why Frame',
+        'podzagolovok' => 'Our advantages',
+        'podzagolovok_2' => '',
+        'spisok' => array_fill(0, 5, [
+            'zagolovok' => 'Advantage',
+            'tekst' => 'Description',
+            'foto' => ['id' => 1],
+        ]),
+    ];
     return false;
+}
+function wp_get_attachment_image($id, $size)
+{
+    return '<img src="/dist/img/project.png" alt="Project image" width="600" height="400">';
 }
 function the_title()
 {
@@ -113,6 +138,8 @@ function the_field($name)
                 </div>
             <?php endfor; ?>
         </section>
+        <?php require $root . '/template-parts/sections/why.php'; ?>
+        <?php require $root . '/template-parts/sections/deals.php'; ?>
         <div class="wpcf7" id="inline-form">
             <form novalidate data-status="init">
                 <div class="form__item"><input aria-label="Name" name="cname" required></div>

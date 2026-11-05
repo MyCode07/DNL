@@ -1,218 +1,59 @@
 # Frame — WordPress + Vite
 
-WordPress формирует страницы из PHP-шаблонов. Vite собирает отдельные JS- и SCSS-входы без HTML.
+WordPress формирует HTML из PHP-шаблонов. Vite собирает отдельные JS- и SCSS-входы; HTML в сборке не создаётся.
 
-## Требования
+## Требования и локальная работа
 
-- Node.js 24+
-- npm
+- Node.js 24+, npm и PHP CLI. CI проверяет тему на PHP 8.3.
+- WordPress с данными и плагинами проекта; контрактные тесты используют собственные фикстуры.
+- Зависимости устанавливаются через `npm ci`; `package-lock.json` хранится в Git.
 
-## Запуск
-
-```bash
-npm install
-npm start
-```
-
-Сервер ассетов: `http://localhost:4040` (фиксированный порт). Страницы открывайте через WordPress: `http://dnl.local` или `https://dnl.local`; оба origin разрешены в CORS.
-
-В локальном `wp-config.php` задайте `WP_ENVIRONMENT_TYPE` как `local` и `WP_VITE_DEV` как `true`. Для проверки production-сборки переключите `WP_VITE_DEV` в `false`.
-
-В dev HTML не нужен: JS и SCSS обрабатываются Vite по запросу с горячим обновлением, а не записываются в `dist`. При запуске автоматически создаётся `dist/img/svg/icons.svg`: WordPress должен отдавать внешний SVG-спрайт со своего origin. При добавлении, изменении или удалении иконок спрайт обновляется, а страница перезагружается. Полную папку `dist` с JS, CSS и остальными ресурсами создаёт `npm run build`.
-
-`npm run dev` — эквивалентная команда запуска. Все команды выполняются из корня проекта.
+Все команды выполняются из корня темы `wp-content/themes/frame`.
 
 | Команда | Назначение |
 | --- | --- |
-| `npm start` / `npm run dev` | Запуск сервера разработки |
-| `npm run build` | Сборка в `dist/` |
-| `npm run preview` | Статическая раздача ассетов без выполнения PHP |
-| `npm test` | Тесты runtime, стилей и плагинов |
-| `npm run sprite` | Старая команда генерации спрайта в `src`; WordPress использует спрайт из `dist` |
+| `npm run check` | ESLint, Prettier и unit/контрактные тесты |
+| `npm run build` | Production-сборка в `dist/` |
+| `npm run test:browser` | Браузерные проверки; сначала требуется сборка |
+| `npm run test:dev` | Интеграционные тесты с временными Vite-серверами |
+| `npm start` / `npm run dev` | Запуск Vite на порту 4040 по явной команде пользователя |
+| `npm run format` | Форматирование JS, сборочных скриптов и конфигурации |
+| `npm run sprite` | Старая генерация спрайта в `src`; тема использует спрайт из `dist` |
 
-Production build:
+Dev-сервер запускает и останавливает пользователь. Проверки `check`, `build` и `test:browser` его не запускают. `test:dev` локально запускайте только при явном разрешении на тестовые серверы; CI выполняет его автоматически.
 
-```bash
-npm run build
-```
+Vite отдаёт ассеты с `http://localhost:4040`. Страницы открывайте через WordPress: `http://dnl.local`. Для локальной разработки задайте в `wp-config.php` `WP_ENVIRONMENT_TYPE = 'local'` и `WP_VITE_DEV = true`, только пока работает Vite. Для production-проверки соберите тему и установите `WP_VITE_DEV = false`. При HTTPS на WordPress требуется совместимая HTTPS/proxy-конфигурация Vite и HMR.
 
-Готовые ассеты появятся в `dist/`, включая `js/app.min.js` и `css/style.min.css`. HTML не генерируется. Перед сборкой Vite очищает эту папку.
+## Структура и ассеты
 
-Для локальной проверки production-сборки:
+- `src/js/app.js` — основной JS entry; результат: `dist/js/app.min.js`.
+- `src/scss/style.scss` — независимый SCSS entry; результат: `dist/css/style.min.css`.
+- Дополнительные JS-чанки используют шаблон `dist/js/[name].min.js`.
+- `inc/wp/enqueue.php` подключает ассеты; CSS и JS версионируются через `filemtime()`.
+- `template-parts/` содержит PHP-компоненты; подключайте их через `get_template_part()`.
+- `acf-json/` содержит отслеживаемую конфигурацию полей. Данные WordPress и секреты не входят в пакет темы.
 
-Выполните `npm run build`, установите `WP_VITE_DEV` в `false` и откройте сайт через WordPress. `vite preview` раздаёт только ассеты и не исполняет PHP.
+Используйте `esc_url(frame_asset('img/name.png'))` для изображений в PHP. В локальном dev-режиме они загружаются из `src/img/` через Vite, в остальных режимах — из `dist/img/`. Алиас `@img` доступен в SCSS.
 
-## Структура
+Сборка оптимизирует JPG/PNG/GIF/WebP, создаёт дополнительные WebP и сохраняет структуру подпапок. Если обработка изображения невозможна, выдаётся предупреждение и копируется оригинал. Отсутствие необязательного каталога допустимо; остальные ошибки чтения прерывают сборку. `src/files/` копируется в `dist/files/`.
 
-- `src/scss/style.scss` — главный SCSS entry.
-- `src/js/app.js` — главный JS entry.
-- `src/img/` — изображения.
-- `src/files/` — любые файлы, которые нужно скопировать в `dist/files/` без изменений.
-- `src/fonts/` — `.otf` / `.ttf` шрифты.
-- `src/svg/` — SVG-иконки для sprite.
-- `build/plugins/` — плагины обработки шаблонов, шрифтов, изображений и других ресурсов.
-- `build/tests/` — тесты на встроенном тестовом раннере Node.js.
-- `vite.config.js` — конфигурация Vite и Rolldown.
+Иконки из `src/svg/` формируют `dist/img/svg/icons.svg`. ID равен имени SVG без расширения. Спрайт всегда отдаётся WordPress из `dist`, в том числе в dev-режиме, где Vite обновляет его автоматически.
 
-## WordPress templates
+Шрифты находятся в `src/fonts/`. Плагин конвертирует OTF/TTF, поддерживает готовые WOFF/WOFF2 и создаёт `src/scss/base/_fonts.scss`, если файл отсутствует или содержит маркер `Auto-generated after fonts are added`. Файл без маркера сохраняется без изменений.
 
-Pages are rendered by PHP. Use `get_template_part()` for reusable components. Vite has no HTML entries or `@@include` processing.
+## SCSS и JavaScript
 
-## SCSS / CSS
+SCSS подключается через `@use`; порядок в `style.scss` сохраняет каскад. `abstracts/` содержит переменные и миксины, `base/` — базовые правила, `vendors/` — используемые сторонние стили, `layout/`, `components/`, `sections/` — оформление интерфейса. Одинаковые соседние media queries объединяются без переноса через другие правила. Autoprefixer использует Browserslist; принудительная генерация IE Grid отключена, приложение использует современные ES modules.
 
-В dev Vite компилирует SCSS на лету.
-Стили подключаются через `@use`. Переменные и миксины нужно явно подключать в каждом SCSS-файле, который их использует. Например, в `src/scss/parts/hero.scss`:
+`app.js` инициализирует интерфейс после готовности DOM и уничтожает предыдущее приложение при повторном запуске. `features/` отвечает за взаимодействие, `animations/` — за анимации, `core/` — за жизненный цикл, media queries и блокировку прокрутки. Инициализатор возвращает очистку, которая регистрируется в `createScope` и безопасна при повторном вызове.
 
-```scss
-@use "../common/variables" as *;
-@use "../mixins" as *;
+CornerKit создаётся на экземпляр приложения и освобождает наблюдателей при уничтожении. Закрытые диалоги и скрытые слои результатов недоступны для клавиатурного фокуса. Меню и попапы владеют отдельными блокировками прокрутки. Reduced motion отключает плавную прокрутку и сокращает переходы.
 
-.hero {
-    color: $black;
-    @include adaptive-value("padding-bottom", 100, 30, 1);
-}
-```
-
-Правила `@use` размещаются до CSS-правил. Для Swiper подключаются готовые CSS-файлы, чтобы не использовать его устаревшие Sass-импорты.
-
-В production CSS автоматически минифицируется и сохраняется как:
-
-`dist/css/style.min.css`
-
-Autoprefixer настроен на `last 3 versions`. В production одинаковые media queries группируются.
-
-# SCSS structure
-
-`style.scss` is an independent Vite entry, enqueued by WordPress separately from JavaScript. Its explicit import order preserves the existing CSS cascade. Vendor CSS, including Lenis and Swiper A11y, is collected in `vendors/_index.scss`.
-
-- `abstracts/` — variables and mixins. `_index.scss` exposes them with `@forward`; these modules emit no CSS.
-- `base/` — reset, fonts, global styles and shared animation rules.
-- `vendors/` — third-party styles, collected in one entry point.
-- `layout/` — header, footer and grid.
-- `components/` — menu, popup, form, cards, ticker and accordion.
-- `sections/` — hero and the existing shared section stylesheet.
-- `overrides/` — existing large-screen overrides.
-- `dev/` — existing development page switcher styles.
-
-Files prefixed with `_` are Sass partials, loaded through `@use`. Component and section files import variables explicitly from `../abstracts/variables`. Keep new imports in the appropriate position in `style.scss`; do not reorder existing imports without checking the cascade.
-
-This change only reorganizes files and their imports. Existing selectors, declarations, media queries, mixins and comments are preserved. The section stylesheet remains intact. The accordion remains available but is not loaded by default, matching its previous behavior.
-
-Font generation in `build/plugins/fonts.js` targets `base/_fonts.scss`. Relative font URLs account for the deeper directory. Image aliases (`@img`) remain unchanged.
-
-Run `npm run build` to verify the stylesheet and asset paths. The restructuring was verified against the original Sass output and production CSS; the production CSS is byte-for-byte identical.
-
-
-`@img/...` можно продолжать использовать в SCSS: алиас указывает на `src/img`.
-
-## JavaScript
-
-Главный JS entry: `src/js/app.js`. WordPress подключает модуль через `wp_enqueue_script()`. Vite/Rolldown собирает JS независимо от SCSS; HTML не генерируется.
-
-Для входных JS-файлов настроен шаблон `js/[name].min.js`, для общих чанков — `js/chunks/[name]-[hash].js`. Отдельный `dist/js/app.min.js` не гарантируется: имена и состав файлов зависят от графа импортов.
-
-Сейчас весь код `app.js` закомментирован, а страницы содержат минимальную разметку. Меню, слайдеры, анимации и другие модули нужно подключать по мере добавления соответствующей разметки. Успешная сборка не означает, что эти функции уже включены.
-
-Импорты `.svg`, `.glsl`, `.vs`, `.fs`, `.vert`, `.frag` без query продолжают импортироваться как raw text — это заменяет старый `raw-loader`.
-# JavaScript architecture
-
-The site uses browser ES modules, Vite, GSAP/ScrollTrigger, Lenis and Swiper. No framework or transpilation layer is required.
-
-- `app.js` is the only browser entry point. It initializes components after the DOM is ready, disposes the previous app before reinitialization and cleans up on Vite hot reload.
-- `features/` owns interaction and state: menu, header, dialogs, tabs, sliders, smooth scrolling and the development page switcher.
-- `animations/` owns visual transitions. `index.js` initializes section scroll animations; menu and CTA controllers are created by the menu feature.
-- `core/` contains shared lifecycle, media queries, GSAP registration and overlay scroll locking.
-- `utils/` contains small focus and calculation helpers. Utilities do not initialize components.
-
-## Component conventions
-
-Export an explicit initializer that accepts the document or component element. Read the DOM during initialization, not at module import. Return a cleanup function (or a controller with `destroy`). Register events with `createScope`, and register observers, library instances and animation contexts as disposers. Cleanup is idempotent and runs in reverse order.
-
-Keep existing HTML classes and data attributes as the component contracts. Do not add placeholder API endpoints, fake form submissions or business behavior. Initialize optional components only when their markup exists.
-
-The menu and header share a single CTA animation controller. An open menu shows the CTA regardless of scroll position. Closing it restores breakpoint/scroll visibility. Compact desktop body height is measured at the expanded width to avoid a jump when text stops wrapping.
-
-Dialogs and the mobile menu acquire independent scroll-lock handles. Releasing one overlay does not unlock the page while another is open. Dialogs trap focus, close with Escape and restore focus to their trigger. Reduced-motion preference disables smooth scrolling, section parallax and decorative pixel transitions; menu and dialog transitions become immediate.
-
-## Checks
-
-```sh
-npm run check
-npm run build
-```
-
-`npm run format` formats the frontend JavaScript and its lint/test configuration. Unit tests cover disposal, nested scroll locks, CTA visibility and pixel direction. Browser verification should cover all pages, menu edges and rapid clicks, desktop CTA scroll visibility, fullscreen mobile layout, dialog keyboard focus, project tabs and all sliders. Import `initApp` from the entry point to verify repeated mounting without duplicated listeners or canvases.
-
-Unused template utilities were removed from the runtime folder. The user-created `src/js copy` backup is outside this architecture and is not modified or included in checks.
-
-## Dependency audit
-
-Runtime library versions are preserved in this refactor. `npm audit` still reports existing advisories for Swiper 10 and the asset-build dependencies (`sharp`, `fast-glob` and `source-map-js`). This work is not a full dependency-security upgrade. Swiper options in this site are static; the library requires a separately tested version upgrade before accepting untrusted configuration.
-
-API references: [Lenis integration and cleanup](https://github.com/darkroomengineering/lenis), [Swiper API](https://swiperjs.com/swiper-api), [ESLint flat configuration](https://eslint.org/docs/latest/use/configure/configuration-files), [Prettier installation](https://prettier.io/docs/install).
-
-## Images
-
-В dev изображения отдаются прямо из `src/img/`.
-
-В production:
-
-- JPG/JPEG оптимизируются;
-- PNG оптимизируются;
-- GIF сохраняется/пережимается, если Sharp поддерживает конкретный файл;
-- исходный WebP оптимизируется;
-- для JPG/JPEG/PNG/GIF дополнительно создается `.webp`;
-- SVG/ICO/AVIF копируются без разрушительной обработки;
-- структура подпапок сохраняется.
-
-Все изображения попадают в `dist/img/`.
-
-## Fonts
-
-При запуске `start`, `dev` и `build`:
-
-1. `.otf` конвертируется в `.ttf` в `src/fonts/`;
-2. `.ttf` конвертируется в `.woff` и `.woff2`;
-3. при наличии `.ttf` файл `src/scss/fonts.scss` создается с `@font-face`, если он отсутствует или содержит маркер-заглушку `Auto-generated after fonts are added`.
-
-Пользовательский `fonts.scss` без этого маркера не перезаписывается. Чтобы пересоздать его после добавления шрифтов, сохраните нужные ручные правки, удалите `src/scss/fonts.scss` и перезапустите команду.
-
-## SVG sprite
-
-Положите SVG-файлы в `src/svg/`.
-При `npm run build` спрайт создаётся в:
-
-`dist/img/svg/icons.svg`
-
-Использование:
-
-```html
-<svg aria-hidden="true">
-  <use href="<?php echo esc_url(frame_asset('img/svg/icons.svg#icon-name')); ?>"></use>
-</svg>
-```
-
-ID равен имени исходного SVG-файла без `.svg`.
-
-PHP всегда использует спрайт из `dist`. В dev он создаётся и обновляется автоматически. Для production выполните:
-
-```bash
-npm run build
-```
-
-## files
-
-Всё содержимое `src/files/` при production build копируется без изменений в:
-
-`dist/files/`
-
-## Cache busting
-
-WordPress versions CSS and JS via `filemtime()` in `inc/wp/enqueue.php`. HTML version injection and `build/version.json` have been removed.
+Телефонные поля используют `plain-phone-inputs.js`. Неактивный `phone-inputs.js` и его зависимость `intl-tel-input` сохранены для возможного возврата международного форматирования; его CSS не входит в текущую сборку.
 
 ## Проверки
 
-```bash
+```sh
 npm ci
 npm run check
 npm run build
@@ -220,14 +61,20 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-`npm run check` проверяет JS, сборочные скрипты, тесты и форматирование workflow, затем запускает unit-тесты и PHP-контракты. PHP CLI обязателен в CI; локально PHP-тесты пропускаются только при его отсутствии. Эти команды не запускают dev-сервер.
+Unit/контрактные тесты проверяют жизненный цикл, формы, AJAX, cookies, стили, ресурсы, упаковку и ограничения деплоя. PHP CLI обязателен в CI; локально PHP-тесты могут пропускаться при его отсутствии.
 
-Браузерные проверки в `build/browser` используют настоящее PHP-меню и карточки проектов, GSAP и CSS из production-сборки. Они проверяют вкладки, клавиатуру, блокировку прокрутки, отправку форм и восстановление после ошибок. WordPress/ACF-данные фиксированы; транспорт CF7 подменён, письма не отправляются. HTTP-запросы обслуживает Playwright без отдельного сервера и базы. Это проверки компонентов, а не полного WordPress-сайта.
+Playwright работает без отдельного HTTP-сервера и базы. Он исполняет настоящее приложение, использует PHP-шаблоны меню, проектов и секции why, production CSS и отдельно проверяет готовый production JS. Покрываются повторный запуск и очистка наблюдателей, блокировки, клавиатура, формы, вкладки и слайдеры на разных ширинах. Транспорт CF7 подменён: письма не отправляются. Ошибки браузера и сетевых ресурсов проваливают тесты; при ошибке сохраняется trace.
 
-Для уже установленного Edge можно задать `PLAYWRIGHT_CHANNEL=msedge` вместо установки Chromium.
+Эти проверки не заменяют полный проход по WordPress с реальными плагинами и данными: главная, статья, архив, обычная страница, 404 и языковые версии. Для локального production-прохода используйте `WP_VITE_DEV = false`.
 
-`npm run test:dev` отдельно запускает три интеграционных теста Vite во временных каталогах на случайных портах. Запускайте их локально только когда разрешён запуск тестовых серверов; CI выполняет их автоматически.
+Обновления Swiper, Sharp и Vite закрывают обнаруженные уязвимости. Для ESLint и `@eslint/config-array` временно переопределён `minimatch` на исправленную ветку 11; совместимость проверяется линтером. После обновления диапазонов в upstream это переопределение можно убрать. Проверяйте текущее состояние через `npm audit`.
 
-Workflow проверяет ветки и pull request. Деплой доступен только из `main` после всех проверок и использует сохранённый пакет без повторной сборки. При ошибках браузерных тестов сохраняются trace-артефакты.
+## CI и staging
 
-Полный сайт проверяйте через WordPress с `WP_VITE_DEV = false`: главную, статью, архив, обычную страницу, 404 и языковые версии. Компонентные тесты не заменяют проверку настроек и совместимости установленных плагинов.
+`.github/workflows/staging.yml` запускается для push, PR в `main` и вручную. Он устанавливает зависимости, проверяет код, собирает ассеты, выполняет браузерные и Vite-интеграционные тесты, проверяет PHP и создаёт пакет runtime темы. Исходники, тесты и локальные настройки не включаются в runtime-пакет. `dist/` не коммитится и передаётся внутри проверенного артефакта.
+
+Staging получает тот же пакет без повторной сборки. Деплой разрешён только из `main`; перед ним проверяется, что коммит остаётся вершиной ветки. Деплои выполняются последовательно, текущая передача не отменяется новым push.
+
+Скрипт проверяет SSH host key, пользователя, фиксированный путь и отсутствие symlink, затем передаёт файлы с `rsync --checksum --delay-updates`. Отложенная замена уменьшает окно частичного обновления, но не делает переключение всей темы атомарным. Удаление файлов на сервере намеренно отключено: старые файлы могут оставаться и требуют отдельной контролируемой уборки. Никакие другие каталоги сайта не очищаются.
+
+После передачи все файлы пакета сверяются по SHA-256. Затем workflow проверяет HTTPS главной и побайтовое совпадение CSS/JS. HTTP 401 главной допустим для защищённого staging и не подтверждает работоспособность содержимого сайта. Проверка файлов не подтверждает активацию темы или визуальную корректность.

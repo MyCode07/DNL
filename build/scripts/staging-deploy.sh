@@ -87,7 +87,7 @@ remote_rsync="$remote_guard && exec rsync"
 printf -v ssh_command '%q ' ssh "${ssh_options[@]}"
 rsync \
     --archive --no-owner --no-group \
-    --checksum --itemize-changes --stats --human-readable \
+    --checksum --delay-updates --itemize-changes --stats --human-readable \
     --protect-args --chmod=D755,F644 \
     --rsh="$ssh_command" \
     --rsync-path="$remote_rsync" \

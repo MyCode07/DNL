@@ -35,7 +35,7 @@ async function copyRuntimeFile(file) {
     count++;
 }
 
-const tracked = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
+const tracked = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8', windowsHide: true })
     .split('\0')
     .filter(Boolean);
 const runtime = tracked.filter(

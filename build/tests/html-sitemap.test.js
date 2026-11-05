@@ -4,12 +4,12 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
 test('HTML sitemap renders page titles, translated homepages, taxonomy and archive names with original URLs', (t) => {
-    const php = spawnSync('php', ['--version'], { encoding: 'utf8' });
+    const php = spawnSync('php', ['--version'], { encoding: 'utf8', windowsHide: true });
     if (php.error?.code === 'ENOENT' && !process.env.CI) return t.skip('PHP CLI is unavailable');
     assert.equal(php.status, 0, 'PHP CLI is required in CI');
     const fixture = fileURLToPath(new URL('./fixtures/html-sitemap.php', import.meta.url));
     const source = fileURLToPath(new URL('../../inc/seo/sitemap.php', import.meta.url));
-    const result = spawnSync('php', [fixture, source], { encoding: 'utf8' });
+    const result = spawnSync('php', [fixture, source], { encoding: 'utf8', windowsHide: true });
     assert.equal(result.status, 0, result.stdout + result.stderr);
     assert.equal(result.stderr, '');
     const links = [...result.stdout.matchAll(/<li><a href="([^"]+)">([^<]+)<\/a><\/li>/g)].map(
