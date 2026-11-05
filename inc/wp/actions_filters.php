@@ -91,7 +91,7 @@ function remove_nbsp($title)
 
 // Применяем фильтры сразу для вывода контента, заголовков и цитат
 add_filter('the_content', 'fix_all_short_words');
-add_filter('the_title', 'fix_all_short_words');
+// add_filter('the_title', 'fix_all_short_words');
 add_filter('get_the_excerpt', 'fix_all_short_words');
 add_filter('widget_text', 'fix_all_short_words');
 function fix_all_short_words($text)

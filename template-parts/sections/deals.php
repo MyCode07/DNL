@@ -23,7 +23,6 @@ if (!$list) return;
                                             $item['foto']['id'],
                                             'full'
                                         ); ?>
-                                        <img src="<?php echo esc_url(frame_asset('img/popup-success-desktop.png')); ?>" alt="">
                                     </picture>
                                 </div>
                             </div>
@@ -35,7 +34,7 @@ if (!$list) return;
                     <div class="deals-viewport">
                         <div class="deals-track">
                             <?php foreach ($list as $key => $item): ?>
-                                <div class="deals-slide <?php if ($key === 0) echo 'active' ?>">
+                                <div class="deals-slide <?php if ($key === 0) echo 'active' ?>" style="--slide: <?php echo $key ?>;">
                                     <div class="icon" aria-hidden="true"></div>
                                     <div class="deals-slide__content">
                                         <div class="deals-slide__layer deals-slide__layer--preview" aria-hidden="true">

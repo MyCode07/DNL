@@ -119,13 +119,7 @@ export default defineConfig(({ command }) => {
             devSourcemap: true,
 
             postcss: {
-                plugins: [
-                    ...(isBuild ? [groupMediaQueriesPlugin()] : []),
-
-                    autoprefixer({
-                        grid: 'autoplace',
-                    }),
-                ],
+                plugins: [...(isBuild ? [groupMediaQueriesPlugin()] : []), autoprefixer()],
             },
         },
 

@@ -147,7 +147,9 @@
     background-color: $white;
     //anim
     pointer-events: none;
+    visibility: hidden;
     transform: translate(0, 100%);
+    transition-property: transform, visibility;
     transition-duration: 1s;
     transition-timing-function: cubic-bezier(.25, .25, 0, 1);
 
@@ -158,7 +160,9 @@
 
     &._open {
         pointer-events: all;
+        visibility: visible;
         transform: translate(0, 0);
+        transition-property: transform;
     }
 
     // .popup-close

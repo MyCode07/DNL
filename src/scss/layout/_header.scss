@@ -6,7 +6,7 @@
     z-index: 10;
     word-spacing: normal;
 
-    @media (max-width:1280px) {
+    @media (max-width:1440px) {
         inset: 3rem 0 auto;
     }
 
@@ -43,7 +43,7 @@
         height: 6.4rem;
         border-radius: 2.8rem;
         background-color: $white-06;
-        backdrop-filter: blur(14rem);
+        backdrop-filter: blur(7rem);
 
         @media (max-width:1280px) {
             height: 5.2rem;
@@ -184,7 +184,7 @@
     @media (max-width:1024px) {
         &:not(.dark, .dark-static) .menu._open .menu-surface {
             background-color: $white-06;
-            backdrop-filter: blur(14rem);
+            backdrop-filter: blur(7rem);
             color: $white;
 
             .menu-toggle {

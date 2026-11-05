@@ -3,7 +3,7 @@ $thanks = get_localized_field('uspeshnaya_otpravka');
 $error = get_localized_field('oshibka_otpravki');
 ?>
 
-<div class="popup-result popup-result--success" data-popup-result="success" hidden inert>
+<div class="popup-result popup-result--success" data-popup-result="success" hidden>
     <div class="popup-result__background" aria-hidden="true">
         <picture>
             <source media="(max-width: 767px)" srcset="<?php echo esc_url(frame_asset('img/popup-success-360.png')); ?>">
@@ -21,7 +21,7 @@ $error = get_localized_field('oshibka_otpravki');
         </a>
     </div>
 </div>
-<div class="popup-result popup-result--error" data-popup-result="error" hidden inert>
+<div class="popup-result popup-result--error" data-popup-result="error" hidden>
     <div class="popup-result__background" aria-hidden="true">
         <picture>
             <source media="(max-width: 767px)" srcset="<?php echo esc_url(frame_asset('img/popup-error-360.png')); ?>">

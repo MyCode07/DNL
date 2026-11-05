@@ -1,4 +1,5 @@
 import { createScope } from '../core/lifecycle.js';
+import { ScrollTrigger } from '../core/gsap.js';
 
 /** Each tab area owns its selection; hidden Swipers are updated after becoming visible. */
 export function initTabs(root) {
@@ -44,6 +45,7 @@ export function initTabs(root) {
                 return;
             event.preventDefault();
             select(tab.dataset.tab);
+            ScrollTrigger.refresh();
         });
         scope.add(() =>
             snapshots.forEach(({ element, active, pressed, inert }) => {

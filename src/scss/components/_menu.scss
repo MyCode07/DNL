@@ -12,7 +12,7 @@
         padding: 2rem 2.4rem;
         border-radius: 2.8rem;
         background-color: $white-06;
-        backdrop-filter: blur(14rem);
+        backdrop-filter: blur(7rem);
 
         @media (max-width:1280px) {
             padding: 1.4rem;
@@ -185,7 +185,6 @@
                     border-radius: 0.2rem;
                     background-color: currentColor;
                     opacity: 0;
-                    transition: opacity 0.3s ease-in-out 0s;
                 }
             }
         }

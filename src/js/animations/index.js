@@ -3,7 +3,6 @@ import { initHeroScroll } from './hero-scroll.js';
 import { initCriteriaScroll } from './criteria-scroll.js';
 import { initSeoScroll } from './seo-scroll.js';
 import { initPixelatedScroll } from './pixelated-scroll.js';
-import { initWhyItemsScroll } from './why-items-scroll.js';
 import { initElementReveal } from './element-reveal.js';
 
 // Trial switch: set false to disable all entrance animations without changing markup or CSS.
@@ -18,7 +17,6 @@ export function initAnimations(root) {
     scope.add(initHeroScroll(root));
     scope.add(initCriteriaScroll(root));
     scope.add(initSeoScroll(root));
-    scope.add(initWhyItemsScroll(root));
     scope.add(initPixelatedScroll(root));
     root.documentElement.classList.remove('reveal-initializing');
     if (ELEMENT_REVEAL_ENABLED) scope.add(initElementReveal(root));

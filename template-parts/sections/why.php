@@ -15,24 +15,29 @@ if (!$list) return;
                 <?php endif;
                 endforeach; ?>
             </div>
-            <div class="why-items">
-                <?php foreach ($list as $key => $item): ?>
-                    <div class="why-item">
-                        <div class="why-item__top">
-                            <span class="medium-nums">0<?php echo $key + 1 ?></span>
-                            <div>
-                                <h3><?php echo $item['zagolovok'] ?></h3>
-                                <p><?php echo $item['tekst'] ?></p>
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    <?php foreach ($list as $key => $item): ?>
+                        <div class="swiper-slide">
+                            <div class="why-item">
+                                <div class="why-item__top">
+                                    <span class="medium-nums">0<?php echo $key + 1 ?></span>
+                                    <div>
+                                        <h3><?php echo $item['zagolovok'] ?></h3>
+                                        <p><?php echo $item['tekst'] ?></p>
+                                    </div>
+                                </div>
+                                <div class="img">
+                                    <?php echo wp_get_attachment_image(
+                                        $item['foto']['id'],
+                                        'large'
+                                    ); ?>
+                                </div>
                             </div>
                         </div>
-                        <div class="img">
-                            <?php echo wp_get_attachment_image(
-                                $item['foto']['id'],
-                                'large'
-                            ); ?>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
+                <?php get_template_part('template-parts/swiper-navigation') ?>
             </div>
         </div>
     </div>

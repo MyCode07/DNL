@@ -25,13 +25,41 @@ export function initSliders(root, media) {
                 spaceBetween: 10,
                 slidesPerView: 1,
             };
+        } else if (section.classList.contains('why')) {
+            options = {
+                modules: [A11y, Navigation],
+                navigation,
+                grabCursor: true,
+                spaceBetween: 16,
+                breakpoints: {
+                    0: {
+                        slidesPerView: 'auto',
+                    },
+                    768: {
+                        slidesPerView: 2,
+                    },
+                    1025: {
+                        slidesPerView: 3,
+                    },
+                },
+            };
         } else if (section.classList.contains('publications')) {
             options = {
                 modules: [A11y, Navigation],
                 navigation,
                 grabCursor: true,
                 spaceBetween: 16,
-                slidesPerView: 'auto',
+                breakpoints: {
+                    0: {
+                        slidesPerView: 'auto',
+                    },
+                    768: {
+                        slidesPerView: 2,
+                    },
+                    1025: {
+                        slidesPerView: 3,
+                    },
+                },
             };
         } else continue;
 
@@ -41,6 +69,7 @@ export function initSliders(root, media) {
             const speed = breakpointSpeed ?? options.speed ?? swiper.originalParams.speed;
             swiper.params.speed = media.reducedMotion.matches ? 0 : speed;
         }
+
         updateMotion();
         swiper.on('breakpoint', updateMotion);
         scope.on(media.reducedMotion, 'change', updateMotion);

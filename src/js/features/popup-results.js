@@ -56,7 +56,7 @@ export function initPopupResults(root, media) {
                         }
                     },
                 });
-                if (form) timeline.to(form, { autoAlpha: 0, y: -20, duration, ease: 'power2.in' });
+                if (form) timeline.to(form, { opacity: 0, y: -20, duration, ease: 'power2.in' });
                 timeline.add(() => {
                     if (form) form.hidden = true;
                     result.hidden = false;
@@ -74,8 +74,8 @@ export function initPopupResults(root, media) {
                 if (content)
                     timeline.fromTo(
                         content,
-                        { autoAlpha: 0, y: 20 },
-                        { autoAlpha: 1, y: 0, duration: duration * 1.5, ease: 'power2.out' },
+                        { opacity: 0, y: 20 },
+                        { opacity: 1, y: 0, duration: duration * 1.5, ease: 'power2.out' },
                         duration * 2,
                     );
             });

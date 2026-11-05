@@ -216,14 +216,13 @@ function get_posts_custom($args)
             get_template_part('template-parts/post-cards/' . $template, null, array('count' => $count));
             $content = ob_get_clean();
 
-            if ($args['slide']) {
+            if (isset($args['slide']) && $args['slide']) {
                 $found_posts .= '<div class="swiper-slide">';
             }
             $found_posts .= $content;
-            if ($args['slide']) {
+            if (isset($args['slide']) && $args['slide']) {
                 $found_posts .= '</div>';
             }
-
             $count++;
         }
         wp_reset_postdata();

@@ -17,7 +17,7 @@ export const ELEMENT_REVEAL_TARGETS = [
     'main .why-item',
     'main .post-item',
     'main .cta .section__body > *',
-    'main .text-box > *',
+    'main .text-box',
     'main .single .img',
     'main .single-data__item',
     'main .single-data__share',

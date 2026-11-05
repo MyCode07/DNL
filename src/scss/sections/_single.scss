@@ -41,9 +41,16 @@
             img,
             picture {
                 border-radius: 2.8rem;
+                max-height: 73rem;
+                object-fit: cover;
 
                 @media (max-width:1440px) {
                     border-radius: 2rem;
+                    max-height: 50rem;
+                }
+
+                @media (max-width:475px) {
+                    aspect-ratio: 1/0.68;
                 }
             }
         }
@@ -247,4 +254,13 @@
         right: 1.6rem;
         bottom: 2.4rem;
     }
+}
+
+button,
+a,
+article {
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: linear-gradient(#fff 0 0);
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }

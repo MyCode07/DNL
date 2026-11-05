@@ -107,23 +107,18 @@ function frame_cf7_checkbox_rules($schema, $form)
 }
 
 
-add_action('wpcf7_before_send_mail', 'custom_cf7_multiple_recipients');
-function custom_cf7_multiple_recipients($contact_form)
+add_filter('wpcf7_mail_components', 'custom_cf7_multiple_recipients', 10, 3);
+function custom_cf7_multiple_recipients($components, $contact_form, $submission)
 {
-    $submission = WPCF7_Submission::get_instance();
+    // Проверяем ID формы (если нужно только для определенной, например, ID 9)
+    if (9 == $contact_form->id()) {
+        $recipients = array(
+            'den@adsbase.com',
+        );
 
-    if (!$submission) {
-        return;
+        // Перезаписываем получателя в готовых компонентах письма
+        $components['recipient'] = implode(', ', $recipients);
     }
 
-    $mail = $contact_form->get_properties('mail');
-
-    $recipients = array(
-        'den@adsbase.com',
-    );
-
-    // Объединяем массив адресов в строку через запятую
-    $mail['mail']['recipient'] = implode(', ', $recipients);
-
-    $contact_form->set_properties(array('mail' => $mail));
+    return $components;
 }
