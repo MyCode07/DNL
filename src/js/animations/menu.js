@@ -38,24 +38,26 @@ export function createMenuAnimation(menu, { media, toggle }) {
     const originalHeroInert = heroButton?.inert;
     const context = gsap.context(() => {}, menu);
     let timeline;
+    let small = false;
 
     function setIcon(open) {
         const opacity = open ? CLOSE_ICON : OPEN_ICON;
         rects.forEach((rect, index) => rect.setAttribute('fill-opacity', opacity[index]));
     }
 
-    function animate(open) {
+    function animate(open, { modeChange = false, immediate = false } = {}) {
         timeline?.kill();
         const mobile = media.mobile.matches;
-        const compact = media.compact.matches;
-        const reducedMotion = media.reducedMotion.matches;
+        const compact = media.compact.matches || small;
+        const reducedMotion = media.reducedMotion.matches || immediate;
+        const duration = reducedMotion ? 0 : modeChange ? 0.3 : 0.8;
         body.inert = !open;
         if (outerLogo) outerLogo.inert = mobile && open;
         if (innerLogo) innerLogo.inert = true;
-        if (heroButton) heroButton.inert = compact && open;
+        if (heroButton) heroButton.inert = media.compact.matches && open;
         setIcon(open);
         const width = mobile ? '100vw' : '33.6rem';
-        const padding = mobile ? '2rem' : '1.6rem 2rem';
+        const padding = mobile ? '2rem' : compact ? '1.6rem 2rem' : '2rem 2.4rem';
         const measure = open && compact && !mobile;
         const height = measure
             ? measureBodyHeight(menu, surface, body, width, padding)
@@ -65,26 +67,28 @@ export function createMenuAnimation(menu, { media, toggle }) {
 
         context.add(() => {
             timeline = gsap.timeline({
-                defaults: { duration: reducedMotion ? 0 : 0.8, ease: 'power2.out' },
+                defaults: { duration, ease: 'power2.out' },
             });
             const logoDuration = reducedMotion ? 0 : 0.3;
             const logoEase = 'power1.inOut';
-            const expandAt = mobile || (compact && !open) ? logoDuration : 0;
-            const finishAt = expandAt + (reducedMotion ? 0 : 0.8);
-            if (compact && label) {
-                if (open) label.textContent = label.dataset.textClose;
+            const expandAt = !modeChange && (mobile || (compact && !open)) ? logoDuration : 0;
+            const finishAt = expandAt + duration;
+            if (label) {
+                if (open || !compact)
+                    label.textContent = open ? label.dataset.textClose : label.dataset.textOpen;
+                const showLabel = open || !compact;
                 timeline.to(
                     label,
                     {
-                        autoAlpha: open ? 1 : 0,
-                        x: open ? 0 : 6,
+                        autoAlpha: showLabel ? 1 : 0,
+                        x: showLabel ? 0 : 6,
                         duration: logoDuration,
                         ease: logoEase,
                         onComplete: () => {
                             if (!open) label.textContent = label.dataset.textOpen;
                         },
                     },
-                    open ? finishAt : 0,
+                    showLabel ? finishAt : 0,
                 );
             }
             if (mobile) {
@@ -123,11 +127,18 @@ export function createMenuAnimation(menu, { media, toggle }) {
                 },
                 expandAt,
             );
-            if (compact) {
+            if (compact || !mobile) {
                 timeline.to(
                     menu,
                     {
-                        width: open ? width : mobile ? '4.4rem' : '5.2rem',
+                        width:
+                            open || !compact
+                                ? width
+                                : mobile
+                                  ? '4.4rem'
+                                  : small
+                                    ? '6.4rem'
+                                    : '5.2rem',
                         ...(mobile
                             ? {
                                   height: open ? '100dvh' : '4.4rem',
@@ -141,7 +152,15 @@ export function createMenuAnimation(menu, { media, toggle }) {
                 timeline.to(
                     surface,
                     {
-                        padding: open ? padding : mobile ? 0 : '1.4rem',
+                        padding: open
+                            ? padding
+                            : mobile
+                              ? 0
+                              : small
+                                ? '2rem'
+                                : compact
+                                  ? '1.4rem'
+                                  : '2rem 2.4rem',
                         ...(mobile
                             ? {
                                   height: open ? '100dvh' : '4.4rem',
@@ -152,7 +171,7 @@ export function createMenuAnimation(menu, { media, toggle }) {
                     expandAt,
                 );
             }
-            if (compact && heroButton)
+            if (media.compact.matches && heroButton)
                 timeline.to(heroButton, { height: open ? 0 : 'auto' }, expandAt);
             if (items.length)
                 timeline.to(
@@ -187,10 +206,16 @@ export function createMenuAnimation(menu, { media, toggle }) {
         if (innerLogo) innerLogo.inert = true;
         if (heroButton) heroButton.inert = false;
         setIcon(false);
+        if (small) animate(false, { immediate: true });
     }
 
     return {
         animate,
+        syncSmall(next, immediate = false) {
+            if (small === next) return;
+            small = next;
+            animate(menu.classList.contains('_open'), { modeChange: true, immediate });
+        },
         reset,
         destroy() {
             timeline?.kill();

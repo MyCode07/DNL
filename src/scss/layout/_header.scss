@@ -2,29 +2,25 @@
 @use "../abstracts/compact-menu";
 
 @media (1440px < width < 1780px) {
-    .header.header-small {
+    .header {
         .header__body {
             grid-template-columns: 16.8rem auto;
         }
 
-        .menu:not(._open) {
-            width: 6.4rem;
+        .menu-toggle {
+            justify-content: flex-end;
 
-            .menu-surface {
-                padding: 2rem;
+            span {
+                @include compact-menu.toggle-label;
+                left: 0;
+                right: auto;
+                opacity: 1;
+                visibility: visible;
             }
+        }
 
-            .menu-toggle {
-                justify-content: flex-end;
-
-                span {
-                    @include compact-menu.toggle-label;
-                }
-            }
-
-            .menu-project {
-                display: none;
-            }
+        &.header-small .menu:not(._open) .menu-project {
+            display: none;
         }
     }
 }

@@ -241,12 +241,57 @@ test('marked sections compact only the closed desktop header between 1440 and 17
     expect(Math.abs(square.width - square.height)).toBeLessThan(1);
     await page.locator('.menu-toggle').click();
     await expect(label).toBeVisible();
+    expect((await label.boundingBox()).x).toBeCloseTo(
+        (await page.locator('.menu-toggle').boundingBox()).x,
+        0,
+    );
     expect((await menu.boundingBox()).width).toBeGreaterThan(square.width * 3);
     await page.locator('main').dispatchEvent('click');
     await expect(label).toBeHidden();
     await page.setViewportSize({ width: 1780, height: 900 });
     await expect(header).not.toHaveClass(/header-small/);
     await expect(label).toBeVisible();
+});
+
+test('header compaction animates and can be interrupted by opening or leaving the section', async ({
+    page,
+}) => {
+    await page.setViewportSize({ width: 1600, height: 900 });
+    await page.evaluate(() => {
+        window.destroyComponents();
+        const section = document.createElement('section');
+        section.id = 'small-header-test';
+        section.dataset.smallHeader = '';
+        section.style.cssText =
+            'position:absolute;top:2000px;height:100vh;width:1px;pointer-events:none';
+        document.body.append(section);
+        window.mountComponents();
+    });
+    const menu = page.locator('.menu');
+    const initialWidth = (await menu.boundingBox()).width;
+    expect((await page.locator('.menu-toggle span').boundingBox()).x).toBeCloseTo(
+        (await page.locator('.menu-toggle').boundingBox()).x,
+        0,
+    );
+    await page.evaluate(() => {
+        document.querySelector('#small-header-test').style.top = '0';
+        window.dispatchEvent(new Event('scroll'));
+    });
+    await expect(page.locator('.header')).toHaveClass(/header-small/);
+    await expect.poll(async () => (await menu.boundingBox()).width).toBeLessThan(initialWidth - 5);
+    const intermediateWidth = (await menu.boundingBox()).width;
+    expect(intermediateWidth).toBeGreaterThan(70);
+    await page.locator('.menu-toggle').dispatchEvent('click');
+    await expect.poll(async () => (await menu.boundingBox()).width).toBeCloseTo(initialWidth, 0);
+    await expect(page.locator('.menu-toggle span')).toBeVisible();
+    await page.locator('main').dispatchEvent('click');
+    await page.evaluate(() => {
+        document.querySelector('#small-header-test').style.top = '2000px';
+        window.dispatchEvent(new Event('scroll'));
+    });
+    await expect(page.locator('.header')).not.toHaveClass(/header-small/);
+    await expect.poll(async () => (await menu.boundingBox()).width).toBeCloseTo(initialWidth, 0);
+    await expect(page.locator('.menu-toggle span')).toBeVisible();
 });
 
 test('closing a popup over the mobile menu preserves the menu scroll lock and restores focus', async ({

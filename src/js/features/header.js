@@ -36,24 +36,23 @@ export function initHeader(root, menu) {
                 : rect.top < position && rect.bottom >= position;
         };
         let dark = sections.some((section) => containsPosition(section.getBoundingClientRect()));
+        let small = smallHeaderSections.some((section) =>
+            containsPosition(section.getBoundingClientRect()),
+        );
         // Edge pixels show the adjacent section's background before its actual boundary.
         for (const { element, neighbor } of transitions) {
             if (!neighbor) continue;
             const rect = element.getBoundingClientRect();
             if (rect.bottom > rect.top && containsPosition(rect)) {
                 dark = neighbor.hasAttribute('data-dark');
+                small = neighbor.hasAttribute('data-small-header');
                 break;
             }
         }
         header.classList.toggle('header-scrolled', window.scrollY >= window.innerHeight);
-        header.classList.toggle(
-            'header-small',
-            window.innerWidth > 1440 &&
-                window.innerWidth < 1780 &&
-                smallHeaderSections.some((section) =>
-                    containsPosition(section.getBoundingClientRect()),
-                ),
-        );
+        small = window.innerWidth > 1440 && window.innerWidth < 1780 && small;
+        menu?.syncSmall?.(small, !initialized);
+        header.classList.toggle('header-small', small);
 
         if (!header.classList.contains('header-page') && menuBtn) {
             if (dark) {

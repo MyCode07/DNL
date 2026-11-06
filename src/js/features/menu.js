@@ -27,7 +27,7 @@ export function initMenu(root, { media, scrollLock }) {
     function setOpen(open) {
         menu.classList.toggle('_open', open);
         toggle.setAttribute('aria-expanded', String(open));
-        if (label && !media.compact.matches)
+        if (label && !media.compact.matches && !header.classList.contains('header-small'))
             label.textContent = open ? label.dataset.textClose : label.dataset.textOpen;
         syncScrollLock(open);
         project.sync();
@@ -74,5 +74,5 @@ export function initMenu(root, { media, scrollLock }) {
         animation.destroy();
         project.destroy();
     });
-    return { syncProject: project.sync, destroy: scope.destroy };
+    return { syncProject: project.sync, syncSmall: animation.syncSmall, destroy: scope.destroy };
 }

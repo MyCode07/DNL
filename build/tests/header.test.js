@@ -5,7 +5,7 @@ import { initHeader } from '../../src/js/features/header.js';
 for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 'inverse-up']) {
     test(`header uses leading edge with ${transitionDirection || 'no'} pixel transition`, (t) => {
         const viewport = new EventTarget();
-        Object.assign(viewport, { scrollY: 0, innerHeight: 800, innerWidth: 1440 });
+        Object.assign(viewport, { scrollY: 0, innerHeight: 800, innerWidth: 1600 });
         let pendingFrame;
         const originalRequest = globalThis.requestAnimationFrame;
         const originalCancel = globalThis.cancelAnimationFrame;
@@ -75,6 +75,11 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
             viewport.dispatchEvent(new Event(event));
             pendingFrame();
             assert.equal(header.classList.contains('dark'), dark, `dark at ${scrollY}, ${event}`);
+            assert.equal(
+                header.classList.contains('header-small'),
+                dark && viewport.innerWidth > 1440 && viewport.innerWidth < 1780,
+                `small at ${scrollY}, ${event}`,
+            );
             assert.equal(button.classList.contains('_btn-black'), dark);
             assert.equal(button.classList.contains('_btn-white'), !dark);
         };
