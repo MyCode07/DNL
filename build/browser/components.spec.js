@@ -197,7 +197,7 @@ test('every PHP-rendered project has its own description and retains state acros
     ).toHaveJSProperty('inert', false);
 });
 
-for (const width of [390, 1100, 1440]) {
+for (const width of [390, 1100, 1440, 1600, 1780]) {
     test(`menu opens and closes without empty GSAP targets at width ${width}`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 });
         await page.evaluate(() => window.mountComponents());
@@ -209,8 +209,45 @@ for (const width of [390, 1100, 1440]) {
         await expect(toggle).toHaveAttribute('aria-expanded', 'false');
         await expect(toggle).toBeFocused();
         await expect(page.locator('body')).not.toHaveClass(/_noscroll/);
+        await toggle.click();
+        await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+        await page.locator('main').dispatchEvent('click');
+        await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+        await expect(page.locator('.menu-body')).toHaveJSProperty('inert', true);
+        await expect(page.locator('body')).not.toHaveClass(/_noscroll/);
     });
 }
+
+test('marked sections compact only the closed desktop header between 1440 and 1780', async ({
+    page,
+}) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.setViewportSize({ width: 1600, height: 900 });
+    await page.evaluate(() => {
+        window.destroyComponents();
+        const section = document.createElement('section');
+        section.dataset.smallHeader = '';
+        section.style.cssText =
+            'position:absolute;top:0;height:100vh;width:1px;pointer-events:none';
+        document.body.append(section);
+        window.mountComponents();
+    });
+    const header = page.locator('.header');
+    const menu = page.locator('.menu');
+    const label = page.locator('.menu-toggle span');
+    await expect(header).toHaveClass(/header-small/);
+    await expect(label).toBeHidden();
+    const square = await menu.boundingBox();
+    expect(Math.abs(square.width - square.height)).toBeLessThan(1);
+    await page.locator('.menu-toggle').click();
+    await expect(label).toBeVisible();
+    expect((await menu.boundingBox()).width).toBeGreaterThan(square.width * 3);
+    await page.locator('main').dispatchEvent('click');
+    await expect(label).toBeHidden();
+    await page.setViewportSize({ width: 1780, height: 900 });
+    await expect(header).not.toHaveClass(/header-small/);
+    await expect(label).toBeVisible();
+});
 
 test('closing a popup over the mobile menu preserves the menu scroll lock and restores focus', async ({
     page,

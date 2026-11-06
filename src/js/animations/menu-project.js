@@ -16,7 +16,7 @@ export function createProjectAnimation(header, media) {
         const nextVisible = isProjectVisible({
             open: menu.classList.contains('_open'),
             mobile: media.mobile.matches,
-            compact: media.compact.matches,
+            compact: media.compact.matches || header.classList.contains('header-small'),
             scrolled: header.classList.contains('header-scrolled'),
             innerPage: header.classList.contains('header-page'),
         });

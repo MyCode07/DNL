@@ -64,6 +64,7 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
             querySelector: (selector) => (selector === '.header' ? header : button),
             querySelectorAll: (selector) => {
                 if (selector === '[data-dark]') return [section];
+                if (selector === '[data-small-header]') return [section];
                 if (selector === '[data-pixelated-scroll-transition]')
                     return transitionDirection ? [transition] : [];
                 return up !== Boolean(inverse) ? [section, plainSection] : [plainSection, section];
@@ -91,5 +92,20 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
         check(start - 39.5, true);
         check(start - 40, false);
         check(start - 39, true);
+        viewport.scrollY = 350;
+        for (const [width, compact] of [
+            [1440, false],
+            [1441, true],
+            [1779, true],
+            [1780, false],
+        ]) {
+            viewport.innerWidth = width;
+            viewport.dispatchEvent(new Event('resize'));
+            pendingFrame();
+            assert.equal(header.classList.contains('header-small'), compact);
+        }
+        viewport.innerWidth = 1600;
+        check(700, false);
+        assert.equal(header.classList.contains('header-small'), false);
     });
 }

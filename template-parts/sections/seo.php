@@ -19,7 +19,7 @@ $list = $seo['spisok'];
         }
     }
 </style>
-<section class="section seo white" id="seo">
+<section class="section seo white" id="seo" data-small-header>
     <div class="seo__bg">
         <div class="seo__bg-image"></div>
     </div>

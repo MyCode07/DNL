@@ -45,6 +45,9 @@ export function initMenu(root, { media, scrollLock }) {
 
     reset();
     scope.on(toggle, 'click', () => setOpen(!menu.classList.contains('_open')));
+    scope.on(menu.ownerDocument, 'click', (event) => {
+        if (menu.classList.contains('_open') && !menu.contains(event.target)) setOpen(false);
+    });
     scope.on(surface, 'click', (event) => {
         if (toggle.contains(event.target) || menu.classList.contains('_open')) return;
         setOpen(true);

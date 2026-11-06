@@ -1,4 +1,33 @@
 @use "../abstracts/variables" as *;
+@use "../abstracts/compact-menu";
+
+@media (1440px < width < 1780px) {
+    .header.header-small {
+        .header__body {
+            grid-template-columns: 16.8rem auto;
+        }
+
+        .menu:not(._open) {
+            width: 6.4rem;
+
+            .menu-surface {
+                padding: 2rem;
+            }
+
+            .menu-toggle {
+                justify-content: flex-end;
+
+                span {
+                    @include compact-menu.toggle-label;
+                }
+            }
+
+            .menu-project {
+                display: none;
+            }
+        }
+    }
+}
 
 .header {
     position: fixed;

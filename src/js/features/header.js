@@ -6,6 +6,7 @@ export function initHeader(root, menu) {
     if (!header) return;
     const menuBtn = root.querySelector('.menu ._btn');
     const sections = [...root.querySelectorAll('[data-dark]')];
+    const smallHeaderSections = [...root.querySelectorAll('[data-small-header]')];
     const blocks = [...root.querySelectorAll('section, footer, [data-dark]')];
     const transitions = [...root.querySelectorAll('[data-pixelated-scroll-transition]')].map(
         (element) => {
@@ -45,6 +46,14 @@ export function initHeader(root, menu) {
             }
         }
         header.classList.toggle('header-scrolled', window.scrollY >= window.innerHeight);
+        header.classList.toggle(
+            'header-small',
+            window.innerWidth > 1440 &&
+                window.innerWidth < 1780 &&
+                smallHeaderSections.some((section) =>
+                    containsPosition(section.getBoundingClientRect()),
+                ),
+        );
 
         if (!header.classList.contains('header-page') && menuBtn) {
             if (dark) {
