@@ -221,7 +221,7 @@ for (const width of [390, 1100, 1280, 1281, 1439, 1440, 1441, 1600, 1780]) {
     });
 }
 
-test('header CTA follows the end of hero content rather than the viewport height', async ({
+test('header CTA follows marked blocks entering the viewport without requiring a hero', async ({
     page,
 }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -229,23 +229,26 @@ test('header CTA follows the end of hero content rather than the viewport height
     await page.evaluate(() => {
         window.destroyComponents();
         const content = document.createElement('div');
-        content.className = 'hero__content';
+        content.dataset.hideHeaderButton = '';
         content.style.cssText =
-            'position:absolute;top:0;height:1200px;width:1px;pointer-events:none';
+            'position:absolute;top:1200px;height:100px;width:1px;pointer-events:none';
         document.body.append(content);
         window.mountComponents();
     });
     const project = page.locator('.menu-project');
     await expect(project).toHaveJSProperty('inert', false);
-    await page.evaluate(() => window.scrollTo(0, 900));
-    await expect(project).toHaveJSProperty('inert', false);
-    await page.evaluate(() => window.scrollTo(0, 1200));
+    const threshold = 300;
+    await page.evaluate((y) => window.scrollTo(0, y), threshold - 1);
+    await expect(page.locator('.header')).not.toHaveClass(/header-scrolled/);
+    await page.evaluate((y) => window.scrollTo(0, y), threshold);
+    await expect(project).toHaveJSProperty('inert', true);
+    await page.evaluate(() => window.scrollTo(0, 1400));
     await expect(project).toHaveJSProperty('inert', true);
     await page.locator('.menu-toggle').click();
     await expect(project).toHaveJSProperty('inert', false);
     await page.keyboard.press('Escape');
     await expect(project).toHaveJSProperty('inert', true);
-    await page.evaluate(() => window.scrollTo(0, 1100));
+    await page.evaluate((y) => window.scrollTo(0, y), threshold - 1);
     await expect(project).toHaveJSProperty('inert', false);
 });
 

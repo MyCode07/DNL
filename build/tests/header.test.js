@@ -34,15 +34,16 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
                 toggle: (name, enabled) => (enabled ? values.add(name) : values.delete(name)),
             };
         };
+        let headerBottom = 104;
         const header = {
             className: 'header',
             classList: classes(),
-            getBoundingClientRect: () => ({ top: 40, bottom: 104 }),
+            getBoundingClientRect: () => ({ top: 40, bottom: headerBottom }),
         };
         const button = { classList: classes() };
-        let heroBottom = 1200;
-        const heroContent = {
-            getBoundingClientRect: () => ({ bottom: heroBottom - viewport.scrollY }),
+        let blockTop = 1200;
+        const hideButtonBlock = {
+            getBoundingClientRect: () => ({ top: blockTop - viewport.scrollY }),
         };
         const section = {
             hasAttribute: () => true,
@@ -67,10 +68,10 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
         const destroy = initHeader({
             querySelector: (selector) => {
                 if (selector === '.header') return header;
-                if (selector === '.hero__content') return heroContent;
                 return button;
             },
             querySelectorAll: (selector) => {
+                if (selector === '[data-hide-header-button]') return [hideButtonBlock];
                 if (selector === '[data-dark]') return [section];
                 if (selector === '[data-small-header]') return [section];
                 if (selector === '[data-pixelated-scroll-transition]')
@@ -120,21 +121,32 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
         viewport.innerWidth = 1600;
         check(700, false);
         assert.equal(header.classList.contains('header-small'), false);
-        // The content can be taller or shorter than the viewport, including after resize.
-        for (const scrollY of [799, 800, 1199.5, 1200, 1201, 1200, 1199.5]) {
+        // Hide as the marked block enters, and stay hidden after it leaves above the viewport.
+        for (const scrollY of [399.5, 400, 401, 1300, 400, 399.5]) {
             viewport.scrollY = scrollY;
             viewport.dispatchEvent(new Event('scroll'));
             pendingFrame();
-            assert.equal(header.classList.contains('header-scrolled'), scrollY >= heroBottom);
+            assert.equal(
+                header.classList.contains('header-scrolled'),
+                scrollY >= blockTop - viewport.innerHeight,
+            );
         }
-        for (const bottom of [600, 1400]) {
-            heroBottom = bottom;
+        for (const top of [600, 1400]) {
+            blockTop = top;
             viewport.dispatchEvent(new Event('resize'));
             pendingFrame();
             assert.equal(
                 header.classList.contains('header-scrolled'),
-                viewport.scrollY >= heroBottom,
+                viewport.scrollY >= blockTop - viewport.innerHeight,
             );
+        }
+        blockTop = 1200;
+        viewport.scrollY = 399;
+        for (const bottom of [104, 500, 200, 104]) {
+            headerBottom = bottom;
+            viewport.dispatchEvent(new Event('scroll'));
+            pendingFrame();
+            assert.equal(header.classList.contains('header-scrolled'), false);
         }
     });
 }

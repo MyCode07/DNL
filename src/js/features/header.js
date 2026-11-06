@@ -5,7 +5,7 @@ export function initHeader(root, menu) {
     const header = root.querySelector('.header');
     if (!header) return;
     const menuBtn = root.querySelector('.menu ._btn');
-    const heroContent = root.querySelector('.hero__content');
+    const hideButtonBlocks = [...root.querySelectorAll('[data-hide-header-button]')];
     const sections = [...root.querySelectorAll('[data-dark]')];
     const smallHeaderSections = [...root.querySelectorAll('[data-small-header]')];
     const blocks = [...root.querySelectorAll('section, footer, [data-dark]')];
@@ -52,9 +52,9 @@ export function initHeader(root, menu) {
         }
         header.classList.toggle(
             'header-scrolled',
-            heroContent
-                ? heroContent.getBoundingClientRect().bottom <= 0
-                : window.scrollY >= window.innerHeight,
+            hideButtonBlocks.some(
+                (block) => block.getBoundingClientRect().top <= window.innerHeight,
+            ),
         );
         small = window.innerWidth > 1440 && window.innerWidth < 1780 && small;
         menu?.syncSmall?.(small, !initialized);
