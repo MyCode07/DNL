@@ -61,6 +61,7 @@ $global_btn = get_localized_field('globalnaya_knopka');
             echo get_link_info($global_btn['ssylka'], '_btn ' . $btn_class . ' primary-button');
         else: ?>
             <button class="_btn <?php echo esc_attr($btn_class); ?> primary-button" data-open-popup="popup-<?php echo $global_btn['popap'] ?>">
+                <?php echo frame_button_layers(); ?>
                 <?php echo $global_btn['tekst'] ?>
             </button>
         <?php endif; ?>

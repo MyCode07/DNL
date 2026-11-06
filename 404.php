@@ -16,6 +16,7 @@ get_header();
             <div class="section__body">
                 <h1 class="h4"><?php echo $err['zagolovok'] ?></h1>
                 <a href="<?php echo get_home_page_url() ?>" class="_btn _btn-white primary-button">
+                    <?php echo frame_button_layers(); ?>
                     <?php echo $err['tekst_knopki'] ?>
                 </a>
             </div>

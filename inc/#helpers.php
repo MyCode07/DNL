@@ -128,6 +128,11 @@ function get_logo_url()
 
 
 
+function frame_button_layers(): string
+{
+    return '<span class="_btn__base" aria-hidden="true"></span><span class="_btn__fill" aria-hidden="true"></span>';
+}
+
 // get link text and url
 function get_link_info($link, $class = '', $attrs = '')
 {
@@ -135,6 +140,9 @@ function get_link_info($link, $class = '', $attrs = '')
 
     $link_url = $link['url'];
     $link_text = $link['title'];
+    if (in_array('_btn', preg_split('/\s+/', trim($class)), true)) {
+        $link_text = frame_button_layers() . $link_text;
+    }
     $link_target = $link['target'];
 
     $rel = '';
