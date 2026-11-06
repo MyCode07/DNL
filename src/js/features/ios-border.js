@@ -2,7 +2,7 @@ import CornerKit from '@cornerkit/core';
 import { createScope } from '../core/lifecycle.js';
 
 const TARGETS = [
-    '._btn',
+    // '._btn',
     '.arrow-btn',
     '.header__logo',
     '.menu-surface',
@@ -10,7 +10,7 @@ const TARGETS = [
     '.criteria-item',
     '.projects-item__content',
     '.projects-item__labels .loc',
-    '.projects-item .swiper-slide',
+    '.projects-item .swiper',
     '.projects-item__grid div',
     '.next',
     '.prev',
@@ -19,6 +19,9 @@ const TARGETS = [
     '._social a',
     '._social button',
     '.single-content img',
+    '.form__checkboxes-text input',
+    '.form__checkboxes .wpcf7-radio label',
+    '.popup-close',
 ].join(', ');
 
 export function initIosBorder(root) {

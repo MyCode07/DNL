@@ -1,5 +1,5 @@
 import Swiper from 'swiper';
-import { A11y, Navigation, Pagination } from 'swiper/modules';
+import { A11y, Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { initDealsSlider } from './deals-slider.js';
 import { createScope } from '../core/lifecycle.js';
 
@@ -19,10 +19,15 @@ export function initSliders(root, media) {
 
         if (section.classList.contains('projects')) {
             options = {
-                modules: [A11y, Pagination],
+                modules: [A11y, Pagination, Autoplay],
                 pagination: { el: slider.querySelector('.swiper-pagination'), clickable: true },
                 grabCursor: true,
-                spaceBetween: 10,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                spaceBetween: 0,
                 slidesPerView: 1,
             };
         } else if (section.classList.contains('why')) {

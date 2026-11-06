@@ -333,11 +333,6 @@ svg {
         min-width: 22rem;
     }
 
-    span {
-        position: relative;
-        z-index: 1;
-    }
-
     &:before {
         display: block;
         position: absolute;
@@ -349,28 +344,15 @@ svg {
         content: '';
         z-index: -1;
         background-color: $black;
-        transition: transform 0.5s ease-in-out;
+        transition: all 0.5s ease-in-out;
         will-change: transoform;
         transform-origin: center;
-    }
-
-    &:after {
-        position: absolute;
-        content: "";
-        inset: 0;
-        border: 0.1rem solid;
-        border-radius: inherit;
-        display: none;
     }
 
     @media (any-hover: hover) {
         &:hover {
             &:before {
                 transform: scale(80);
-            }
-
-            &:after {
-                display: block;
             }
         }
     }
@@ -379,6 +361,7 @@ svg {
     &-white {
         background-color: $white;
         color: $black;
+        box-shadow: 0 0 0 0.1rem $white-30;
 
         &:after {
             border-color: $white-30;
@@ -386,7 +369,7 @@ svg {
 
         @media (any-hover: hover) {
             &:hover {
-                background-color: $black;
+                // background-color: $black;
                 color: $white;
             }
         }
@@ -396,18 +379,15 @@ svg {
     &-black {
         background-color: $black;
         color: $white;
+        box-shadow: 0 0 0 0.1rem $black-20;
 
         &:before {
             background-color: $white;
         }
 
-        &:after {
-            border-color: $black-20;
-        }
-
         @media (any-hover: hover) {
             &:hover {
-                background-color: $white;
+                // background-color: $white;
                 color: $black;
             }
         }

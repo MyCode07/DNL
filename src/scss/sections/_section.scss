@@ -270,7 +270,7 @@
 .seo {
     overflow: clip;
     isolation: isolate;
-    background: linear-gradient(180deg, #A2A2A2 0%, #111 100%);
+    background: linear-gradient(180deg, #4B5057 0%, #656A73 100%);
     position: relative;
 
     @media (max-width:1024px) {
@@ -584,7 +584,7 @@
 
     // .deals-controls
     &-controls {
-        @media (768px <= width <= 1024px) {
+        @media (768px <=width <=1024px) {
             z-index: 2;
             position: absolute;
             left: 0;
@@ -1102,7 +1102,7 @@
         }
     }
 
-    @media (1024px < width <= 1440px) {
+    @media (1024px < width <=1440px) {
         --deals-navigation-gap: 1.4rem;
 
         .deals-collection__wrap {
@@ -1283,6 +1283,15 @@
 
         @media (max-width:1024px) {
             padding-top: 16rem;
+        }
+    }
+
+    .section__top {
+
+        h1,
+        .h1,
+        .h2 {
+            max-width: 108rem;
         }
     }
 

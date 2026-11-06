@@ -255,12 +255,3 @@
         bottom: 2.4rem;
     }
 }
-
-button,
-a,
-article {
-    -webkit-mask-image: -webkit-radial-gradient(white, black);
-    mask-image: linear-gradient(#fff 0 0);
-    transform: translateZ(0);
-    backface-visibility: hidden;
-}

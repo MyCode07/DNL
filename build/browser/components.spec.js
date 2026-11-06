@@ -130,6 +130,30 @@ test('production bundle boots and keeps dialogs keyboard accessible', async ({ p
     await expect(page.locator('body')).not.toHaveClass(/_noscroll/);
 });
 
+test('project gallery autoplay advances, pauses on hover and survives manual pagination', async ({
+    page,
+}) => {
+    const slider = page.locator('[data-tab-content="1"] .swiper');
+    await slider.scrollIntoViewIfNeeded();
+    expect(await slider.evaluate((element) => element.swiper.params.autoplay.delay)).toBe(3000);
+    await expect
+        .poll(() => slider.evaluate((element) => element.swiper.autoplay.running))
+        .toBe(true);
+    const initialIndex = await slider.evaluate((element) => element.swiper.activeIndex);
+    await expect
+        .poll(() => slider.evaluate((element) => element.swiper.activeIndex), { timeout: 6000 })
+        .not.toBe(initialIndex);
+    await slider.hover();
+    await expect
+        .poll(() => slider.evaluate((element) => element.swiper.autoplay.paused))
+        .toBe(true);
+    await slider.locator('.swiper-pagination-bullet').first().click();
+    await expect.poll(() => slider.evaluate((element) => element.swiper.activeIndex)).toBe(0);
+    await expect
+        .poll(() => slider.evaluate((element) => element.swiper.autoplay.running))
+        .toBe(true);
+});
+
 test('responsive navigation and project pagination work after tab and viewport changes', async ({
     page,
 }) => {

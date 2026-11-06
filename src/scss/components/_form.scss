@@ -65,12 +65,17 @@
             }
         }
 
-        input {
+        input,
+        textarea {
             width: 100%;
             @include type.typography("primary-button");
             display: block;
             border-bottom: 0.1rem solid $gray-300;
             padding-bottom: 1.2rem;
+
+            @media (max-width:767px) {
+                font-size: 1.6rem;
+            }
 
             &::placeholder {
                 color: $gray-600;
@@ -154,6 +159,10 @@
                 border-radius: 1.4rem;
                 background-color: $gray-100;
                 @include type.typography("primary-button");
+
+                @media (max-width:767px) {
+                    font-size: 1.6rem;
+                }
 
                 &::placeholder {
                     color: $gray-600;
@@ -325,6 +334,10 @@
     gap: 0.8rem;
     padding-top: 0.6rem;
     @include type.typography("primary-button");
+
+    @media (max-width:767px) {
+        font-size: 1.6rem;
+    }
 
     &:before {
         content: '';

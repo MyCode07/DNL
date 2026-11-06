@@ -26,6 +26,7 @@
             height: 4.4rem;
             display: flex;
             flex-direction: column;
+            clip-path: unset !important;
         }
     }
 
@@ -283,6 +284,22 @@
 
         ._social {
             gap: 1rem;
+        }
+    }
+
+    // .menu-project
+    &-project {
+        padding: 0.1rem;
+
+        ._btn {
+            max-height: 98rem;
+            max-width: calc(100% - 0.2rem);
+            min-width: calc(100% - 0.2rem);
+            margin-inline: auto;
+
+            @media (max-width:1024px) {
+                max-height: 88rem;
+            }
         }
     }
 }
