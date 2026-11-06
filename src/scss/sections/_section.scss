@@ -1025,7 +1025,7 @@
         --deals-slide-width: calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4));
 
         .section__body {
-            height: 100svh;
+            min-height: 100svh;
             display: flex;
             flex-direction: column;
         }
@@ -1054,7 +1054,7 @@
             position: relative;
             flex: 1 1 auto;
             height: auto;
-            min-height: 0;
+            min-height: 56rem;
         }
 
         .deals-media__inner img,
@@ -1106,6 +1106,7 @@
         --deals-navigation-gap: 1.4rem;
 
         .deals-collection__wrap {
+            min-height: 33rem;
             width: calc(100% - 44rem);
             align-self: flex-end;
         }

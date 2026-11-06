@@ -164,7 +164,7 @@ test('responsive navigation and project pagination work after tab and viewport c
     await expect.poll(() => project.evaluate((element) => element.swiper.width)).toBeGreaterThan(0);
 });
 
-test('desktop deals fit one screen with stable cards and reserved navigation space', async ({
+test('desktop deals respect minimum artwork height with stable cards and navigation space', async ({
     page,
 }, testInfo) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -179,7 +179,9 @@ test('desktop deals fit one screen with stable cards and reserved navigation spa
     const section = page.locator('.deals');
     for (const [width, height] of [
         [1920, 1080],
+        [1920, 1600],
         [1440, 900],
+        [1440, 1200],
         [1280, 800],
         [1025, 768],
     ]) {
@@ -187,7 +189,7 @@ test('desktop deals fit one screen with stable cards and reserved navigation spa
         await section.scrollIntoViewIfNeeded();
         await expect
             .poll(() => section.evaluate((element) => element.getBoundingClientRect().height))
-            .toBe(height);
+            .toBeGreaterThanOrEqual(height);
         await page.evaluate(() => document.fonts.ready);
         const widths = await section
             .locator('.deals-slide')
@@ -221,10 +223,15 @@ test('desktop deals fit one screen with stable cards and reserved navigation spa
                     imageHeight: element
                         .querySelector('.deals-collection__wrap')
                         .getBoundingClientRect().height,
+                    minimumImageHeight:
+                        (window.innerWidth > 1440 ? 56 : 33) *
+                        parseFloat(getComputedStyle(document.documentElement).fontSize),
                 };
             });
             expect(geometry.gap).toBeCloseTo(geometry.expectedGap, 0);
-            expect(geometry.imageHeight).toBeGreaterThan(100);
+            expect(geometry.imageHeight).toBeGreaterThanOrEqual(geometry.minimumImageHeight);
+            if (height >= 1200)
+                expect(geometry.imageHeight).toBeGreaterThan(geometry.minimumImageHeight);
             expect(geometry.navBottom).toBeLessThanOrEqual(geometry.sectionBottom);
             expect(geometry.transform).toBe('matrix(1, 0, 0, 1, 0, 0)');
             geometry.cards.forEach((card, cardIndex) => {
