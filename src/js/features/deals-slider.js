@@ -3,7 +3,7 @@ import { createScope } from '../core/lifecycle.js';
 import { getDealsOffset } from '../utils/deals-layout.js';
 import { cssTimeToSeconds } from '../utils/css-time.js';
 
-/** Widths belong to CSS; this controller only keeps the active card inside the viewport. */
+/** Desktop cards keep fixed slots; smaller screens retain the scrolling track. */
 export function initDealsSlider(section, media) {
     const track = section.querySelector('.deals-track');
     const viewport = section.querySelector('.deals-viewport');
@@ -59,6 +59,23 @@ export function initDealsSlider(section, media) {
     }
 
     function layout(index, animate = true) {
+        if (!media.mobile.matches) {
+            track.style.setProperty('--deals-count', slides.length);
+            track.classList.add('is-measuring');
+            const height = Math.max(...slides.map((slide) => slide.offsetHeight));
+            viewport.style.setProperty('--deals-cards-height', `${height}px`);
+            if (animate) {
+                track.classList.remove('is-measuring');
+                void track.offsetWidth;
+            }
+            activate(index);
+            offset = 0;
+            track.style.transform = 'translate3d(0, 0, 0)';
+            void track.offsetWidth;
+            track.classList.remove('is-measuring');
+            if (progress) progress.style.transform = `scaleX(${(index + 1) / slides.length})`;
+            return;
+        }
         // Measure the final CSS layout, then restore the start before allowing transitions.
         track.classList.add('is-measuring');
         activate(index);
@@ -155,14 +172,21 @@ export function initDealsSlider(section, media) {
             if (index !== active) request(index);
         });
     });
-    let viewportWidth = viewport.clientWidth;
+    let layoutFrame = 0;
     const resize = new ResizeObserver(() => {
-        if (viewportWidth === viewport.clientWidth) return;
-        viewportWidth = viewport.clientWidth;
-        layout(active, false);
+        if (layoutFrame) return;
+        layoutFrame = requestAnimationFrame(() => {
+            layoutFrame = 0;
+            layout(active, false);
+        });
     });
     resize.observe(viewport);
-    scope.add(() => resize.disconnect());
+    slides.forEach((slide) => resize.observe(slide));
+    scope.add(() => {
+        resize.disconnect();
+        cancelAnimationFrame(layoutFrame);
+    });
+    scope.on(media.mobile, 'change', () => layout(active, false));
     scope.on(media.reducedMotion, 'change', () => {
         if (media.reducedMotion.matches) timeline?.progress(1);
         layout(active, false);

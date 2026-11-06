@@ -164,6 +164,132 @@ test('responsive navigation and project pagination work after tab and viewport c
     await expect.poll(() => project.evaluate((element) => element.swiper.width)).toBeGreaterThan(0);
 });
 
+test('desktop deals fit one screen with stable cards and reserved navigation space', async ({
+    page,
+}, testInfo) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.evaluate(() => {
+        window.destroyComponents();
+        const main = document.querySelector('main');
+        main.replaceChildren(main.querySelector('.deals'));
+        main.style.padding = '0';
+        document.querySelector('.header').style.display = 'none';
+        window.mountComponents();
+    });
+    const section = page.locator('.deals');
+    for (const [width, height] of [
+        [1920, 1080],
+        [1440, 900],
+        [1280, 800],
+        [1025, 768],
+    ]) {
+        await page.setViewportSize({ width, height });
+        await section.scrollIntoViewIfNeeded();
+        await expect
+            .poll(() => section.evaluate((element) => element.getBoundingClientRect().height))
+            .toBe(height);
+        await page.evaluate(() => document.fonts.ready);
+        const widths = await section
+            .locator('.deals-slide')
+            .evaluateAll((slides) => slides.map((slide) => slide.getBoundingClientRect().width));
+        for (let index = 0; index < 4; index++) {
+            await section.locator('.deals-slide').nth(index).click();
+            await expect(section.locator('.deals-slide').nth(index)).toHaveClass(/active/);
+            const geometry = await section.evaluate((element) => {
+                const nav = element.querySelector('.swiper-navigation').getBoundingClientRect();
+                const viewport = element.querySelector('.deals-viewport').getBoundingClientRect();
+                const cards = [...element.querySelectorAll('.deals-slide')].map((card) => {
+                    const rect = card.getBoundingClientRect();
+                    return {
+                        width: rect.width,
+                        left: rect.left,
+                        right: rect.right,
+                        bottom: rect.bottom,
+                    };
+                });
+                return {
+                    cards,
+                    navTop: nav.top,
+                    navBottom: nav.bottom,
+                    sectionBottom: element.getBoundingClientRect().bottom,
+                    gap: nav.top - viewport.bottom,
+                    expectedGap:
+                        parseFloat(
+                            getComputedStyle(element).getPropertyValue('--deals-navigation-gap'),
+                        ) * parseFloat(getComputedStyle(document.documentElement).fontSize),
+                    transform: getComputedStyle(element.querySelector('.deals-track')).transform,
+                    imageHeight: element
+                        .querySelector('.deals-collection__wrap')
+                        .getBoundingClientRect().height,
+                };
+            });
+            expect(geometry.gap).toBeCloseTo(geometry.expectedGap, 0);
+            expect(geometry.imageHeight).toBeGreaterThan(100);
+            expect(geometry.navBottom).toBeLessThanOrEqual(geometry.sectionBottom);
+            expect(geometry.transform).toBe('matrix(1, 0, 0, 1, 0, 0)');
+            geometry.cards.forEach((card, cardIndex) => {
+                expect(card.width).toBeCloseTo(widths[cardIndex], 0);
+                expect(card.left).toBeGreaterThanOrEqual(0);
+                expect(card.right).toBeLessThanOrEqual(width + 1);
+                expect(card.bottom).toBeLessThanOrEqual(geometry.navTop - geometry.expectedGap + 1);
+            });
+        }
+        await section.locator('.deals-slide').first().click();
+        await section.screenshot({ path: testInfo.outputPath(`deals-${width}.png`) });
+    }
+});
+
+test('desktop deals preserve geometry while animated requests are queued', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const section = page.locator('.deals');
+    const before = await section
+        .locator('.deals-slide')
+        .evaluateAll((slides) =>
+            slides.map((slide) => ({ width: slide.offsetWidth, left: slide.offsetLeft })),
+        );
+    for (let index = 0; index < 3; index++) await section.locator('.next').click();
+    await expect(section.locator('.deals-slide').last()).toHaveClass(/active/);
+    await expect
+        .poll(() =>
+            section
+                .locator('.deals-media')
+                .last()
+                .evaluate((image) => getComputedStyle(image).clipPath),
+        )
+        .toBe('inset(0%)');
+    const after = await section
+        .locator('.deals-slide')
+        .evaluateAll((slides) =>
+            slides.map((slide) => ({ width: slide.offsetWidth, left: slide.offsetLeft })),
+        );
+    expect(after).toEqual(before);
+    await expect(section.locator('.next')).toBeDisabled();
+});
+
+test('deals keep the scrolling track at tablet and mobile widths', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    const section = page.locator('.deals');
+    for (const width of [1024, 768, 767, 360]) {
+        await page.setViewportSize({ width, height: 900 });
+        for (let index = 0; index < 3; index++) {
+            if (await section.locator('.prev').isEnabled()) await section.locator('.prev').click();
+        }
+        for (let index = 1; index < 4; index++) await section.locator('.next').click();
+        await expect(section.locator('.deals-slide').last()).toHaveClass(/active/);
+        expect(
+            await section
+                .locator('.deals-slide')
+                .last()
+                .evaluate((slide) => getComputedStyle(slide).position),
+        ).not.toBe('absolute');
+        expect(
+            await section
+                .locator('.deals-track')
+                .evaluate((track) => new DOMMatrixReadOnly(getComputedStyle(track).transform).m41),
+        ).toBeLessThan(0);
+    }
+});
+
 test('every PHP-rendered project has its own description and retains state across tabs', async ({
     page,
 }) => {

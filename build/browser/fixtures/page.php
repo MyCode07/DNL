@@ -72,14 +72,14 @@ function get_field($name)
 {
     if ($name === 'galereya') return [['id' => 1], ['id' => 2], ['id' => 3]];
     if ($name === 'sdelki') return [
-        'zagolovok' => 'Deals',
-        'podzagolovok' => 'Deal stages',
-        'spisok' => array_fill(0, 4, [
-            'zagolovok' => 'Deal stage',
-            'tekst' => 'Stage description',
-            'foto' => ['id' => 1],
-            'foto_mobajl' => ['url' => '/dist/img/project.png'],
-        ]),
+        'zagolovok' => 'Как мы ищем сделки',
+        'podzagolovok' => 'Мы не стремимся к количеству сделок. Каждый объект оцениваем по экономике: текущему денежному потоку, возможностям его роста и потенциалу создания стоимости.',
+        'spisok' => array_map(static fn($title, $index) => [
+            'zagolovok' => $title,
+            'tekst' => 'Предпочтение активам, которые уже способны генерировать арендный поток.',
+            'foto' => ['id' => 101 + $index],
+            'foto_mobajl' => ['url' => '/dist/img/deals-' . ($index + 1) . '.png'],
+        ], ['Existing Cash Flow', 'Value-Add Potential', 'Development Upside', 'Clear Economics'], range(0, 3)),
     ];
     if ($name === 'pochemu') return [
         'zagolovok' => 'Why Frame',
@@ -95,6 +95,9 @@ function get_field($name)
 }
 function wp_get_attachment_image($id, $size)
 {
+    if ($id >= 101 && $id <= 104) {
+        return '<img src="/dist/img/deals-' . ($id - 100) . '.png" alt="Deal illustration" width="1920" height="960">';
+    }
     return '<img src="/dist/img/project.png" alt="Project image" width="600" height="400">';
 }
 function the_title()
