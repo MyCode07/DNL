@@ -218,6 +218,34 @@ for (const width of [390, 1100, 1440, 1600, 1780]) {
     });
 }
 
+test('header CTA follows the end of hero content rather than the viewport height', async ({
+    page,
+}) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.setViewportSize({ width: 1920, height: 900 });
+    await page.evaluate(() => {
+        window.destroyComponents();
+        const content = document.createElement('div');
+        content.className = 'hero__content';
+        content.style.cssText =
+            'position:absolute;top:0;height:1200px;width:1px;pointer-events:none';
+        document.body.append(content);
+        window.mountComponents();
+    });
+    const project = page.locator('.menu-project');
+    await expect(project).toHaveJSProperty('inert', false);
+    await page.evaluate(() => window.scrollTo(0, 900));
+    await expect(project).toHaveJSProperty('inert', false);
+    await page.evaluate(() => window.scrollTo(0, 1200));
+    await expect(project).toHaveJSProperty('inert', true);
+    await page.locator('.menu-toggle').click();
+    await expect(project).toHaveJSProperty('inert', false);
+    await page.keyboard.press('Escape');
+    await expect(project).toHaveJSProperty('inert', true);
+    await page.evaluate(() => window.scrollTo(0, 1100));
+    await expect(project).toHaveJSProperty('inert', false);
+});
+
 test('marked sections compact only the closed desktop header between 1440 and 1780', async ({
     page,
 }) => {

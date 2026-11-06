@@ -40,6 +40,10 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
             getBoundingClientRect: () => ({ top: 40, bottom: 104 }),
         };
         const button = { classList: classes() };
+        let heroBottom = 1200;
+        const heroContent = {
+            getBoundingClientRect: () => ({ bottom: heroBottom - viewport.scrollY }),
+        };
         const section = {
             hasAttribute: () => true,
             getBoundingClientRect: () => ({
@@ -61,7 +65,11 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
             }),
         };
         const destroy = initHeader({
-            querySelector: (selector) => (selector === '.header' ? header : button),
+            querySelector: (selector) => {
+                if (selector === '.header') return header;
+                if (selector === '.hero__content') return heroContent;
+                return button;
+            },
             querySelectorAll: (selector) => {
                 if (selector === '[data-dark]') return [section];
                 if (selector === '[data-small-header]') return [section];
@@ -112,5 +120,21 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
         viewport.innerWidth = 1600;
         check(700, false);
         assert.equal(header.classList.contains('header-small'), false);
+        // The content can be taller or shorter than the viewport, including after resize.
+        for (const scrollY of [799, 800, 1199.5, 1200, 1201, 1200, 1199.5]) {
+            viewport.scrollY = scrollY;
+            viewport.dispatchEvent(new Event('scroll'));
+            pendingFrame();
+            assert.equal(header.classList.contains('header-scrolled'), scrollY >= heroBottom);
+        }
+        for (const bottom of [600, 1400]) {
+            heroBottom = bottom;
+            viewport.dispatchEvent(new Event('resize'));
+            pendingFrame();
+            assert.equal(
+                header.classList.contains('header-scrolled'),
+                viewport.scrollY >= heroBottom,
+            );
+        }
     });
 }
