@@ -2,7 +2,7 @@
 export function createMediaQueries() {
     return {
         mobile: window.matchMedia('(max-width: 1024px)'),
-        compact: window.matchMedia('(max-width: 1280px)'),
+        compact: window.matchMedia('(max-width: 1440px)'),
         reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)'),
     };
 }

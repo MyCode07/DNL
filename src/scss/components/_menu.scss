@@ -3,7 +3,7 @@
 @use "../abstracts/compact-menu";
 
 .menu {
-    @media (max-width:1280px) {
+    @media (max-width:1440px) {
         margin-left: auto;
     }
 
@@ -15,7 +15,7 @@
         background-color: $white-06;
         backdrop-filter: blur(7rem);
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             padding: 1.4rem;
             border-radius: 2rem;
         }
@@ -100,14 +100,14 @@
             padding: 1rem 1rem 0 0;
         }
 
-        @media (max-width:1280px) {
+        @media (max-width:1440px) {
             justify-content: flex-end;
         }
 
         span {
             white-space: nowrap;
 
-            @media (max-width:1280px) {
+            @media (max-width:1440px) {
                 @include compact-menu.toggle-label;
             }
         }

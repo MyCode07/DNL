@@ -197,11 +197,13 @@ test('every PHP-rendered project has its own description and retains state acros
     ).toHaveJSProperty('inert', false);
 });
 
-for (const width of [390, 1100, 1440, 1600, 1780]) {
+for (const width of [390, 1100, 1280, 1281, 1439, 1440, 1441, 1600, 1780]) {
     test(`menu opens and closes without empty GSAP targets at width ${width}`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 });
         await page.evaluate(() => window.mountComponents());
         const toggle = page.locator('.menu-toggle');
+        if (width <= 1440) await expect(toggle.locator('span')).toBeHidden();
+        else await expect(toggle.locator('span')).toBeVisible();
         await toggle.click();
         await expect(toggle).toHaveAttribute('aria-expanded', 'true');
         await expect(page.locator('.menu-body')).toHaveJSProperty('inert', false);
@@ -209,6 +211,7 @@ for (const width of [390, 1100, 1440, 1600, 1780]) {
         await expect(toggle).toHaveAttribute('aria-expanded', 'false');
         await expect(toggle).toBeFocused();
         await expect(page.locator('body')).not.toHaveClass(/_noscroll/);
+        if (width <= 1440) await expect(toggle.locator('span')).toBeHidden();
         await toggle.click();
         await expect(toggle).toHaveAttribute('aria-expanded', 'true');
         await page.locator('main').dispatchEvent('click');
