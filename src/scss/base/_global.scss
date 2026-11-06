@@ -302,8 +302,6 @@ svg {
 }
 
 ._btn {
-    --btn-border-slice: 45;
-    --btn-border-width: 4.5rem;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -325,8 +323,6 @@ svg {
     }
 
     @media (max-width:1440px) {
-        --btn-border-slice: 32;
-        --btn-border-width: 3.2rem;
         min-width: 28.2rem;
         height: 9rem;
         border-radius: 2rem;
@@ -365,11 +361,6 @@ svg {
         border: 0.1rem solid;
         border-radius: inherit;
         display: none;
-        pointer-events: none;
-        // Nine-slice vector corners follow CornerKit without stretching their radius.
-        border-image-slice: var(--btn-border-slice);
-        border-image-width: var(--btn-border-width);
-        border-image-repeat: stretch;
     }
 
     @media (any-hover: hover) {
@@ -391,12 +382,6 @@ svg {
 
         &:after {
             border-color: $white-30;
-            border-image-source: url('@img/icons/button-border-28-white.svg');
-            opacity: 0.3;
-
-            @media (max-width:1440px) {
-                border-image-source: url('@img/icons/button-border-20-white.svg');
-            }
         }
 
         @media (any-hover: hover) {
@@ -418,12 +403,6 @@ svg {
 
         &:after {
             border-color: $black-20;
-            border-image-source: url('@img/icons/button-border-28-black.svg');
-            opacity: 0.2;
-
-            @media (max-width:1440px) {
-                border-image-source: url('@img/icons/button-border-20-black.svg');
-            }
         }
 
         @media (any-hover: hover) {
