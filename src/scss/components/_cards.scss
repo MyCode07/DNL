@@ -468,7 +468,8 @@
         position: relative;
         overflow: hidden;
         border-radius: 2.8rem;
-        background-color: $black;
+        // Keep the image's antialiased edge free of a dark backing layer.
+        background-color: transparent;
         display: block;
 
         @media (max-width:1440px) {
@@ -491,7 +492,6 @@
             object-fit: cover;
             object-position: center;
             transition: transform 0.5s ease-in-out 0s;
-            will-change: transform;
             min-height: 27rem;
 
             @media (max-width:767px) {
