@@ -302,8 +302,6 @@ svg {
 }
 
 ._btn {
-    --btn-base: #{$white};
-    --btn-fill: #{$black};
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -311,14 +309,14 @@ svg {
     text-align: left;
     height: 10rem;
     border-radius: 2.8rem;
-    padding: 2rem 2rem 1.6rem;
+    padding: 2rem 2rem 1.6rem 2rem;
     width: fit-content;
     min-width: 33.6rem;
+    height: 10rem;
     overflow: hidden;
     position: relative;
     isolation: isolate;
-    background-color: transparent;
-    transition: color 0.3s ease-in-out;
+    transition: color 0.3s ease-in-out 0s, background-color 0.3s ease-in-out 0s;
 
     * {
         pointer-events: none;
@@ -328,28 +326,19 @@ svg {
         min-width: 28.2rem;
         height: 9rem;
         border-radius: 2rem;
-        padding: 1.6rem 1.6rem 1.2rem;
+        padding: 1.6rem 1.6rem 1.2rem 1.6rem;
     }
 
     @media (max-width:767px) {
         min-width: 22rem;
     }
 
-    // Pseudo-elements provide the same layers for form buttons supplied by CF7.
-    &::after,
-    > ._btn__base {
-        content: '';
-        display: block;
-        position: absolute;
-        inset: -1px;
-        z-index: -2;
-        background-color: var(--btn-base);
-        pointer-events: none;
+    span {
+        position: relative;
+        z-index: 1;
     }
 
-    &::before,
-    > ._btn__fill {
-        content: '';
+    &:before {
         display: block;
         position: absolute;
         width: 1rem;
@@ -357,42 +346,70 @@ svg {
         right: 2rem;
         top: 2rem;
         border-radius: 0.2rem;
+        content: '';
         z-index: -1;
-        background-color: var(--btn-fill);
+        background-color: $black;
         transition: transform 0.5s ease-in-out;
+        will-change: transoform;
         transform-origin: center;
-        pointer-events: none;
     }
 
-    &:has(> ._btn__base)::after,
-    &:has(> ._btn__fill)::before {
-        content: none;
-    }
-
-    &-white {
-        color: $black;
-    }
-
-    &-black {
-        --btn-base: #{$black};
-        --btn-fill: #{$white};
-        color: $white;
+    &:after {
+        position: absolute;
+        content: "";
+        inset: 0;
+        border: 0.1rem solid;
+        border-radius: inherit;
+        display: none;
     }
 
     @media (any-hover: hover) {
         &:hover {
-            &::before,
-            > ._btn__fill {
+            &:before {
                 transform: scale(80);
             }
+
+            &:after {
+                display: block;
+            }
+        }
+    }
+
+    // ._btn-white
+    &-white {
+        background-color: $white;
+        color: $black;
+
+        &:after {
+            border-color: $white-30;
         }
 
-        &-white:hover {
-            color: $white;
+        @media (any-hover: hover) {
+            &:hover {
+                background-color: $black;
+                color: $white;
+            }
+        }
+    }
+
+    // ._btn-black
+    &-black {
+        background-color: $black;
+        color: $white;
+
+        &:before {
+            background-color: $white;
         }
 
-        &-black:hover {
-            color: $black;
+        &:after {
+            border-color: $black-20;
+        }
+
+        @media (any-hover: hover) {
+            &:hover {
+                background-color: $white;
+                color: $black;
+            }
         }
     }
 }
