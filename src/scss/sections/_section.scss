@@ -1021,8 +1021,14 @@
     }
 
     @media (min-width:1025px) {
-        --deals-navigation-gap: 6rem;
+        --deals-navigation-gap: 3rem;
         --deals-slide-width: calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4));
+
+        .section__body {
+            min-height: 100svh;
+            display: flex;
+            flex-direction: column;
+        }
 
         .section__top {
             position: relative;
@@ -1081,7 +1087,7 @@
         }
 
         .swiper-navigation {
-            margin-top: 3rem;
+            margin-top: var(--deals-navigation-gap);
         }
     }
 
