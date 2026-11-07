@@ -34,9 +34,11 @@
             background-size: cover;
             background-position: 50% 0%;
 
+            @media (max-width:1280px) {
+            }
+
             @media (max-width:1024px) {
                 height: 100vh;
-                // height: 100svh;
             }
 
             @media (max-width:767px) {}

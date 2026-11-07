@@ -43,7 +43,7 @@ export function initSliders(root, media) {
                     768: {
                         slidesPerView: 2,
                     },
-                    1025: {
+                    1281: {
                         slidesPerView: 3,
                     },
                 },
