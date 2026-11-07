@@ -24,3 +24,28 @@ add_filter('script_loader_tag', static function (string $tag, string $handle): s
     }
     return $tag;
 }, 10, 2);
+
+// Hide the page scrollbar for local design overlays without disabling scrolling.
+add_action('wp_footer', static function (): void {
+    if (!frame_is_vite_dev()) {
+        return;
+    }
+
+    wp_print_inline_script_tag(<<<'JS'
+(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+        html, body {
+            scrollbar-width: none !important;
+            scrollbar-gutter: auto !important;
+        }
+        html::-webkit-scrollbar, body::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+    `;
+    document.head.append(style);
+})();
+JS, ['id' => 'frame-dev-scrollbar']);
+});
