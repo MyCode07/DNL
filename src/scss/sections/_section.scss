@@ -1020,12 +1020,6 @@
         --deals-navigation-gap: 3rem;
         --deals-slide-width: calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4));
 
-        .section__body {
-            min-height: 100svh;
-            display: flex;
-            flex-direction: column;
-        }
-
         .section__top {
             position: relative;
             z-index: 2;
@@ -1037,13 +1031,6 @@
                 left: 0;
                 width: 100%;
             }
-        }
-
-        .deals-slider {
-            flex: 1 1 auto;
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
         }
 
         .deals-collection__wrap {
@@ -1082,7 +1069,7 @@
 
         .deals-controls {
             position: relative;
-            margin-top: -7rem;
+            margin-top: -9rem;
         }
 
         .swiper-navigation {
