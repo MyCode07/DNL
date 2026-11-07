@@ -74,9 +74,14 @@
             width: 100%;
             max-width: 33.6rem;
             position: relative;
+            margin-top: 0.4rem;
 
             @media (max-width:1440px) {
                 max-width: 31.3rem;
+            }
+
+            @media (max-width:1024px) {
+                margin-top: 0;
             }
 
             button {
@@ -100,6 +105,13 @@
 
             .wpcf7-not-valid-tip {
                 position: static;
+            }
+
+            &__item {
+                input {
+                    @include type.typography("body-text");
+                    padding-bottom: 0.8rem;
+                }
             }
 
             .form__privacy {

@@ -193,7 +193,7 @@
         grid-auto-rows: auto;
         gap: 1.6rem;
         width: 100%;
-        max-width: 146rem;
+        max-width: 144rem;
 
         @media (max-width:1440px) {
             margin-top: 4rem;
@@ -1024,12 +1024,6 @@
         --deals-navigation-gap: 6rem;
         --deals-slide-width: calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4));
 
-        .section__body {
-            min-height: 100svh;
-            display: flex;
-            flex-direction: column;
-        }
-
         .section__top {
             position: relative;
             z-index: 2;
@@ -1060,19 +1054,7 @@
         .deals-media__inner img,
         .deals-media__inner picture {
             object-fit: contain;
-        }
-
-        .deals-media__inner img {
-            // The shared artwork has empty space below the illustration.
-            height: 160%;
-        }
-
-        .deals-controls {
-            position: relative;
-            bottom: auto;
-            flex: 0 0 auto;
-            display: grid;
-            gap: var(--deals-navigation-gap);
+            object-position: center;
         }
 
         .deals-viewport {
@@ -1093,12 +1075,13 @@
             visibility: hidden;
         }
 
-        .swiper-navigation {
+        .deals-controls {
             position: relative;
-            bottom: auto;
-            left: auto;
-            transform: none;
-            margin: 0 auto;
+            margin-top: -6rem;
+        }
+
+        .swiper-navigation {
+            margin-top: 3rem;
         }
     }
 
@@ -1243,14 +1226,12 @@
     }
 
     .section__body {
-        min-height: 100vh;
-        // min-height: 100svh;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: flex-start;
 
         @media (max-width:1024px) {
-            justify-content: flex-start;
+            min-height: 100vh;
         }
 
         @media (max-width:767px) {
@@ -1261,7 +1242,7 @@
     }
 
     .section__top {
-        margin-bottom: 12rem;
+        margin-bottom: 18rem;
 
         @media (max-width:1440px) {
             margin-bottom: 8rem;

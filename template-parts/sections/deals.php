@@ -17,13 +17,10 @@ if (!$list) return;
                         <div class="deals-collection">
                             <div class="deals-media">
                                 <div class="deals-media__inner">
-                                    <picture>
-                                        <source media="(max-width: 767px)" srcset="<?php echo esc_url($item['foto_mobajl']['url']); ?>">
-                                        <?php echo wp_get_attachment_image(
-                                            $item['foto']['id'],
-                                            'full'
-                                        ); ?>
-                                    </picture>
+                                    <?php echo wp_get_attachment_image(
+                                        $item['foto']['id'],
+                                        'full'
+                                    ); ?>
                                 </div>
                             </div>
                         </div>
