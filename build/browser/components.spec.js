@@ -201,6 +201,7 @@ test('desktop deals respect minimum artwork height with stable cards and navigat
         window.mountComponents();
     });
     const section = page.locator('.deals');
+    const sectionHeights = new Map();
     for (const [width, height] of [
         [1920, 1080],
         [1920, 1600],
@@ -211,9 +212,6 @@ test('desktop deals respect minimum artwork height with stable cards and navigat
     ]) {
         await page.setViewportSize({ width, height });
         await section.scrollIntoViewIfNeeded();
-        await expect
-            .poll(() => section.evaluate((element) => element.getBoundingClientRect().height))
-            .toBeGreaterThanOrEqual(height);
         await page.evaluate(() => document.fonts.ready);
         const widths = await section
             .locator('.deals-slide')
@@ -254,8 +252,6 @@ test('desktop deals respect minimum artwork height with stable cards and navigat
             });
             expect(geometry.gap).toBeCloseTo(geometry.expectedGap, 0);
             expect(geometry.imageHeight).toBeGreaterThanOrEqual(geometry.minimumImageHeight);
-            if (height >= 1200)
-                expect(geometry.imageHeight).toBeGreaterThan(geometry.minimumImageHeight);
             expect(geometry.navBottom).toBeLessThanOrEqual(geometry.sectionBottom);
             expect(geometry.transform).toBe('matrix(1, 0, 0, 1, 0, 0)');
             geometry.cards.forEach((card, cardIndex) => {
@@ -264,6 +260,15 @@ test('desktop deals respect minimum artwork height with stable cards and navigat
                 expect(card.right).toBeLessThanOrEqual(width + 1);
                 expect(card.bottom).toBeLessThanOrEqual(geometry.navTop - geometry.expectedGap + 1);
             });
+        }
+        const sectionHeight = await section.evaluate(
+            (element) => element.getBoundingClientRect().height,
+        );
+        if (sectionHeights.has(width)) {
+            // A taller viewport must not reintroduce empty space around the artwork.
+            expect(sectionHeight).toBeCloseTo(sectionHeights.get(width), 0);
+        } else {
+            sectionHeights.set(width, sectionHeight);
         }
         await section.locator('.deals-slide').first().click();
         await section.screenshot({ path: testInfo.outputPath(`deals-${width}.png`) });
@@ -464,15 +469,28 @@ test('header compaction animates and can be interrupted by opening or leaving th
         (await page.locator('.menu-toggle').boundingBox()).x,
         0,
     );
-    await page.evaluate(() => {
+    const intermediateWidth = await page.evaluate((initialWidth) => {
         document.querySelector('#small-header-test').style.top = '0';
         window.dispatchEvent(new Event('scroll'));
-    });
-    await expect(page.locator('.header')).toHaveClass(/header-small/);
-    await expect.poll(async () => (await menu.boundingBox()).width).toBeLessThan(initialWidth - 5);
-    const intermediateWidth = (await menu.boundingBox()).width;
+        return new Promise((resolve) => {
+            const interrupt = () => {
+                const width = document.querySelector('.menu').getBoundingClientRect().width;
+                if (
+                    document.querySelector('.header').classList.contains('header-small') &&
+                    width < initialWidth - 5
+                ) {
+                    // Measure and interrupt in one frame, before another browser round trip.
+                    document.querySelector('.menu-toggle').click();
+                    resolve(width);
+                } else {
+                    requestAnimationFrame(interrupt);
+                }
+            };
+            requestAnimationFrame(interrupt);
+        });
+    }, initialWidth);
+    expect(intermediateWidth).toBeLessThan(initialWidth - 5);
     expect(intermediateWidth).toBeGreaterThan(70);
-    await page.locator('.menu-toggle').dispatchEvent('click');
     await expect.poll(async () => (await menu.boundingBox()).width).toBeCloseTo(initialWidth, 0);
     await expect(page.locator('.menu-toggle span')).toBeVisible();
     await page.locator('main').dispatchEvent('click');
