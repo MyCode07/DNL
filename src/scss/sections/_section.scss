@@ -950,6 +950,13 @@
                 aspect-ratio: 1/0.44;
                 margin-top: 6rem;
                 margin-bottom: 3rem;
+
+                & > :last-child {
+
+                    img{
+                        transform: scale(1.7);
+                    }
+                }
             }
         }
     }
@@ -975,8 +982,7 @@
             position: absolute;
             inset: 0;
 
-            img,
-            picture {
+            img {
                 display: block;
                 width: 100%;
                 height: 100%;
@@ -987,10 +993,13 @@
                     position: relative;
                     object-fit: contain;
                     object-position: center;
-                    width: 125%;
-                    max-width: none;
-                    left: 50%;
-                    transform: translate(-50%, 0);
+                }
+
+                @media (max-width:767px) {
+                    transform: scale(1.14);
+                    transform-origin: center;
+                    top: -1.4rem;
+                    left: 0.4rem;
                 }
             }
         }
@@ -1256,7 +1265,7 @@
 
         p {
             @media (max-width:767px) {
-                max-width: 25rem;
+                max-width: 27rem;
             }
         }
     }

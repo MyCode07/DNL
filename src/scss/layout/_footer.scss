@@ -136,7 +136,7 @@
 
             @media (max-width:767px) {
                 flex-direction: column;
-                gap: 10rem;
+                gap: 6rem;
             }
         }
 
@@ -261,6 +261,10 @@
             max-width: 49rem;
             gap: 1.2rem;
             margin-top: -2rem;
+        }
+
+        @media (max-width:475px) {
+            max-width: 90%;
         }
 
         &:before {

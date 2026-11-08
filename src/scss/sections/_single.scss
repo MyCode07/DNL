@@ -178,6 +178,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease 0s;
+            z-index: 1;
 
             @media (max-width:1440px) {
                 max-width: 30rem;

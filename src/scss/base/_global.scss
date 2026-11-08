@@ -108,8 +108,8 @@ label {
             background-color: $black;
 
             @media (max-width:1440px) {
-                width: 4rem;
-                height: 4rem;
+                width: 4.4rem;
+                height: 4.4rem;
             }
 
             img,
@@ -347,6 +347,11 @@ svg {
         transition: all 0.5s ease-in-out;
         will-change: transoform;
         transform-origin: center;
+
+        @media (max-width:1024px){
+            right: 1.6rem;
+            top: 1.6rem;
+        }
     }
 
     @media (any-hover: hover) {
