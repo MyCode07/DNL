@@ -754,14 +754,15 @@ picture {
         height: auto;
         border-radius: 2.8rem;
         display: block;
+        max-height: 74.2rem;
 
         @media (max-width:1440px) {
             border-radius: 2rem;
             margin: 6rem 0;
         }
 
-        @media (max-width:767px) {
-            margin: 4rem 0;
+        @media (max-width:475px) {
+            aspect-ratio: 1/0.683;
         }
 
         &:last-child,
