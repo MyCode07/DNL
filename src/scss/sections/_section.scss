@@ -1008,7 +1008,12 @@
         --deals-slide-width: calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4));
 
         .deals-viewport {
-            height: calc(var(--deals-cards-height, 21rem) + 0.2rem);
+            // Include the viewport's existing top padding around the fixed card height.
+            height: calc(21rem + 0.2rem);
+
+            @media (max-width:1440px) {
+                height: calc(15rem + 0.2rem);
+            }
         }
 
         .deals-track {
@@ -1058,18 +1063,6 @@
         .deals-media__inner picture {
             object-fit: contain;
             object-position: center;
-        }
-
-        .deals-viewport {
-            height: calc(var(--deals-cards-height, 21rem) + 0.2rem);
-        }
-
-        .deals-track {
-            height: 100%;
-        }
-
-        .deals-slide {
-            height: auto;
         }
 
         .deals-slide:not(.active) p {

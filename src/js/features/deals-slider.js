@@ -61,12 +61,7 @@ export function initDealsSlider(section, media) {
     }
 
     function layout(index, animate = true) {
-        if (!mobile.matches) {
-            track.style.setProperty('--deals-count', slides.length);
-            track.classList.add('is-measuring');
-            const height = Math.max(...slides.map((slide) => slide.offsetHeight));
-            viewport.style.setProperty('--deals-cards-height', `${height}px`);
-        }
+        track.style.setProperty('--deals-count', slides.length);
         // Measure the final CSS layout, then restore the start before allowing transitions.
         track.classList.add('is-measuring');
         activate(index);
