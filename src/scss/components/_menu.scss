@@ -3,6 +3,8 @@
 @use "../abstracts/compact-menu";
 
 .menu {
+    white-space: nowrap;
+
     @media (max-width:1440px) {
         margin-left: auto;
     }

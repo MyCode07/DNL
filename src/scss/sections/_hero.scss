@@ -12,17 +12,6 @@
         z-index: -2;
         pointer-events: none;
 
-        @media (max-width:1024px) {
-            &:before {
-                position: absolute;
-                content: '';
-                inset: 0;
-                background: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.00) 25%);
-                z-index: 1;
-                display: none;
-            }
-        }
-
         // .hero__bg-image
         &-image {
             position: sticky;
@@ -39,8 +28,6 @@
             @media (max-width:1024px) {
                 height: 100vh;
             }
-
-            @media (max-width:767px) {}
         }
     }
 

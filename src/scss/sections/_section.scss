@@ -1010,10 +1010,6 @@
         .deals-viewport {
             // Include the viewport's existing top padding around the fixed card height.
             height: calc(21rem + 0.2rem);
-
-            @media (max-width:1440px) {
-                height: calc(15rem + 0.2rem);
-            }
         }
 
         .deals-track {
@@ -1029,7 +1025,7 @@
         --deals-slide-width: max(32rem, calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4)));
     }
 
-    @media (768px <= width <= 1440px) {
+    @media (768px <=width <=1440px) {
         --deals-active-space: 0.5;
     }
 

@@ -394,8 +394,12 @@
             padding: 2.4rem 2.4rem 2rem 2.4rem;
         }
 
-        @media (max-width:767px) {
+        @media (max-width:1024px) {
             flex-direction: column;
+            gap: 2rem;
+        }
+
+        @media (max-width:767px) {
             gap: 0;
             padding: 2rem 2rem 1.5rem 2rem;
         }
@@ -500,6 +504,10 @@
         display: flex;
         flex-wrap: wrap;
         gap: 0.8rem 0.4rem;
+
+        @media (max-width:1024px) {
+            flex-direction: column;
+        }
     }
 
     // .post-item__date
