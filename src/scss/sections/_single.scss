@@ -41,13 +41,16 @@
             img,
             picture {
                 border-radius: 2.8rem;
+                max-height: 73rem;
                 object-fit: cover;
 
                 @media (max-width:1440px) {
                     border-radius: 2rem;
                 }
 
-                @media (max-width:475px) {}
+                @media (max-width:475px) {
+                    // aspect-ratio: 1/0.68;
+                }
             }
         }
     }

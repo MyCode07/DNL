@@ -110,6 +110,7 @@ label {
             @media (max-width:1440px) {
                 width: 4.4rem;
                 height: 4.4rem;
+                border-radius: 1rem;
             }
 
             img,
@@ -331,6 +332,7 @@ svg {
 
     @media (max-width:767px) {
         min-width: 22rem;
+        border-radius: 1.4rem;
     }
 
     &:before {

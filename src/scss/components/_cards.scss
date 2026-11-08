@@ -164,7 +164,6 @@
             color: $white-60;
             background: transparent;
             justify-content: center;
-            margin-top: 0.4rem;
 
             &[hidden] {
                 display: none;
@@ -373,6 +372,10 @@
     height: 100%;
     overflow: hidden;
     flex: 0 0 auto;
+
+    @media (max-width:1440px) {
+        border-radius: 2rem;
+    }
 
     // .why-item__top
     &__top {
