@@ -570,6 +570,8 @@
 
     --deals-slide-width: 25%;
     --deals-gap: 2rem;
+    // Extra space after the active card, as a fraction of its unchanged width.
+    --deals-active-space: 0.08;
     --deals-duration: 800ms;
     --deals-ease: cubic-bezier(0.65, 0, 0.35, 1);
 
@@ -684,7 +686,7 @@
         cursor: pointer;
         height: 21rem;
 
-        @media (min-width:1025px) {
+        @media (min-width:768px) {
             position: absolute;
             left: 0;
             top: 0;
@@ -996,12 +998,31 @@
 
     @media (min-width:1025px) {
         --deals-navigation-gap: 3rem;
-        --deals-slide-width: calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4));
 
         .section__top {
             position: relative;
             z-index: 2;
             flex: 0 0 auto;
+
+    @media (min-width:768px) {
+        --deals-slide-width: calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4));
+
+        .deals-viewport {
+            height: calc(var(--deals-cards-height, 21rem) + 0.2rem);
+        }
+
+        .deals-track {
+            height: 100%;
+        }
+
+        .deals-slide {
+            left: calc(var(--slide) * (var(--deals-slide-width) + var(--deals-gap)) + var(--deals-after-active, 0) * var(--deals-slide-width) * var(--deals-active-space));
+        }
+    }
+
+    @media (767px < width < 1440px) {
+        --deals-slide-width: max(32rem, calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4)));
+    }
 
             p {
                 position: absolute;
@@ -1036,7 +1057,6 @@
         }
 
         .deals-slide {
-            left: calc(var(--slide) * (var(--deals-slide-width) + var(--deals-gap)));
             height: auto;
         }
 

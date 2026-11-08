@@ -188,7 +188,7 @@ test('responsive navigation and project pagination work after tab and viewport c
     await expect.poll(() => project.evaluate((element) => element.swiper.width)).toBeGreaterThan(0);
 });
 
-test('desktop deals respect minimum artwork height with stable cards and navigation space', async ({
+test('desktop deals reserve active space with stable card widths and navigation space', async ({
     page,
 }, testInfo) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -217,7 +217,7 @@ test('desktop deals respect minimum artwork height with stable cards and navigat
             .locator('.deals-slide')
             .evaluateAll((slides) => slides.map((slide) => slide.getBoundingClientRect().width));
         for (let index = 0; index < 4; index++) {
-            await section.locator('.deals-slide').nth(index).click();
+            if (index > 0) await section.locator('.next').click();
             await expect(section.locator('.deals-slide').nth(index)).toHaveClass(/active/);
             const geometry = await section.evaluate((element) => {
                 const nav = element.querySelector('.swiper-navigation').getBoundingClientRect();
@@ -253,11 +253,12 @@ test('desktop deals respect minimum artwork height with stable cards and navigat
             expect(geometry.gap).toBeCloseTo(geometry.expectedGap, 0);
             expect(geometry.imageHeight).toBeGreaterThanOrEqual(geometry.minimumImageHeight);
             expect(geometry.navBottom).toBeLessThanOrEqual(geometry.sectionBottom);
-            expect(geometry.transform).toBe('matrix(1, 0, 0, 1, 0, 0)');
             geometry.cards.forEach((card, cardIndex) => {
                 expect(card.width).toBeCloseTo(widths[cardIndex], 0);
-                expect(card.left).toBeGreaterThanOrEqual(0);
-                expect(card.right).toBeLessThanOrEqual(width + 1);
+                if (cardIndex === index) {
+                    expect(card.left).toBeGreaterThanOrEqual(0);
+                    expect(card.right).toBeLessThanOrEqual(width + 1);
+                }
                 expect(card.bottom).toBeLessThanOrEqual(geometry.navTop - geometry.expectedGap + 1);
             });
         }
@@ -270,7 +271,7 @@ test('desktop deals respect minimum artwork height with stable cards and navigat
         } else {
             sectionHeights.set(width, sectionHeight);
         }
-        await section.locator('.deals-slide').first().click();
+        for (let back = 0; back < 3; back++) await section.locator('.prev').click();
         await section.screenshot({ path: testInfo.outputPath(`deals-${width}.png`) });
     }
 });
@@ -298,12 +299,16 @@ test('desktop deals preserve geometry while animated requests are queued', async
         .evaluateAll((slides) =>
             slides.map((slide) => ({ width: slide.offsetWidth, left: slide.offsetLeft })),
         );
-    expect(after).toEqual(before);
+    expect(after.map((card) => card.width)).toEqual(before.map((card) => card.width));
+    expect(after[1].left).toBeLessThan(before[1].left);
     await expect(section.locator('.next')).toBeDisabled();
 });
 
 test('deals keep the scrolling track at tablet and mobile widths', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.evaluate(() => {
+        document.querySelector('main').style.padding = '0';
+    });
     const section = page.locator('.deals');
     for (const width of [1024, 768, 767, 360]) {
         await page.setViewportSize({ width, height: 900 });
@@ -312,17 +317,39 @@ test('deals keep the scrolling track at tablet and mobile widths', async ({ page
         }
         for (let index = 1; index < 4; index++) await section.locator('.next').click();
         await expect(section.locator('.deals-slide').last()).toHaveClass(/active/);
+        const geometry = await section.evaluate((element) => {
+            const slides = [...element.querySelectorAll('.deals-slide')];
+            const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+            return {
+                widths: slides.map((slide) => slide.getBoundingClientRect().width),
+                last: slides.at(-1).getBoundingClientRect().right,
+                minimum: 32 * rem,
+            };
+        });
+        expect(geometry.last).toBeLessThanOrEqual(width + 1);
+        if (width > 767) {
+            geometry.widths.forEach((cardWidth) =>
+                expect(cardWidth).toBeGreaterThanOrEqual(geometry.minimum - 1),
+            );
+        }
         expect(
             await section
                 .locator('.deals-slide')
                 .last()
                 .evaluate((slide) => getComputedStyle(slide).position),
-        ).not.toBe('absolute');
+        ).toBe(width > 767 ? 'absolute' : 'static');
         expect(
             await section
                 .locator('.deals-track')
                 .evaluate((track) => new DOMMatrixReadOnly(getComputedStyle(track).transform).m41),
         ).toBeLessThan(0);
+        for (let index = 0; index < 3; index++) await section.locator('.prev').click();
+        expect(
+            await section
+                .locator('.deals-slide')
+                .first()
+                .evaluate((slide) => slide.getBoundingClientRect().left),
+        ).toBeGreaterThanOrEqual(0);
     }
 });
 

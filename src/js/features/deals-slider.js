@@ -3,7 +3,7 @@ import { createScope } from '../core/lifecycle.js';
 import { getDealsOffset } from '../utils/deals-layout.js';
 import { cssTimeToSeconds } from '../utils/css-time.js';
 
-/** Desktop cards keep fixed slots; smaller screens retain the scrolling track. */
+/** Absolute cards reserve extra space after the active card; mobile keeps its flex track. */
 export function initDealsSlider(section, media) {
     const track = section.querySelector('.deals-track');
     const viewport = section.querySelector('.deals-viewport');
@@ -11,6 +11,7 @@ export function initDealsSlider(section, media) {
     const images = [...section.querySelectorAll('.deals-media')];
     if (!track || !viewport || !slides.length) return;
     const scope = createScope();
+    const mobile = window.matchMedia('(max-width: 767px)');
     const context = gsap.context(() => {}, section);
     const prev = section.querySelector('.prev');
     const next = section.querySelector('.next');
@@ -38,6 +39,7 @@ export function initDealsSlider(section, media) {
     function activate(index) {
         slides.forEach((slide, i) => {
             slide.classList.toggle('active', i === index);
+            slide.style.setProperty('--deals-after-active', i > index ? 1 : 0);
             slide
                 .querySelector('.deals-slide__layer--preview')
                 ?.setAttribute('aria-hidden', String(i === index));
@@ -59,22 +61,11 @@ export function initDealsSlider(section, media) {
     }
 
     function layout(index, animate = true) {
-        if (!media.mobile.matches) {
+        if (!mobile.matches) {
             track.style.setProperty('--deals-count', slides.length);
             track.classList.add('is-measuring');
             const height = Math.max(...slides.map((slide) => slide.offsetHeight));
             viewport.style.setProperty('--deals-cards-height', `${height}px`);
-            if (animate) {
-                track.classList.remove('is-measuring');
-                void track.offsetWidth;
-            }
-            activate(index);
-            offset = 0;
-            track.style.transform = 'translate3d(0, 0, 0)';
-            void track.offsetWidth;
-            track.classList.remove('is-measuring');
-            if (progress) progress.style.transform = `scaleX(${(index + 1) / slides.length})`;
-            return;
         }
         // Measure the final CSS layout, then restore the start before allowing transitions.
         track.classList.add('is-measuring');
@@ -186,7 +177,7 @@ export function initDealsSlider(section, media) {
         resize.disconnect();
         cancelAnimationFrame(layoutFrame);
     });
-    scope.on(media.mobile, 'change', () => layout(active, false));
+    scope.on(mobile, 'change', () => layout(active, false));
     scope.on(media.reducedMotion, 'change', () => {
         if (media.reducedMotion.matches) timeline?.progress(1);
         layout(active, false);
