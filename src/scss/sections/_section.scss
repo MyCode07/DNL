@@ -593,7 +593,7 @@
     &-viewport {
         padding-top: 0.2rem;
         touch-action: pan-y pinch-zoom;
-        height: 21rem;
+        height: 23rem;
 
         @media (max-width:1920px) {
             width: 100vw;
@@ -609,6 +609,11 @@
         @media (max-width:1024px) {
             padding-inline: 1.6rem;
             margin-left: -1.6rem;
+            height: 20rem;
+        }
+
+        @media (max-width:767px) {
+            height: 15rem;
         }
     }
 
@@ -820,7 +825,6 @@
                 margin-top: 2.4rem;
                 padding-left: 6rem;
                 max-width: 42rem;
-                padding-right: 2rem;
 
                 @media (max-width:1440px) {
                     margin-top: 2em;
@@ -830,6 +834,7 @@
                 @media (max-width:767px) {
                     padding-left: 4rem;
                     margin-top: 1.6rem;
+                    padding-right: 2rem;
                 }
             }
         }
