@@ -1024,6 +1024,10 @@
         --deals-slide-width: max(32rem, calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4)));
     }
 
+    @media (768px <= width <= 1440px) {
+        --deals-active-space: 0.5;
+    }
+
     @media (min-width:1025px) {
         --deals-navigation-gap: 3rem;
 
