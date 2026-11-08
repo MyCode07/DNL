@@ -593,6 +593,7 @@
     &-viewport {
         padding-top: 0.2rem;
         touch-action: pan-y pinch-zoom;
+        height: 21rem;
 
         @media (max-width:1920px) {
             width: 100vw;
@@ -613,6 +614,7 @@
 
     // .deals-track
     &-track {
+        height: 100%;
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
@@ -684,16 +686,12 @@
         display: flex;
         flex-direction: column;
         cursor: pointer;
-        height: 21rem;
+        height: inherit;
 
         @media (min-width:768px) {
             position: absolute;
             left: 0;
             top: 0;
-        }
-
-        @media (max-width:1440px) {
-            height: 15rem;
         }
 
         @media (max-width:767px) {}
@@ -1006,15 +1004,6 @@
 
     @media (min-width:768px) {
         --deals-slide-width: calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4));
-
-        .deals-viewport {
-            // Include the viewport's existing top padding around the fixed card height.
-            height: calc(21rem + 0.2rem);
-        }
-
-        .deals-track {
-            height: 100%;
-        }
 
         .deals-slide {
             left: calc(var(--slide) * (var(--deals-slide-width) + var(--deals-gap)) + var(--deals-after-active, 0) * var(--deals-slide-width) * var(--deals-active-space));
