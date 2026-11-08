@@ -31,19 +31,28 @@ export function initIosBorder(root) {
     if (!elements.length) return;
 
     const scope = createScope();
-    const cornerKit = new CornerKit();
-    scope.add(() => cornerKit.destroy());
-    try {
-        elements.forEach((element) => {
-            const radius = parseFloat(
-                root.defaultView.getComputedStyle(element).borderTopLeftRadius,
-            );
-            if (!Number.isFinite(radius) || radius <= 0) return;
-            cornerKit.apply(element, { radius, smoothing: 0.6 });
-        });
-    } catch (error) {
-        scope.destroy();
-        throw error;
+    const desktop = root.defaultView.matchMedia('(min-width: 768px)');
+    let cornerKit;
+    function update() {
+        cornerKit?.destroy();
+        cornerKit = undefined;
+        if (!desktop.matches) return;
+        cornerKit = new CornerKit();
+        try {
+            elements.forEach((element) => {
+                const radius = parseFloat(
+                    root.defaultView.getComputedStyle(element).borderTopLeftRadius,
+                );
+                if (!Number.isFinite(radius) || radius <= 0) return;
+                cornerKit.apply(element, { radius, smoothing: 0.6 });
+            });
+        } catch (error) {
+            scope.destroy();
+            throw error;
+        }
     }
+    scope.add(() => cornerKit?.destroy());
+    scope.on(desktop, 'change', update);
+    update();
     return scope.destroy;
 }

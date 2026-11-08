@@ -74,6 +74,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('application remount releases observers, corners and overlay locks', async ({ page }) => {
+    await page.setViewportSize({ width: 768, height: 900 });
     await page.evaluate(() => {
         const NativeObserver = window.ResizeObserver;
         window.activeObservers = new Map();
@@ -97,6 +98,10 @@ test('application remount releases observers, corners and overlay locks', async 
         window.mountComponents();
     });
     const logo = page.locator('.header__logo');
+    await expect.poll(() => logo.evaluate((element) => element.style.clipPath)).toContain('path(');
+    await page.setViewportSize({ width: 767, height: 900 });
+    await expect.poll(() => logo.evaluate((element) => element.style.clipPath)).toBe('');
+    await page.setViewportSize({ width: 768, height: 900 });
     await expect.poll(() => logo.evaluate((element) => element.style.clipPath)).toContain('path(');
     await page.locator('.menu-toggle').click();
     await expect(page.locator('body')).toHaveClass(/_noscroll/);
