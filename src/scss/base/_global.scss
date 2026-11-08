@@ -348,7 +348,7 @@ svg {
         will-change: transoform;
         transform-origin: center;
 
-        @media (max-width:1024px){
+        @media (max-width:1024px) {
             right: 1.6rem;
             top: 1.6rem;
         }
@@ -649,7 +649,8 @@ picture {
     }
 
     h2 {
-        @include type.typography('h3')
+        @include type.typography('h3');
+        text-transform: unset;
     }
 
     h3 {
@@ -750,6 +751,7 @@ picture {
         width: 100%;
         height: auto;
         border-radius: 2.8rem;
+        display: block;
 
         @media (max-width:1440px) {
             border-radius: 2rem;
@@ -798,6 +800,7 @@ picture {
         overflow: hidden;
         border-collapse: unset;
         border-spacing: 0;
+        table-layout: fixed;
 
         td {
             @include type.typography("text-s");
@@ -858,6 +861,10 @@ picture {
 
     .project-name p {
         margin-bottom: 0;
+    }
+
+    & > :last-child {
+        margin-bottom: 0 !important;
     }
 }
 

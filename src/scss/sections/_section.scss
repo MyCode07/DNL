@@ -952,10 +952,7 @@
                 margin-bottom: 3rem;
 
                 & > :last-child {
-
-                    img{
-                        transform: scale(1.7);
-                    }
+                    img {}
                 }
             }
         }
@@ -1233,6 +1230,7 @@
 
             @media (max-width:767px) {
                 background-size: 100%;
+                background-position: 65% 113%;
             }
         }
     }
@@ -1280,17 +1278,14 @@
         }
     }
 
+    .text-box,
     .section__top {
 
         h1,
         .h1,
         .h2 {
-            max-width: 108rem;
+            max-width: 108.8rem;
         }
-    }
-
-    .text-box {
-        max-width: 108rem;
     }
 }
 

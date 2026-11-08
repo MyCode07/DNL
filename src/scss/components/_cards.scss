@@ -438,6 +438,8 @@
             @media (max-width:767px) {
                 object-fit: contain;
                 object-position: bottom;
+                transform: scale(1.15);
+                transform-origin: left;
             }
         }
     }
@@ -592,6 +594,11 @@
         margin-top: 2.4rem;
         max-width: 40rem;
         color: $gray-600;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        overflow: hidden;
 
         @media (max-width:1440px) {
             max-width: 34rem;
