@@ -802,7 +802,10 @@ picture {
         overflow: hidden;
         border-collapse: unset;
         border-spacing: 0;
-        table-layout: fixed;
+
+        @media (min-width:768px) {
+            table-layout: fixed;
+        }
 
         td {
             @include type.typography("text-s");
