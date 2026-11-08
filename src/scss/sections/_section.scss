@@ -996,14 +996,6 @@
         }
     }
 
-    @media (min-width:1025px) {
-        --deals-navigation-gap: 3rem;
-
-        .section__top {
-            position: relative;
-            z-index: 2;
-            flex: 0 0 auto;
-
     @media (min-width:768px) {
         --deals-slide-width: calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4));
 
@@ -1023,6 +1015,14 @@
     @media (767px < width < 1440px) {
         --deals-slide-width: max(32rem, calc((100% - (var(--deals-count, 4) - 1) * var(--deals-gap)) / var(--deals-count, 4)));
     }
+
+    @media (min-width:1025px) {
+        --deals-navigation-gap: 3rem;
+
+        .section__top {
+            position: relative;
+            z-index: 2;
+            flex: 0 0 auto;
 
             p {
                 position: absolute;
