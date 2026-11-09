@@ -17,8 +17,12 @@ async function fixture(t) {
         'style.css',
         'functions.php',
         'index.php',
-        'inc/helpers.php',
-        'inc/enqueue.php',
+        'inc/#helpers.php',
+        'inc/wp/enqueue.php',
+        'inc/wp/setup.php',
+        'inc/forms/cf7.php',
+        'pages/publications.php',
+        'pages/legal/cookies.php',
         'template-parts/card.php',
         'acf-json/group.json',
         'assets/js/tinymce/table.min.js',
@@ -72,9 +76,13 @@ test('runtime package includes theme and assets, excludes secrets and developmen
         'dist/img/svg/icons.svg',
         'dist/js/app.min.js',
         'functions.php',
-        'inc/enqueue.php',
-        'inc/helpers.php',
+        'inc/#helpers.php',
+        'inc/forms/cf7.php',
+        'inc/wp/enqueue.php',
+        'inc/wp/setup.php',
         'index.php',
+        'pages/legal/cookies.php',
+        'pages/publications.php',
         'style.css',
         'template-parts/card.php',
     ]);
@@ -86,38 +94,6 @@ test('runtime package refuses destinations outside the runner temporary director
     const result = run(join(temporary, '..', 'outside-package'));
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /inside the runner temporary directory/);
-});
-
-test('runtime package supports moved inc modules and nested page templates', async (t) => {
-    const { root, destination, run } = await fixture(t);
-    for (const file of ['inc/helpers.php', 'inc/enqueue.php']) {
-        await rm(join(root, file));
-    }
-    const movedFiles = [
-        'inc/#helpers.php',
-        'inc/wp/enqueue.php',
-        'inc/wp/setup.php',
-        'inc/forms/cf7.php',
-        'pages/publications.php',
-        'pages/legal/cookies.php',
-    ];
-    for (const file of movedFiles) {
-        await mkdir(join(root, file, '..'), { recursive: true });
-        await writeFile(join(root, file), '<?php // runtime module');
-    }
-    execFileSync('git', ['add', '--update'], { cwd: root, stdio: 'ignore', windowsHide: true });
-    execFileSync('git', ['add', '--', ...movedFiles], {
-        cwd: root,
-        stdio: 'ignore',
-        windowsHide: true,
-    });
-    const result = run();
-    assert.equal(result.status, 0, result.stderr);
-    const packaged = await filesIn(destination);
-    for (const file of movedFiles) assert.ok(packaged.includes(file), file);
-    assert.ok(!packaged.includes('inc/helpers.php'));
-    assert.ok(!packaged.includes('inc/enqueue.php'));
-    assert.ok(!packaged.includes('inc/untracked-local.php'));
 });
 
 test('runtime package refuses symlinked asset directories', async (t) => {

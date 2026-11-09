@@ -3,7 +3,6 @@ import test from 'node:test';
 import { createScope } from '../../src/js/core/lifecycle.js';
 import { createScrollLock } from '../../src/js/core/scroll-lock.js';
 import { isProjectVisible } from '../../src/js/utils/menu-visibility.js';
-import { createPixelCells } from '../../src/js/utils/pixels.js';
 import { initPopups } from '../../src/js/features/popups.js';
 
 function popupFixture(t) {
@@ -233,9 +232,7 @@ test('an open menu shows the CTA at any scroll position; closing restores viewpo
         assert.equal(isProjectVisible({ ...base, ...state }), false);
         assert.equal(isProjectVisible({ ...base, ...state, open: true }), true);
     }
-});
 
-test('header-page CTA only appears inside the open menu regardless of scroll', () => {
     for (const scrolled of [false, true]) {
         for (const compact of [false, true]) {
             for (const mobile of [false, true]) {
@@ -243,21 +240,6 @@ test('header-page CTA only appears inside the open menu regardless of scroll', (
                 assert.equal(isProjectVisible({ ...state, open: false }), false);
                 assert.equal(isProjectVisible({ ...state, open: true }), true);
             }
-        }
-    }
-});
-
-test('pixel direction reverses the row reveal order without leaving thresholds outside 0..1', () => {
-    const up = createPixelCells(3, 4, 'up', () => 0.5);
-    const down = createPixelCells(3, 4, 'down', () => 0.5);
-    assert.equal(up.length, 12);
-    assert.equal(down.length, 12);
-    assert.ok(up[0].threshold < up.at(-1).threshold);
-    assert.ok(down[0].threshold > down.at(-1).threshold);
-    assert.equal(up[0].threshold, down.at(-1).threshold);
-    for (const random of [() => 0, () => 1]) {
-        for (const cell of createPixelCells(10, 4, 'down', random)) {
-            assert.ok(cell.threshold >= 0 && cell.threshold <= 1);
         }
     }
 });

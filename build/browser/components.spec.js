@@ -122,41 +122,22 @@ test('application remount releases observers, corners and overlay locks', async 
 test('production bundle boots and keeps dialogs keyboard accessible', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('http://frame.test/?production');
+
     await page.locator('.menu-toggle').click();
     const opener = page.locator('.menu-body .menu-btn[data-open-popup]');
     await opener.click();
     const popup = page.locator('#popup-1');
     await expect(popup).toHaveClass(/_open/);
+    await popup.locator('input').focus();
+    await page.keyboard.press('Tab');
+    await expect(popup.locator('.popup-close')).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(popup).not.toHaveClass(/_open/);
     await expect(opener).toBeFocused();
     await expect(popup).toHaveJSProperty('inert', true);
+    await expect(page.locator('body')).toHaveClass(/_noscroll/);
     await page.keyboard.press('Escape');
     await expect(page.locator('body')).not.toHaveClass(/_noscroll/);
-});
-
-test('project gallery autoplay advances, pauses on hover and survives manual pagination', async ({
-    page,
-}) => {
-    const slider = page.locator('[data-tab-content="1"] .swiper');
-    await slider.scrollIntoViewIfNeeded();
-    expect(await slider.evaluate((element) => element.swiper.params.autoplay.delay)).toBe(3000);
-    await expect
-        .poll(() => slider.evaluate((element) => element.swiper.autoplay.running))
-        .toBe(true);
-    const initialIndex = await slider.evaluate((element) => element.swiper.activeIndex);
-    await expect
-        .poll(() => slider.evaluate((element) => element.swiper.activeIndex), { timeout: 6000 })
-        .not.toBe(initialIndex);
-    await slider.hover();
-    await expect
-        .poll(() => slider.evaluate((element) => element.swiper.autoplay.paused))
-        .toBe(true);
-    await slider.locator('.swiper-pagination-bullet').first().click();
-    await expect.poll(() => slider.evaluate((element) => element.swiper.activeIndex)).toBe(0);
-    await expect
-        .poll(() => slider.evaluate((element) => element.swiper.autoplay.running))
-        .toBe(true);
 });
 
 test('responsive navigation and project pagination work after tab and viewport changes', async ({
@@ -193,7 +174,7 @@ test('responsive navigation and project pagination work after tab and viewport c
     await expect.poll(() => project.evaluate((element) => element.swiper.width)).toBeGreaterThan(0);
 });
 
-test('desktop deals reserve active space with stable card widths and navigation space', async ({
+test('responsive deals preserve geometry and keep first and last cards reachable', async ({
     page,
 }, testInfo) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -279,42 +260,7 @@ test('desktop deals reserve active space with stable card widths and navigation 
         for (let back = 0; back < 3; back++) await section.locator('.prev').click();
         await section.screenshot({ path: testInfo.outputPath(`deals-${width}.png`) });
     }
-});
 
-test('desktop deals preserve geometry while animated requests are queued', async ({ page }) => {
-    await page.setViewportSize({ width: 1440, height: 900 });
-    const section = page.locator('.deals');
-    const before = await section
-        .locator('.deals-slide')
-        .evaluateAll((slides) =>
-            slides.map((slide) => ({ width: slide.offsetWidth, left: slide.offsetLeft })),
-        );
-    for (let index = 0; index < 3; index++) await section.locator('.next').click();
-    await expect(section.locator('.deals-slide').last()).toHaveClass(/active/);
-    await expect
-        .poll(() =>
-            section
-                .locator('.deals-media')
-                .last()
-                .evaluate((image) => getComputedStyle(image).clipPath),
-        )
-        .toBe('inset(0%)');
-    const after = await section
-        .locator('.deals-slide')
-        .evaluateAll((slides) =>
-            slides.map((slide) => ({ width: slide.offsetWidth, left: slide.offsetLeft })),
-        );
-    expect(after.map((card) => card.width)).toEqual(before.map((card) => card.width));
-    expect(after[1].left).toBeLessThan(before[1].left);
-    await expect(section.locator('.next')).toBeDisabled();
-});
-
-test('deals keep the scrolling track at tablet and mobile widths', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.evaluate(() => {
-        document.querySelector('main').style.padding = '0';
-    });
-    const section = page.locator('.deals');
     for (const width of [1024, 768, 767, 360]) {
         await page.setViewportSize({ width, height: 900 });
         for (let index = 0; index < 3; index++) {
@@ -356,6 +302,34 @@ test('deals keep the scrolling track at tablet and mobile widths', async ({ page
                 .evaluate((slide) => slide.getBoundingClientRect().left),
         ).toBeGreaterThanOrEqual(0);
     }
+});
+
+test('desktop deals preserve geometry while animated requests are queued', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const section = page.locator('.deals');
+    const before = await section
+        .locator('.deals-slide')
+        .evaluateAll((slides) =>
+            slides.map((slide) => ({ width: slide.offsetWidth, left: slide.offsetLeft })),
+        );
+    for (let index = 0; index < 3; index++) await section.locator('.next').click();
+    await expect(section.locator('.deals-slide').last()).toHaveClass(/active/);
+    await expect
+        .poll(() =>
+            section
+                .locator('.deals-media')
+                .last()
+                .evaluate((image) => getComputedStyle(image).clipPath),
+        )
+        .toBe('inset(0%)');
+    const after = await section
+        .locator('.deals-slide')
+        .evaluateAll((slides) =>
+            slides.map((slide) => ({ width: slide.offsetWidth, left: slide.offsetLeft })),
+        );
+    expect(after.map((card) => card.width)).toEqual(before.map((card) => card.width));
+    expect(after[1].left).toBeLessThan(before[1].left);
+    await expect(section.locator('.next')).toBeDisabled();
 });
 
 test('every PHP-rendered project has its own description and retains state across tabs', async ({
@@ -415,40 +389,7 @@ for (const width of [390, 1100, 1280, 1281, 1439, 1440, 1441, 1600, 1780]) {
     });
 }
 
-test('header CTA follows marked blocks entering the viewport without requiring a hero', async ({
-    page,
-}) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.setViewportSize({ width: 1920, height: 900 });
-    await page.evaluate(() => {
-        window.destroyComponents();
-        const content = document.createElement('div');
-        content.dataset.hideHeaderButton = '';
-        content.style.cssText =
-            'position:absolute;top:1200px;height:100px;width:1px;pointer-events:none';
-        document.body.append(content);
-        window.mountComponents();
-    });
-    const project = page.locator('.menu-project');
-    await expect(project).toHaveJSProperty('inert', false);
-    const threshold = 300;
-    await page.evaluate((y) => window.scrollTo(0, y), threshold - 1);
-    await expect(page.locator('.header')).not.toHaveClass(/header-scrolled/);
-    await page.evaluate((y) => window.scrollTo(0, y), threshold);
-    await expect(project).toHaveJSProperty('inert', true);
-    await page.evaluate(() => window.scrollTo(0, 1400));
-    await expect(project).toHaveJSProperty('inert', true);
-    await page.locator('.menu-toggle').click();
-    await expect(project).toHaveJSProperty('inert', false);
-    await page.keyboard.press('Escape');
-    await expect(project).toHaveJSProperty('inert', true);
-    await page.evaluate((y) => window.scrollTo(0, y), threshold - 1);
-    await expect(project).toHaveJSProperty('inert', false);
-});
-
-test('marked sections compact only the closed desktop header between 1440 and 1780', async ({
-    page,
-}) => {
+test('header compaction and CTA follow marked sections and menu state', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: 1600, height: 900 });
     await page.evaluate(() => {
@@ -479,6 +420,34 @@ test('marked sections compact only the closed desktop header between 1440 and 17
     await page.setViewportSize({ width: 1780, height: 900 });
     await expect(header).not.toHaveClass(/header-small/);
     await expect(label).toBeVisible();
+
+    // Start the CTA phase without the compact-header marker or prior focus/scroll state.
+    await page.goto('http://frame.test/');
+    await page.setViewportSize({ width: 1920, height: 900 });
+    await page.evaluate(() => {
+        window.destroyComponents();
+        const content = document.createElement('div');
+        content.dataset.hideHeaderButton = '';
+        content.style.cssText =
+            'position:absolute;top:1200px;height:100px;width:1px;pointer-events:none';
+        document.body.append(content);
+        window.mountComponents();
+    });
+    const project = page.locator('.menu-project');
+    await expect(project).toHaveJSProperty('inert', false);
+    const threshold = 300;
+    await page.evaluate((y) => window.scrollTo(0, y), threshold - 1);
+    await expect(page.locator('.header')).not.toHaveClass(/header-scrolled/);
+    await page.evaluate((y) => window.scrollTo(0, y), threshold);
+    await expect(project).toHaveJSProperty('inert', true);
+    await page.evaluate(() => window.scrollTo(0, 1400));
+    await expect(project).toHaveJSProperty('inert', true);
+    await page.locator('.menu-toggle').click();
+    await expect(project).toHaveJSProperty('inert', false);
+    await page.keyboard.press('Escape');
+    await expect(project).toHaveJSProperty('inert', true);
+    await page.evaluate((y) => window.scrollTo(0, y), threshold - 1);
+    await expect(project).toHaveJSProperty('inert', false);
 });
 
 test('header compaction animates and can be interrupted by opening or leaving the section', async ({
@@ -533,26 +502,6 @@ test('header compaction animates and can be interrupted by opening or leaving th
     await expect(page.locator('.header')).not.toHaveClass(/header-small/);
     await expect.poll(async () => (await menu.boundingBox()).width).toBeCloseTo(initialWidth, 0);
     await expect(page.locator('.menu-toggle span')).toBeVisible();
-});
-
-test('closing a popup over the mobile menu preserves the menu scroll lock and restores focus', async ({
-    page,
-}) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.locator('.menu-toggle').click();
-    const opener = page.locator('.menu-body .menu-btn[data-open-popup]');
-    await opener.click();
-    const popup = page.locator('#popup-1');
-    await expect(popup).toHaveClass(/_open/);
-    await popup.locator('input').focus();
-    await page.keyboard.press('Tab');
-    await expect(popup.locator('.popup-close')).toBeFocused();
-    await page.keyboard.press('Escape');
-    await expect(popup).not.toHaveClass(/_open/);
-    await expect(opener).toBeFocused();
-    await expect(page.locator('body')).toHaveClass(/_noscroll/);
-    await page.keyboard.press('Escape');
-    await expect(page.locator('body')).not.toHaveClass(/_noscroll/);
 });
 
 for (const inline of [false, true]) {

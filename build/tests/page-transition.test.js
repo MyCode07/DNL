@@ -131,22 +131,20 @@ function boot(
     return { ...state, window, state };
 }
 
-test('destination is covered before the app runs and fallback releases a failed bundle', () => {
-    const { window, state } = boot({ url: current, at: Date.now() });
-    assert.equal(window.framePageTransition.pending, true);
-    assert.equal(state.appended, true);
-    assert.equal(state.consumed, true);
-    state.fallback();
-    assert.equal(state.removed, true);
-    assert.equal(window.framePageTransition.pending, false);
-    assert.deepEqual(state.events, ['frame:page-reveal']);
-});
-
-test('first loads, reloads and unavailable storage still receive an entrance', () => {
-    for (const options of [{}, { blocked: true }]) {
-        const { window, state } = boot(null, options);
+test('initial and returning pages are covered before the app runs and fallback releases them', () => {
+    for (const [record, options] of [
+        [{ url: current, at: Date.now() }, {}],
+        [null, {}],
+        [null, { blocked: true }],
+    ]) {
+        const { window, state } = boot(record, options);
         assert.equal(window.framePageTransition.pending, true);
         assert.equal(state.appended, true);
+        assert.equal(state.consumed, !options.blocked);
+        state.fallback();
+        assert.equal(state.removed, true);
+        assert.equal(window.framePageTransition.pending, false);
+        assert.deepEqual(state.events, ['frame:page-reveal']);
     }
 });
 
