@@ -279,11 +279,6 @@
 
     .section__body {
         min-height: 100vh;
-
-        // min-height: 100svh;
-        @media (max-width:767px) {
-            padding-bottom: 4rem;
-        }
     }
 
     // .ceo__bg
