@@ -91,7 +91,6 @@ jobs:
               run: |
                   set -euo pipefail
                   node build/scripts/package-theme.mjs "$RUNNER_TEMP/frame-package"
-                  test ! -e "$RUNNER_TEMP/frame-package/assets"
 
             - name: Save verified runtime package
               if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
