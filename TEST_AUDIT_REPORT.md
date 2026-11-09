@@ -447,4 +447,3 @@ OTF/fallback-image/Yoast negative branches полезны при изменен�
 - Пользовательские изменения SCSS не затронуты; production-код, package/lock и конфигурация не менялись. Коммиты не создавались.
 
 Итоговый зарегистрированный набор: 79 Node/PHP + 21 browser + 3 неизменённых dev integration = 103 кейса вместо 114. Из них на этом этапе выполнены 100; dev integration не выполнялись.
-

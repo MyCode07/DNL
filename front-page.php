@@ -11,7 +11,7 @@ get_header();
 
     get_template_part('template-parts/sections/projects');
 
-    get_template_part('template-parts/sections/seo');
+    get_template_part('template-parts/sections/ceo');
 
     get_template_part('template-parts/sections/deals');
 

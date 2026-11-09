@@ -267,15 +267,11 @@
     }
 }
 
-.seo {
+.ceo {
     overflow: clip;
     isolation: isolate;
-    background: linear-gradient(180deg, #4B5057 0%, #656A73 100%);
+    background: linear-gradient(180deg, #494D54 0%, #656970 100%);
     position: relative;
-
-    @media (max-width:1024px) {
-        background: linear-gradient(180deg, #A2A2A2 0%, #000 100%);
-    }
 
     @media (max-width:767px) {
         scroll-margin-top: -12rem !important;
@@ -290,88 +286,65 @@
         }
     }
 
-    // .seo__bg
+    // .ceo__bg
     &__bg {
         position: absolute;
         inset: 0;
+        top: calc(16rem + 28rem);
         z-index: 1;
         pointer-events: none;
 
-        @media (max-width:1024px) {
-            &:before {
-                position: absolute;
-                content: '';
-                width: 100%;
-                height: 100%;
-                left: 0;
-                top: 0;
-                background: linear-gradient(180deg, rgba(162, 162, 162, 0.00) 46.47%, #000 72.74%);
-                z-index: 1;
-
-                @media (max-width:767px) {
-                    filter: blur(2rem);
-                    background: linear-gradient(#a2a2a200 55%, #606060 53%, #000 80%);
-                    width: 120vw;
-                    left: 50%;
-                    transform: translate(-50%, 0);
-                    height: 100%;
-                }
-            }
+        @media (max-width:1440px) {
+            top: calc(12rem + 28rem);
         }
 
-        // .seo__bg-image
+        @media (max-width:1280px) {
+            top: calc(12rem + 23rem);
+        }
+
+        @media (max-width:1024px) {
+            top: calc(12rem + 18rem);
+        }
+
+        @media (max-width:767px) {
+            top: calc(8rem + 12rem);
+        }
+
+        @media (max-width:425px) {
+            top: calc(8rem + 12rem + 2rem);
+        }
+
+        // .ceo__bg-image
         &-image {
             position: sticky;
             width: 100%;
-            // height: 150svh;
+            height: 100vh;
             background-repeat: no-repeat;
-            background-position: top;
+            background-position: 67.5% bottom;
+            background-size: contain;
+            top: 4rem;
 
-            @media (max-width:1440px) {}
+            @media (max-width:1440px) {
+                background-position: 70% bottom;
+                top: 3rem;
+            }
 
-            @media (min-width:1025px) {
-                --seo-header-top: 4rem;
-                // Header line inside the 1920 x 1650 Figma composition.
-                --seo-image-anchor: calc(379 / 1650);
-                // Top of the head in the current admin image, including its transparent padding.
-                --seo-head-anchor: calc(362 / 1650);
-                // Keep the original crop, enlarging only when a tall viewport needs it.
-                --seo-image-height: max(85.9375vw, calc((100vh - var(--seo-header-top)) / (1 - var(--seo-image-anchor))));
-                top: calc(var(--seo-header-top) - var(--seo-image-height) * var(--seo-head-anchor));
-                height: var(--seo-image-height);
-                background-size: cover;
-
-                @media (max-width:1440px) {
-                    --seo-header-top: 3rem;
-                    // The 1440 x 1100 composition has its own header line.
-                    --seo-image-anchor: calc(239 / 1100);
-                    --seo-head-anchor: calc(226 / 1100);
-                }
+            @media (max-width:1280px) {
+                background-position: 82.5% bottom;
             }
 
             @media (max-width:1024px) {
+                margin-left: auto;
+                width: 74%;
                 position: relative;
-                left: 0;
-                top: 16rem;
-                min-height: 100vh;
-                // min-height: 100svh;
-                height: 100%;
-                background-size: contain;
-
-                // background-position: top;
-                @media (orientation: landscape) {}
+                top: 0;
+                background-position: right top;
+                min-height: 88rem;
             }
 
             @media (max-width:767px) {
-                // Compensate for the 16px transparent right margin in the 774 x 2560 image.
-                --seo-mobile-image-width: min(100vw, calc(max(100vh, 137rem) * 774 / 2560));
-                background-position: right calc(var(--seo-mobile-image-width) * -16 / 774) top;
-                max-height: 127rem;
-                top: 13rem;
-            }
-
-            @media (max-width:425px) {
-                // background-size: cover;
+                width: 90%;
+                min-height: 60rem;
             }
         }
     }
@@ -396,7 +369,7 @@
         }
     }
 
-    // .seo-subtitle
+    // .ceo-subtitle
     &-subtitle {
         position: relative;
         z-index: 1;
@@ -410,7 +383,7 @@
         }
     }
 
-    // .seo-text
+    // .ceo-text
     &-text {
         position: relative;
         z-index: 1;
@@ -428,7 +401,7 @@
         }
 
         @media (max-width:767px) {
-            margin-top: 40rem;
+            margin-top: 36rem;
         }
     }
 
@@ -436,12 +409,12 @@
         margin: 0;
         position: relative;
         z-index: 2;
-        margin-top: 35rem;
+        margin-top: 30rem;
         padding-top: 0;
         padding-bottom: 0;
 
         @media (max-width:1440px) {
-            margin-top: 28rem;
+            margin-top: 20rem;
         }
 
         @media (max-width:1024px) {
@@ -466,7 +439,11 @@
             }
 
             @media (max-width:1024px) {
-                gap: 6rem;
+                gap: 12rem;
+            }
+
+            @media (max-width:767px) {
+                gap: 7rem;
                 padding: 2rem 1.6rem;
             }
 
@@ -477,10 +454,6 @@
             &:nth-child(even) {
                 margin-top: 18rem;
 
-                @media (max-width:1440px) {
-                    margin-top: 17rem;
-                }
-
                 @media (max-width:1024px) {
                     margin-top: 0;
                 }
@@ -488,11 +461,11 @@
         }
     }
 
-    // .seo-quote
+    // .ceo-quote
     &-quote {
         display: flex;
         flex-direction: column;
-        margin-top: 32rem;
+        margin-top: 36rem;
         gap: 4rem;
         max-width: 65rem;
         position: relative;
@@ -944,9 +917,26 @@
         &__wrap {
             isolation: isolate;
 
-            @media (max-width:1204px) {
+            @media (max-width:1024px) {
                 aspect-ratio: 1/0.78;
                 position: relative;
+            }
+
+            @media (max-width:1024px) and (min-width:768px) and (max-height:800px) {
+                aspect-ratio: 1/0.44;
+
+                img {
+                    transform: scale(1.14);
+                    transform-origin: center;
+                    top: -1.4rem;
+                    left: 0.4rem;
+                }
+
+                & > :last-child {
+                    img {
+                        transform: scale(1.7);
+                    }
+                }
             }
 
             @media (max-width:767px) {
