@@ -1,0 +1,287 @@
+# ПРОЕКТ будущего workflow. Этот файл находится в корне темы и НЕ запускается GitHub Actions.
+# Действующий .github/workflows/staging.yml и код темы не изменены.
+# Не переносить пример в .github/workflows без реализации отмеченных ниже TODO.
+# При активации он должен ЗАМЕНИТЬ текущий workflow, иначе оба запустят staging-деплой.
+#
+# Схема: PR -> проверки; merge/push main -> проверки и ОДНА сборка -> staging
+# -> ручная проверка сайта и подтверждение production -> ТОТ ЖЕ пакет в production.
+# Отдельная постоянная production/master-ветка для этой схемы не нужна.
+#
+# НАСТРОЙКИ В GITHUB, которые нельзя включить одним YAML:
+# 1. Создать Environments staging и production.
+# 2. Для production включить Required reviewers; разрешить деплой только из main.
+#    Иначе production job после staging начнётся автоматически! Проверить доступность
+#    этих правил для тарифа/приватности репозитория ДО активации workflow.
+#    Если правил подтверждения нет, нужен отдельный ручной production workflow
+#    с выбором проверенного run/artifact; этот пример такой вариант не реализует.
+# 3. В обоих окружениях задать secrets SSH_HOST, SSH_PORT, SSH_USER,
+#    SSH_PRIVATE_KEY, SSH_KNOWN_HOSTS с РАЗНЫМИ значениями/ключами доступа.
+#    Для staging можно перенести существующие secrets в его Environment.
+# 4. В production задать vars SITE_URL и THEME_DIRECTORY с реальными значениями.
+#    SITE_URL — HTTPS origin сайта без завершающего слеша;
+#    THEME_DIRECTORY — проверенный абсолютный путь только к каталогу темы.
+# 5. Защитить main: PR и успешные checks перед merge; выбрать reviewers.
+#
+# TODO ПЕРЕД АКТИВАЦИЕЙ PRODUCTION:
+# Создать общий build/scripts/deploy-theme.sh с интерфейсом из production job ниже.
+# Текущий staging-deploy.sh НЕ вызывать для production: внутри зафиксированы
+# staging-путь и пользователь chipsa. Простая подстановка secrets этого не меняет.
+# Общий скрипт должен сохранить host-key verification, guards пути и symlink,
+# изоляцию ключа, контроль ошибок, проверку SHA-256 всех переданных файлов.
+# Адреса/пользователи/пути production здесь намеренно не придуманы.
+# Для production заранее определить резервирование и откат на предыдущий пакет;
+# частичный rsync --delay-updates НЕ является атомарным переключением всей темы.
+# БД, uploads и wp-config.php не входят в поставку темы.
+# Не добавлять глобальный rsync --delete ради очистки старых файлов.
+#
+# Подтверждение в GitHub относится к версии этого workflow run / github.sha.
+# Временная папка assets не нужна: src/files -> dist/files -> runtime-пакет.
+# Все вложенные обычные файлы dist/files включаются упаковщиком без списка расширений.
+#
+# Документация:
+# https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments
+
+name: Frame checks, staging and approved production (example)
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+    # Ручной повтор полного pipeline, а не выбор произвольного production-пакета.
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+defaults:
+    run:
+        shell: bash
+
+# Простая последовательная очередь релизов: пока production ждёт подтверждения,
+# следующий main-run не обновляет staging. Так проверенный staging не подменяется
+# новой версией перед выпуском. Цена: ожидание/отклонение production блокирует очередь.
+# GitHub concurrency не гарантирует FIFO, может заменять ожидающие pending runs;
+# это не механизм хранения каждой версии релиза. Текущий running run не прерывается.
+# Для независимых частых staging-деплоев лучше отдельный promotion-workflow,
+# выбирающий artifact конкретного успешного staging-run и проверяющий его происхождение.
+concurrency:
+    group: frame-example-release-${{ github.ref }}
+    cancel-in-progress: false
+
+jobs:
+    checks:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 30
+        outputs:
+            package_id: ${{ steps.release-package.outputs.artifact-id }}
+        steps:
+            - name: Checkout exact commit
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+              with:
+                  persist-credentials: false
+
+            - name: Set up Node.js
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+              with:
+                  node-version: '24'
+                  cache: npm
+
+            - name: Set up PHP 8.3
+              uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962
+              with:
+                  php-version: '8.3'
+                  coverage: none
+                  tools: none
+              env:
+                  update: 'true'
+
+            - name: Verify patched PHP runtime
+              run: |
+                  php -r 'if (version_compare(PHP_VERSION, "8.3.36", "<")) { fwrite(STDERR, "CI requires PHP 8.3.36 or newer\n"); exit(1); }'
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Audit dependencies
+              run: npm audit --audit-level=high
+
+            - name: Lint, formatting and unit tests
+              run: npm run check
+
+            # Сборка происходит только здесь, до обоих деплоев.
+            - name: Build dist once
+              run: npm run build
+
+            - name: Install Chromium
+              run: npx playwright install --with-deps chromium
+
+            - name: Browser regression tests
+              run: npm run test:browser
+
+            - name: Save browser failure traces
+              if: failure()
+              uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+              with:
+                  name: browser-failures-${{ github.run_id }}-${{ github.run_attempt }}
+                  path: test-results
+                  if-no-files-found: ignore
+                  retention-days: 3
+
+            - name: Vite integration tests
+              run: npm run test:dev
+
+            - name: Verify runtime files and PHP syntax
+              run: |
+                  set -euo pipefail
+                  test -s dist/css/style.min.css
+                  test -s dist/js/app.min.js
+                  test -s dist/files/tinymce/table.min.js
+                  while IFS= read -r -d '' file; do
+                    php -l "$file"
+                  done < <(git ls-files -z -- '*.php')
+
+            - name: Package runtime theme
+              run: node build/scripts/package-theme.mjs "$RUNNER_TEMP/frame-package"
+
+            # У каждого полного запуска своя неизменяемая версия пакета.
+            # Retention должен покрывать время проверки/подтверждения и политику отката.
+            # 30 дней — пример; допустимый срок ограничен настройками репозитория.
+            - name: Save verified release package
+              id: release-package
+              if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+              uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+              with:
+                  name: frame-package-${{ github.sha }}-${{ github.run_attempt }}
+                  path: ${{ runner.temp }}/frame-package
+                  if-no-files-found: error
+                  retention-days: 30
+
+    staging:
+        needs: checks
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+        environment:
+            name: staging
+            url: https://dnl.chipsa.ru
+        steps:
+            - name: Checkout deployment script from this commit
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+              with:
+                  persist-credentials: false
+
+            - name: Download verified package from this run
+              uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+              with:
+                  artifact-ids: ${{ needs.checks.outputs.package_id }}
+                  path: ${{ runner.temp }}/frame-package
+
+            - name: Deploy staging and verify remote checksums
+              env:
+                  FRAME_PACKAGE_DIR: ${{ runner.temp }}/frame-package
+                  SSH_HOST: ${{ secrets.SSH_HOST }}
+                  SSH_PORT: ${{ secrets.SSH_PORT }}
+                  SSH_USER: ${{ secrets.SSH_USER }}
+                  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+                  SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+              run: bash build/scripts/staging-deploy.sh
+
+            # Эта проверка сравнивает реальные CSS/JS с пакетом.
+            # 401 главной означает защиту staging, а не проверку приложения.
+            # После этого человек проверяет сайт с авторизацией и подтверждает production.
+            - name: Verify staging HTTP and packaged CSS/JS
+              env:
+                  SITE_URL: https://dnl.chipsa.ru
+              run: |
+                  set -euo pipefail
+                  curl_options=(--silent --show-error --location --max-redirs 5
+                    --connect-timeout 15 --max-time 60 --retry 2
+                    --proto '=https' --proto-redir '=https')
+                  status=$(curl "${curl_options[@]}" --output "$RUNNER_TEMP/staging-home.html" \
+                    --write-out '%{http_code}' "$SITE_URL/")
+                  case "$status" in
+                    2??) echo "Staging HTTP $status" ;;
+                    401) echo 'Protected staging: manual authenticated review is required.' ;;
+                    *) echo "Unexpected staging HTTP $status" >&2; exit 1 ;;
+                  esac
+                  for file in css/style.min.css js/app.min.js; do
+                    output="$RUNNER_TEMP/staging-$(basename "$file")"
+                    curl "${curl_options[@]}" --fail --output "$output" \
+                      "$SITE_URL/wp-content/themes/frame/dist/$file?frame_deploy=$GITHUB_SHA"
+                    cmp -- "$output" "$RUNNER_TEMP/frame-package/dist/$file"
+                  done
+
+    production:
+        needs: [checks, staging]
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+        # Именно правила Environment в Settings останавливают job до подтверждения.
+        # Один этот блок environment ручного подтверждения НЕ включает.
+        environment:
+            name: production
+            url: ${{ vars.SITE_URL }}
+        steps:
+            - name: Checkout deployment script from the approved commit
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+              with:
+                  persist-credentials: false
+
+            # Тот же artifact того же run. Здесь НЕТ npm ci или повторной сборки.
+            - name: Download the package tested on staging
+              uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+              with:
+                  artifact-ids: ${{ needs.checks.outputs.package_id }}
+                  path: ${{ runner.temp }}/frame-package
+
+            # TODO: скрипта deploy-theme.sh сейчас НЕТ. Этот шаг намеренно завершится
+            # ошибкой до сетевой передачи, пока интерфейс не будет реализован и проверен.
+            # DEPLOY_ENVIRONMENT, THEME_DIRECTORY и RELEASE_SHA — предлагаемый контракт,
+            # а не поддерживаемые параметры существующего staging-deploy.sh.
+            - name: Deploy the approved package to production
+              env:
+                  DEPLOY_ENVIRONMENT: production
+                  RELEASE_SHA: ${{ github.sha }}
+                  THEME_DIRECTORY: ${{ vars.THEME_DIRECTORY }}
+                  FRAME_PACKAGE_DIR: ${{ runner.temp }}/frame-package
+                  SSH_HOST: ${{ secrets.SSH_HOST }}
+                  SSH_PORT: ${{ secrets.SSH_PORT }}
+                  SSH_USER: ${{ secrets.SSH_USER }}
+                  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+                  SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+              run: |
+                  set -euo pipefail
+                  if [[ ! -f build/scripts/deploy-theme.sh ]]; then
+                    echo 'TODO: implement and review production deployment and rollback before activation.' >&2
+                    exit 1
+                  fi
+                  bash build/scripts/deploy-theme.sh
+
+            # В production 401 не считается успешной проверкой публичного сайта.
+            # Дополнительно нужен содержательный smoke: активная тема, главная/архив/
+            # статья/формы без PHP fatal. Конкретные URL и признаки определить до запуска.
+            - name: Verify production HTTP and packaged CSS/JS
+              env:
+                  SITE_URL: ${{ vars.SITE_URL }}
+              run: |
+                  set -euo pipefail
+                  : "${SITE_URL:?Configure production SITE_URL}"
+                  [[ "$SITE_URL" == https://* && "$SITE_URL" != */ ]] || exit 1
+                  curl_options=(--silent --show-error --location --max-redirs 5
+                    --connect-timeout 15 --max-time 60 --retry 2
+                    --proto '=https' --proto-redir '=https')
+                  status=$(curl "${curl_options[@]}" --output "$RUNNER_TEMP/production-home.html" \
+                    --write-out '%{http_code}' "$SITE_URL/")
+                  [[ "$status" == 2?? ]] || { echo "Unexpected production HTTP $status" >&2; exit 1; }
+                  for file in css/style.min.css js/app.min.js; do
+                    output="$RUNNER_TEMP/production-$(basename "$file")"
+                    curl "${curl_options[@]}" --fail --output "$output" \
+                      "$SITE_URL/wp-content/themes/frame/dist/$file?frame_deploy=$GITHUB_SHA"
+                    cmp -- "$output" "$RUNNER_TEMP/frame-package/dist/$file"
+                  done
+
+# Оба окружения скачивают один artifact по ID, переданному из checks.
+# Полный повтор создаёт новый пакет и снова проходит staging; повтор failed job
+# должен использовать прежний package_id, пока artifact не истёк/не удалён.
+# Проверить поведение retry и подтверждения Environment перед активацией.
