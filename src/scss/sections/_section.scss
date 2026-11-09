@@ -298,10 +298,6 @@
             top: calc(12rem + 28rem);
         }
 
-        @media (max-width:1280px) {
-            top: calc(12rem + 23rem);
-        }
-
         @media (max-width:1024px) {
             top: calc(12rem + 18rem);
         }
@@ -473,7 +469,6 @@
         text-wrap: wrap;
 
         @media (max-width:1440px) {
-            margin-top: 24rem;
             gap: 3rem;
             max-width: 52rem;
         }
