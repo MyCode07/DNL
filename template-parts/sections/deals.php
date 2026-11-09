@@ -17,15 +17,15 @@ if (!$list) return;
                         <div class="deals-collection">
                             <div class="deals-media">
                                 <div class="deals-media__inner">
-                                    <picture>
+                                    <!-- <picture>
                                         <?php if (!empty($item['foto_mobajl']['url'])) : ?>
                                             <source media="(max-width: 1024px)" srcset="<?php echo esc_url($item['foto_mobajl']['url']); ?>">
-                                        <?php endif; ?>
+                                        <?php endif; ?> -->
                                         <?php echo wp_get_attachment_image(
                                             $item['foto']['id'],
                                             'full'
                                         ); ?>
-                                    </picture>
+                                    <!-- </picture> -->
                                 </div>
                             </div>
                         </div>

@@ -555,6 +555,11 @@
     // .deals-controls
     &-controls {
         position: relative;
+        margin-top: -11rem;
+
+        @media (max-width:1024px) {
+            margin-top: -6rem;
+        }
     }
 
     // .deals-viewport
@@ -912,38 +917,30 @@
         &__wrap {
             isolation: isolate;
 
+            @media (min-width:1025px) {
+                position: relative;
+                flex: 1 1 auto;
+                height: 56rem;
+                margin-top: 3rem;
+                width: calc(100% + 8rem);
+                margin-left: -4rem;
+
+                @media (max-width:1440px) {
+                    height: 33rem;
+                }
+            }
+
             @media (max-width:1024px) {
-                aspect-ratio: 1/0.78;
+                height: 26rem;
                 position: relative;
             }
 
-            @media (max-width:1024px) and (min-width:768px) and (max-height:800px) {
-                aspect-ratio: 1/0.44;
-
-                img {
-                    transform: scale(1.14);
-                    transform-origin: center;
-                    top: -1.4rem;
-                    left: 0.4rem;
-                }
-
-                & > :last-child {
-                    img {
-                        transform: scale(1.7);
-                    }
-                }
-            }
+            @media (max-width:1024px) and (min-width:768px) and (max-height:800px) {}
 
             @media (max-width:767px) {
-                aspect-ratio: 1/0.44;
-                margin-top: 6rem;
-                margin-bottom: 3rem;
-
-                & > :last-child {
-                    img {
-                        transform: scale(1.7);
-                    }
-                }
+                height: 12.8rem;
+                margin-top: 3rem;
+                margin-bottom: 3.5rem;
             }
         }
     }
@@ -968,25 +965,27 @@
             pointer-events: none;
             position: absolute;
             inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
             img {
+                flex: 0 0 auto;
                 display: block;
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
-                object-position: top;
+                object-fit: contain;
+                object-position: center;
+                margin-inline: auto;
+                transform-origin: center;
 
-                @media (max-width:1024px) {
-                    position: relative;
-                    object-fit: contain;
-                    object-position: center;
+                @media (max-width:1440px) {
+                    max-width: 113rem;
                 }
 
-                @media (max-width:767px) {
-                    transform: scale(1.14);
-                    transform-origin: center;
-                    top: -1.4rem;
-                    left: 0.4rem;
+                @media (max-width:1024px) {
+                    width: auto;
+                    max-width: none;
                 }
             }
         }
@@ -1024,34 +1023,9 @@
             }
         }
 
-        .deals-collection__wrap {
-            position: relative;
-            flex: 1 1 auto;
-            height: auto;
-            min-height: 56rem;
-            margin-top: 3rem;
-            width: calc(100% + 8rem);
-            margin-left: -4rem;
-        }
-
-        .deals-media__inner img,
-        .deals-media__inner picture {
-            object-fit: contain;
-            object-position: center;
-        }
-
         .deals-slide:not(.active) p {
             display: block;
             visibility: hidden;
-        }
-
-        .deals-controls {
-            position: relative;
-            margin-top: -9rem;
-
-            @media (max-width:1280px) {
-                margin-top: -6rem;
-            }
         }
 
         .swiper-navigation {
@@ -1061,10 +1035,6 @@
 
     @media (1024px < width <=1440px) {
         --deals-navigation-gap: 1.4rem;
-
-        .deals-collection__wrap {
-            min-height: 33rem;
-        }
     }
 }
 
