@@ -42,6 +42,10 @@
     &__top {
         margin-bottom: 36rem;
 
+        @media (max-width:1820px) {
+            margin-bottom: 20rem;
+        }
+
         @media (max-width:1440px) {
             margin-bottom: 10rem;
         }
@@ -267,8 +271,7 @@
             margin-top: -2rem;
         }
 
-        @media (max-width:475px) {
-        }
+        @media (max-width:475px) {}
 
         &:before {
             content: '';
