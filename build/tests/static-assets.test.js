@@ -25,7 +25,19 @@ test('static assets preserve paths, create WebP and copy supplementary files', a
         resolve(srcRoot, 'img/nested/icon.svg'),
         '<svg xmlns="http://www.w3.org/2000/svg"/>',
     );
-    await writeFile(resolve(srcRoot, 'files/document.txt'), 'download');
+    const files = new Map([
+        ['document.txt', Buffer.from('download')],
+        ['jquery.min.js', Buffer.from('jquery fixture')],
+        ['tinymce/table.min.js', Buffer.from('tinymce fixture')],
+        ['custom/deep/data.bin', Buffer.from([0, 255, 128, 10])],
+        ['custom/LICENSE', Buffer.from('no extension')],
+        ['folder with spaces/config.unknown', Buffer.from('arbitrary extension')],
+    ]);
+    for (const [path, content] of files) {
+        const file = resolve(srcRoot, 'files', path);
+        await mkdir(resolve(file, '..'), { recursive: true });
+        await writeFile(file, content);
+    }
     await plugin.closeBundle();
     for (const format of ['png', 'webp']) {
         const image = await sharp(
@@ -34,7 +46,9 @@ test('static assets preserve paths, create WebP and copy supplementary files', a
         assert.equal(image.format, format);
         assert.equal(image.width, 2);
     }
-    assert.equal(await readFile(resolve(root, 'dist/files/document.txt'), 'utf8'), 'download');
+    for (const [path, content] of files) {
+        assert.deepEqual(await readFile(resolve(root, 'dist/files', path)), content, path);
+    }
     assert.equal(
         await readFile(resolve(root, 'dist/img/nested/icon.svg'), 'utf8'),
         await readFile(resolve(srcRoot, 'img/nested/icon.svg'), 'utf8'),

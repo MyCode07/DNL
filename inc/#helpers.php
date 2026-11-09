@@ -166,7 +166,7 @@ function get_link_with_icon_info($link, $class, $svg = false)
         $link_target = '_blank';
     }
 
-    $icon = '<svg viewBox="0 0 8 7"><use xlink:href="' . get_template_directory_uri() . '/assets/img//svg/icons.svg#link-arrow"></use></svg>';
+    $icon = '<svg viewBox="0 0 13 10"><use xlink:href="' . esc_url(frame_asset('img/svg/icons.svg#menu-btn-arrow')) . '"></use></svg>';
     if (!$link_target) {
         $icon = '';
     }
@@ -427,7 +427,7 @@ function get_home_page_url()
 /*
 для hero:
 echo theme_image(
-    'assets/img/hero.webp',
+    'dist/img/hero.webp',
     [
         'alt'           => 'Hero',
         'loading'       => 'eager',
@@ -437,7 +437,7 @@ echo theme_image(
 
 для остальных
 echo theme_image(
-    'assets/img/about.webp',
+    'dist/img/about.webp',
     ['alt' => 'About company']
 );
 */
