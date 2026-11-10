@@ -25,7 +25,17 @@
             background-size: cover;
             background-position: 24.5rem -2rem;
 
-            @media (max-width:1280px) {}
+            @media (max-width:1780px) {
+                background-position: 24.5rem 4rem;
+            }
+
+            @media (max-width:1440px) {
+                background-position: 24.5rem 0rem;
+            }
+
+            @media (max-width:1280px) {
+                background-position: 24.5rem -2rem;
+            }
 
             @media (max-width:1024px) {
                 height: 100vh;
