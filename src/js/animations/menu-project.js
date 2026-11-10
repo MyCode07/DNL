@@ -26,6 +26,8 @@ export function createProjectAnimation(header, media) {
         context.add(() => {
             gsap.to(project, {
                 height: visible ? 'auto' : 0,
+                paddingTop: visible ? '0.1rem' : 0,
+                paddingBottom: visible ? '0.1rem' : 0,
                 duration: immediate || media.reducedMotion.matches ? 0 : 0.8,
                 ease: 'power2.out',
                 overwrite: true,

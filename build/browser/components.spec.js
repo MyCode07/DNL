@@ -389,22 +389,69 @@ for (const width of [390, 1100, 1280, 1281, 1439, 1440, 1441, 1600, 1780]) {
     });
 }
 
-test('header compaction and CTA follow marked sections and menu state', async ({ page }) => {
+for (const width of [1440, 1600]) {
+    test('hero CTA and inner-page header at width ' + width, async ({ page }) => {
+        await page.emulateMedia({ reducedMotion: 'reduce' });
+        await page.setViewportSize({ width, height: 900 });
+        await page.evaluate(() => {
+            window.destroyComponents();
+            const hero = document.createElement('div');
+            hero.className = 'hero';
+            hero.innerHTML =
+                '<div class="hero__content"><div class="hero__button"><button class="_btn">Contact</button></div></div>';
+            document.querySelector('main').prepend(hero);
+            document.querySelector('.header').classList.add('header-page');
+            window.mountComponents();
+        });
+        const header = page.locator('.header');
+        const hero = page.locator('.hero__button');
+        await expect(header).not.toHaveClass(/header-small/);
+        if (width === 1440) {
+            await expect(hero).toBeVisible();
+            await page.locator('.menu-toggle').click();
+            await expect(hero).toBeHidden();
+            await expect(hero).toHaveJSProperty('inert', true);
+            await expect(page.locator('.menu-project')).toHaveJSProperty('inert', false);
+            await page.keyboard.press('Escape');
+            await expect(hero).toBeVisible();
+        } else {
+            await expect(hero).toBeHidden();
+            await page.evaluate(() => window.scrollTo(0, 1));
+            await expect(header).toHaveClass(/header-small/);
+            await expect(page.locator('.menu-toggle span')).toBeHidden();
+            await page.locator('.menu-toggle').click();
+            await expect(page.locator('.menu-project')).toHaveJSProperty('inert', false);
+            await page.keyboard.press('Escape');
+            await expect(page.locator('.menu-project')).toHaveJSProperty('inert', true);
+            await page.evaluate(() => window.scrollTo(0, 0));
+            await expect(header).not.toHaveClass(/header-small/);
+        }
+    });
+}
+
+test('header compaction and CTA follow the scroll threshold and menu state', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: 1600, height: 900 });
     await page.evaluate(() => {
         window.destroyComponents();
         const section = document.createElement('section');
-        section.dataset.smallHeader = '';
+        section.dataset.hideHeaderButton = '';
         section.style.cssText =
-            'position:absolute;top:0;height:100vh;width:1px;pointer-events:none';
+            'position:absolute;top:1200px;height:100vh;width:1px;pointer-events:none';
         document.body.append(section);
         window.mountComponents();
     });
     const header = page.locator('.header');
     const menu = page.locator('.menu');
     const label = page.locator('.menu-toggle span');
+    await expect(header).not.toHaveClass(/header-small/);
+    await expect(label).toBeVisible();
+    const logo = await page.locator('.header__logo').boundingBox();
+    await page.evaluate(() => window.scrollTo(0, 299));
+    await expect(header).not.toHaveClass(/header-small/);
+    await page.evaluate(() => window.scrollTo(0, 300));
     await expect(header).toHaveClass(/header-small/);
+    expect((await page.locator('.header__logo').boundingBox()).width).toBe(logo.width);
     await expect(label).toBeHidden();
     const square = await menu.boundingBox();
     expect(Math.abs(square.width - square.height)).toBeLessThan(1);
@@ -450,15 +497,15 @@ test('header compaction and CTA follow marked sections and menu state', async ({
     await expect(project).toHaveJSProperty('inert', false);
 });
 
-test('header compaction animates and can be interrupted by opening or leaving the section', async ({
+test('header compaction animates and can be interrupted by opening or returning to the start', async ({
     page,
 }) => {
     await page.setViewportSize({ width: 1600, height: 900 });
     await page.evaluate(() => {
         window.destroyComponents();
         const section = document.createElement('section');
-        section.id = 'small-header-test';
-        section.dataset.smallHeader = '';
+        section.id = 'header-threshold-test';
+        section.dataset.hideHeaderButton = '';
         section.style.cssText =
             'position:absolute;top:2000px;height:100vh;width:1px;pointer-events:none';
         document.body.append(section);
@@ -471,7 +518,7 @@ test('header compaction animates and can be interrupted by opening or leaving th
         0,
     );
     const intermediateWidth = await page.evaluate((initialWidth) => {
-        document.querySelector('#small-header-test').style.top = '0';
+        document.querySelector('#header-threshold-test').style.top = '0';
         window.dispatchEvent(new Event('scroll'));
         return new Promise((resolve) => {
             const interrupt = () => {
@@ -496,7 +543,7 @@ test('header compaction animates and can be interrupted by opening or leaving th
     await expect(page.locator('.menu-toggle span')).toBeVisible();
     await page.locator('main').dispatchEvent('click');
     await page.evaluate(() => {
-        document.querySelector('#small-header-test').style.top = '2000px';
+        document.querySelector('#header-threshold-test').style.top = '2000px';
         window.dispatchEvent(new Event('scroll'));
     });
     await expect(page.locator('.header')).not.toHaveClass(/header-small/);

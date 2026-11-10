@@ -50,7 +50,7 @@ export function createMenuAnimation(menu, { media, toggle }) {
         const mobile = media.mobile.matches;
         const compact = media.compact.matches || small;
         const reducedMotion = media.reducedMotion.matches || immediate;
-        const duration = reducedMotion ? 0 : modeChange ? 0.3 : 0.8;
+        const duration = reducedMotion ? 0 : 0.8;
         body.inert = !open;
         if (outerLogo) outerLogo.inert = mobile && open;
         if (innerLogo) innerLogo.inert = true;

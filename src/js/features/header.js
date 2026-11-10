@@ -7,7 +7,6 @@ export function initHeader(root, menu) {
     const menuBtn = root.querySelector('.menu ._btn');
     const hideButtonBlocks = [...root.querySelectorAll('[data-hide-header-button]')];
     const sections = [...root.querySelectorAll('[data-dark]')];
-    const smallHeaderSections = [...root.querySelectorAll('[data-small-header]')];
     const blocks = [...root.querySelectorAll('section, footer, [data-dark]')];
     const transitions = [...root.querySelectorAll('[data-pixelated-scroll-transition]')].map(
         (element) => {
@@ -37,26 +36,22 @@ export function initHeader(root, menu) {
                 : rect.top < position && rect.bottom >= position;
         };
         let dark = sections.some((section) => containsPosition(section.getBoundingClientRect()));
-        let small = smallHeaderSections.some((section) =>
-            containsPosition(section.getBoundingClientRect()),
-        );
         // Edge pixels show the adjacent section's background before its actual boundary.
         for (const { element, neighbor } of transitions) {
             if (!neighbor) continue;
             const rect = element.getBoundingClientRect();
             if (rect.bottom > rect.top && containsPosition(rect)) {
                 dark = neighbor.hasAttribute('data-dark');
-                small = neighbor.hasAttribute('data-small-header');
                 break;
             }
         }
-        header.classList.toggle(
-            'header-scrolled',
-            hideButtonBlocks.some(
-                (block) => block.getBoundingClientRect().top <= window.innerHeight,
-            ),
-        );
-        small = window.innerWidth > 1440 && window.innerWidth < 1780 && small;
+        const scrolled = hideButtonBlocks.length
+            ? hideButtonBlocks.some(
+                  (block) => block.getBoundingClientRect().top <= window.innerHeight,
+              )
+            : scrollY > 0;
+        header.classList.toggle('header-scrolled', scrolled);
+        const small = window.innerWidth > 1440 && window.innerWidth < 1780 && scrolled;
         menu?.syncSmall?.(small, !initialized);
         header.classList.toggle('header-small', small);
 
@@ -70,7 +65,7 @@ export function initHeader(root, menu) {
             }
         }
         header.classList.toggle('dark', dark);
-        if (!header.classList.contains('header-page')) menu?.syncProject(!initialized);
+        menu?.syncProject(!initialized);
         initialized = true;
     }
 

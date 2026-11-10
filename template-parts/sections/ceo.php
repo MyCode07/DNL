@@ -11,7 +11,7 @@ $list = $ceo['spisok'];
         }
     }
 </style>
-<section class="section ceo white" id="ceo" data-small-header>
+<section class="section ceo white" id="ceo">
     <div class="ceo__bg">
         <div class="ceo__bg-image"></div>
     </div>

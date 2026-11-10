@@ -86,7 +86,9 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
             assert.equal(header.classList.contains('dark'), dark, `dark at ${scrollY}, ${event}`);
             assert.equal(
                 header.classList.contains('header-small'),
-                dark && viewport.innerWidth > 1440 && viewport.innerWidth < 1780,
+                scrollY >= blockTop - viewport.innerHeight &&
+                    viewport.innerWidth > 1440 &&
+                    viewport.innerWidth < 1780,
                 `small at ${scrollY}, ${event}`,
             );
             assert.equal(button.classList.contains('_btn-black'), dark);
@@ -106,7 +108,7 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
         check(start - 39.5, true);
         check(start - 40, false);
         check(start - 39, true);
-        viewport.scrollY = 350;
+        viewport.scrollY = 450;
         for (const [width, compact] of [
             [1440, false],
             [1441, true],
@@ -120,7 +122,7 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
         }
         viewport.innerWidth = 1600;
         check(700, false);
-        assert.equal(header.classList.contains('header-small'), false);
+        assert.equal(header.classList.contains('header-small'), true);
         // Hide as the marked block enters, and stay hidden after it leaves above the viewport.
         for (const scrollY of [399.5, 400, 401, 1300, 400, 399.5]) {
             viewport.scrollY = scrollY;
@@ -128,6 +130,10 @@ for (const transitionDirection of [null, 'down', 'up', 'empty', 'inverse-down', 
             pendingFrame();
             assert.equal(
                 header.classList.contains('header-scrolled'),
+                scrollY >= blockTop - viewport.innerHeight,
+            );
+            assert.equal(
+                header.classList.contains('header-small'),
                 scrollY >= blockTop - viewport.innerHeight,
             );
         }
