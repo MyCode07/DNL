@@ -29,13 +29,13 @@
 
             @media (max-width:1024px) {
                 height: 100vh;
-                background-position: 37% max(16rem, 16vh);
+                background-position: 37% max(22rem, 22vh);
                 background-size: 181%;
             }
 
             @media (max-width:767px) {
-                background-position: 12% max(21rem, 30vh);
-                background-size: 190%;
+                background-position: 8rem bottom;
+                background-size: 127%;
             }
         }
     }
