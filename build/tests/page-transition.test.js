@@ -173,6 +173,7 @@ function transitionFixture({ blocked = false, broken = false } = {}) {
         dataset: {},
         removed: false,
         setAttribute() {},
+        getBoundingClientRect: () => ({ width: view.innerWidth, height: view.innerHeight }),
         remove() {
             this.removed = true;
         },
@@ -300,4 +301,46 @@ test('blocked storage and failing canvas preserve native links and release revea
         destroy();
     }
     gsap.ticker.sleep();
+});
+
+test('transition covers the large viewport while mobile browser toolbars resize', async () => {
+    const fixture = transitionFixture();
+    fixture.view.innerWidth = 390;
+    fixture.view.innerHeight = 660;
+    const viewport = new EventTarget();
+    fixture.view.visualViewport = viewport;
+    let height = 844;
+    fixture.canvas.getBoundingClientRect = () => ({ width: 390, height });
+    const fills = [];
+    fixture.canvas.getContext = () => ({
+        clearRect() {
+            fills.length = 0;
+        },
+        fillRect(x, y, width, height) {
+            fills.push({ x, y, width, height });
+        },
+    });
+    const destroy = initPageTransition(fixture.root);
+    await Promise.resolve();
+    try {
+        assert.equal(fixture.canvas.width, 780);
+        assert.equal(fixture.canvas.height, 1688);
+        assert.ok(Math.max(...fills.map((cell) => cell.y + cell.height)) >= 1688);
+        for (const visibleHeight of [720, 844, 660]) {
+            fixture.view.innerHeight = visibleHeight;
+            viewport.dispatchEvent(new Event('resize'));
+            assert.equal(fixture.canvas.height, 1688);
+        }
+        height = 900;
+        viewport.dispatchEvent(new Event('resize'));
+        assert.equal(fixture.canvas.height, 1800);
+        assert.ok(Math.max(...fills.map((cell) => cell.y + cell.height)) >= 1800);
+        destroy();
+        height = 1000;
+        viewport.dispatchEvent(new Event('resize'));
+        assert.equal(fixture.canvas.height, 1800);
+    } finally {
+        destroy();
+        gsap.ticker.sleep();
+    }
 });

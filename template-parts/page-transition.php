@@ -34,7 +34,7 @@
             cover.width = cover.height = 1;
             cover.dataset.pageTransition = '';
             cover.setAttribute('aria-hidden', 'true');
-            cover.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:2147483647;pointer-events:none;display:block';
+            cover.style.cssText = 'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:100lvh;z-index:2147483647;pointer-events:none;display:block';
             context.fillStyle = '#000';
             context.fillRect(0, 0, 1, 1);
             document.documentElement.append(cover);

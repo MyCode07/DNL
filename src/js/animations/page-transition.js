@@ -87,15 +87,18 @@ export function initPageTransition(root) {
     }
     function resize() {
         if (!canvas || !context) return;
-        const width = view.innerWidth;
-        const height = view.innerHeight;
+        // Include the area revealed when mobile browser toolbars collapse.
+        const { width, height } = canvas.getBoundingClientRect();
         const size = width <= 767 ? 40 : width <= 1280 ? 80 : 100;
         const columns = Math.ceil(width / size);
         const pixel = width / columns;
         const rows = Math.ceil(height / pixel);
         const ratio = Math.min(view.devicePixelRatio || 1, 2);
-        canvas.width = Math.round(width * ratio);
-        canvas.height = Math.round(height * ratio);
+        const bitmapWidth = Math.round(width * ratio);
+        const bitmapHeight = Math.round(height * ratio);
+        if (cells.length && canvas.width === bitmapWidth && canvas.height === bitmapHeight) return;
+        canvas.width = bitmapWidth;
+        canvas.height = bitmapHeight;
         cells = createPixelCells(columns, rows, 'down').map((cell) => {
             const x = Math.round(cell.column * pixel * ratio);
             const y = Math.round(cell.row * pixel * ratio);
@@ -116,7 +119,7 @@ export function initPageTransition(root) {
                 canvas.dataset.pageTransition = '';
                 canvas.setAttribute('aria-hidden', 'true');
                 canvas.style.cssText =
-                    'position:fixed;inset:0;width:100%;height:100%;z-index:2147483647;pointer-events:auto;display:block';
+                    'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:100lvh;z-index:2147483647;pointer-events:auto;display:block';
                 root.documentElement.append(canvas);
             }
             context = canvas.getContext('2d');
@@ -242,6 +245,7 @@ export function initPageTransition(root) {
         }
     });
     scope.on(view, 'resize', resize);
+    if (view.visualViewport) scope.on(view.visualViewport, 'resize', resize);
     scope.on(view, 'pageshow', (event) => {
         if (!event.persisted) return;
         // Keep queued reveals waiting while replacing a cached outgoing cover.
