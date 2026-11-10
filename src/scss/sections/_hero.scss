@@ -26,11 +26,15 @@
             background-position: 24.5rem -2rem;
 
             @media (max-width:1780px) {
-                background-position: 24.5rem 4rem;
+                background-position: 24.5rem 7rem;
+            }
+
+            @media (max-width:1640px) {
+                background-position: 24.5rem 19rem;
             }
 
             @media (max-width:1440px) {
-                background-position: 24.5rem 0rem;
+                background-position: 24.5rem 4rem;
             }
 
             @media (max-width:1280px) {
