@@ -7,7 +7,7 @@ $list = $ceo['spisok'];
         background-image: url(<?php echo esc_url($ceo['fon_desktop']) ?>);
 
         @media (max-width:1024px) {
-            background-image: url(<?php echo esc_url($ceo['fon_mobajl']) ?>);
+            /* background-image: url(<?php echo esc_url($ceo['fon_mobajl']) ?>); */
         }
     }
 </style>

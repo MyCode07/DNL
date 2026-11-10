@@ -7,11 +7,11 @@ $btn = $cta['knopka'];
         background-image: url(<?php echo esc_url($cta['fon_desktop']) ?>);
 
         @media (max-width:1024px) {
-            background-image: url(<?php echo esc_url($cta['fon_mobajl']) ?>);
+            /* background-image: url(<?php echo esc_url($cta['fon_mobajl']) ?>); */
         }
 
         @media (max-width:767px) {
-            background-image: url(<?php echo esc_url($cta['fon_360']) ?>);
+            /* background-image: url(<?php echo esc_url($cta['fon_360']) ?>); */
         }
     }
 </style>

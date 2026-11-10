@@ -8,11 +8,11 @@ $list = $hero['spisok'];
         background-image: url(<?php echo esc_url($hero['fon_desktop']) ?>);
 
         @media (max-width:1024px) {
-            background-image: url(<?php echo esc_url($hero['fon_tablet']) ?>);
+            /* background-image: url(<?php echo esc_url($hero['fon_tablet']) ?>); */
         }
 
         @media (max-width:767px) {
-            background-image: url(<?php echo esc_url($hero['fon_mobajl']) ?>);
+            /* background-image: url(<?php echo esc_url($hero['fon_mobajl']) ?>); */
         }
     }
 </style>
