@@ -5,7 +5,7 @@ export function initHeader(root, menu) {
     const header = root.querySelector('.header');
     if (!header) return;
     const menuBtn = root.querySelector('.menu ._btn');
-    const hideButtonBlocks = [...root.querySelectorAll('[data-hide-header-button]')];
+    const hasHero = Boolean(root.querySelector('.hero'));
     const sections = [...root.querySelectorAll('[data-dark]')];
     const blocks = [...root.querySelectorAll('section, footer, [data-dark]')];
     const transitions = [...root.querySelectorAll('[data-pixelated-scroll-transition]')].map(
@@ -45,13 +45,12 @@ export function initHeader(root, menu) {
                 break;
             }
         }
-        const scrolled = hideButtonBlocks.length
-            ? hideButtonBlocks.some(
-                  (block) => block.getBoundingClientRect().top <= window.innerHeight,
-              )
-            : scrollY > 0;
-        header.classList.toggle('header-scrolled', scrolled);
-        const small = window.innerWidth > 1440 && window.innerWidth < 1780 && scrolled;
+        const scrolled = scrollY >= 100;
+        header.classList.toggle('header-scrolled', !hasHero || scrolled);
+        const small =
+            window.innerWidth > 1440 &&
+            window.innerWidth < 1780 &&
+            (hasHero ? scrolled : scrollY > 0);
         menu?.syncSmall?.(small, !initialized);
         header.classList.toggle('header-small', small);
 

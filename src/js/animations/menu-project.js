@@ -8,17 +8,16 @@ export function createProjectAnimation(header, media) {
     if (!project || !menu) return { sync() {}, destroy() {} };
     const context = gsap.context(() => {}, header);
     const originalInert = project.inert;
+    const hasHero = Boolean(header.ownerDocument.querySelector('.hero'));
     let visible;
 
     function sync(immediate = false) {
-        if (immediate && header.classList.contains('header-page')) return;
-
         const nextVisible = isProjectVisible({
             open: menu.classList.contains('_open'),
             mobile: media.mobile.matches,
             compact: media.compact.matches || header.classList.contains('header-small'),
             scrolled: header.classList.contains('header-scrolled'),
-            innerPage: header.classList.contains('header-page'),
+            innerPage: !hasHero,
         });
         project.inert = !nextVisible;
         if (!immediate && visible === nextVisible) return;

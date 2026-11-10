@@ -30,7 +30,7 @@ $list = $hero['spisok'];
                 </div>
             </div>
             <?php if ($list): ?>
-                <div class="glass__grid" data-hide-header-button>
+                <div class="glass__grid">
                     <?php foreach ($list as $item): ?>
                         <div class="glass__grid-item">
                             <h4><?php echo $item['zagolovok'] ?></h4>
