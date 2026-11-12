@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/messages.php';
+
 add_filter('wpcf7_autop_or_not', '__return_false');
 // Keep field wrappers: CF7 needs them for validation and accessible errors.
 
@@ -17,9 +19,7 @@ add_filter('wpcf7_form_hidden_fields', function ($fields) {
     $form = WPCF7_ContactForm::get_current();
     if (!$form) return $fields;
     $messages = [];
-    foreach (['invalid_required', 'invalid_email', 'invalid_tel', 'invalid_url',
-        'invalid_too_short', 'invalid_too_long', 'accept_terms', 'validation_error',
-        'invalid_alphabetic'] as $key) {
+    foreach (array_keys(frame_cf7_message_labels()) as $key) {
         $messages[$key] = $form->message($key);
     }
     $fields['_frame_cf7_messages'] = wp_json_encode($messages);
