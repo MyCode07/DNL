@@ -1,6 +1,19 @@
 <?php
 
-/** Shared validation copy, configured once per CF7 form language. */
+/** Shared validation copy, configured once per site language. */
+function frame_cf7_message_language()
+{
+    return function_exists('pll_current_language') ? (pll_current_language('slug') ?: '') : '';
+}
+
+// CF7 also fetches validation schemas with GET; carry the page language on every request.
+add_action('wpcf7_enqueue_scripts', function () {
+    $language = frame_cf7_message_language();
+    if (!$language) return;
+    $root = add_query_arg(['lang' => $language, 'rest_route' => '/'], home_url('/'));
+    wp_add_inline_script('contact-form-7', 'wpcf7.api.root = ' . wp_json_encode($root) . ';', 'before');
+});
+
 function frame_cf7_message_labels()
 {
     return [
@@ -53,7 +66,7 @@ function frame_cf7_messages_page()
     ?>
     <div class="wrap">
         <h1>Сообщения форм</h1>
-        <p>Задайте тексты один раз для всех форм одного языка. Язык определяется настройкой самой формы Contact Form 7.</p>
+        <p>Задайте тексты один раз для каждого языка сайта. Язык сообщений определяется текущей страницей Polylang, независимо от языка формы Contact Form 7.</p>
         <p>Пустое поле сохраняет сообщение из настроек конкретной формы. Эти настройки применяются и при вводе, и при отправке формы.</p>
         <?php settings_errors('frame_cf7_messages'); ?>
         <form action="options.php" method="post">
@@ -85,7 +98,7 @@ add_filter('wpcf7_display_message', function ($message, $status) {
     if (!isset(frame_cf7_message_labels()[$status])) return $message;
     $form = WPCF7_ContactForm::get_current();
     if (!$form) return $message;
-    $language = strtolower(strtok(str_replace('-', '_', $form->locale()), '_') ?: '');
+    $language = frame_cf7_message_language();
     if (!in_array($language, ['ru', 'en'], true)) return $message;
     $settings = get_option('frame_cf7_messages', []);
     $override = $settings[$language][$status] ?? '';

@@ -10,6 +10,7 @@ function get_option($name, $default = false) { return $GLOBALS['options'][$name]
 function sanitize_textarea_field($value) { return trim(strip_tags($value)); }
 function wp_json_encode($value) { return json_encode($value); }
 function PLL() { return $GLOBALS['polylang']; }
+function pll_current_language($field = 'slug') { return $GLOBALS['page_language'] ?? false; }
 function current_user_can($capability) { return true; }
 function esc_attr($value) { return htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); }
 function esc_html($value) { return esc_attr($value); }
@@ -83,17 +84,24 @@ $GLOBALS['options']['frame_cf7_messages'] = [
     'en' => ['invalid_email' => 'Shared email'],
 ];
 $display = $filters['wpcf7_display_message'];
-check($display('Original', 'invalid_email') === 'Общий email', 'Use Russian form locale');
+$GLOBALS['page_language'] = 'ru';
+WPCF7_ContactForm::$language = 'en_US';
+check($display('Original', 'invalid_email') === 'Общий email', 'Russian page overrides English form locale');
+$hidden_fields = $filters['wpcf7_form_hidden_fields']([]);
+check($hidden_fields['lang'] === 'ru', 'Carry the Polylang page language on submission');
 $payload = json_decode($filters['wpcf7_form_hidden_fields']([])['_frame_cf7_messages'], true);
 check($payload['invalid_email'] === 'Общий email', 'Client receives the same shared message');
 check($payload['invalid_alphabetic'] === 'Только буквы', 'Include custom alphabetic validation');
 check($display('Original', 'invalid_required') === 'Original', 'Unset values keep form messages');
-WPCF7_ContactForm::$language = 'en-US';
-check($display('Original', 'invalid_email') === 'Shared email', 'Use English locale, independent of site language');
+WPCF7_ContactForm::$language = 'ru_RU';
+$GLOBALS['page_language'] = 'en';
+check($display('Original', 'invalid_email') === 'Shared email', 'English page overrides Russian form locale');
 $GLOBALS['options']['frame_cf7_messages']['en']['invalid_email'] = '  ';
 check($display('Original', 'invalid_email') === 'Original', 'Blank values keep form messages');
-WPCF7_ContactForm::$language = 'de_DE';
+$GLOBALS['page_language'] = 'de';
 check($display('Original', 'invalid_email') === 'Original', 'Do not override other languages');
+$GLOBALS['page_language'] = false;
+check($display('Original', 'invalid_email') === 'Original', 'Keep CF7 copy when the page language is unavailable');
 check($display('Original', 'mail_sent_ok') === 'Original', 'Only override the configured validation keys');
 $clean = frame_cf7_sanitize_messages([
     'ru' => ['invalid_email' => '<b>Общий email</b>', 'invalid_tel' => ['bad']],

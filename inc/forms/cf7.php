@@ -14,10 +14,12 @@ add_filter('wpcf7_messages', function ($messages) {
     return $messages;
 });
 
-// CF7 escapes hidden values when rendering. Copy comes from this form, never the page language.
+// CF7 escapes hidden values when rendering. Keep the page language on AJAX submissions too.
 add_filter('wpcf7_form_hidden_fields', function ($fields) {
     $form = WPCF7_ContactForm::get_current();
     if (!$form) return $fields;
+    $language = frame_cf7_message_language();
+    if ($language) $fields['lang'] = $language;
     $messages = [];
     foreach (array_keys(frame_cf7_message_labels()) as $key) {
         $messages[$key] = $form->message($key);
