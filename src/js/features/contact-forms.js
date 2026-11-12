@@ -23,7 +23,10 @@ export function initContactForms(root) {
         ];
         const originalDisabled = buttons.map((button) => button.disabled);
         const touched = new Set();
-        const serverErrors = new Set();
+        const serverErrors = new Map();
+        const messages = JSON.parse(
+            form.querySelector('[name="_frame_cf7_messages"]')?.value || '{}',
+        );
         let pending = false;
         let disposed = false;
         for (const field of getFormFields(form).filter(isAlphabeticField)) {
@@ -52,10 +55,12 @@ export function initContactForms(root) {
                     containers.set(container, showError ? field : null);
                 if (touched.has(field)) field.setAttribute('aria-invalid', String(invalid));
             }
-            const message = getFieldErrorMessage(root.documentElement.lang);
             for (const [container, errorField] of containers) {
                 const error = Boolean(errorField);
-                const fieldMessage = getFieldErrorMessage(root.documentElement.lang, errorField);
+                const fieldMessage = errorField
+                    ? serverErrors.get(errorField.name) ||
+                      getFieldErrorMessage(messages, errorField)
+                    : '';
                 container?.classList.toggle('error', error);
                 if (!container) continue;
                 const tips = [...container.querySelectorAll('.wpcf7-not-valid-tip')];
@@ -73,17 +78,16 @@ export function initContactForms(root) {
                         container.append(tip);
                         tips.push(tip);
                     }
-                    tips.forEach((tip) => {
-                        tip.textContent = fieldMessage;
-                    });
+                    tips.filter((tip) => tip.hasAttribute('data-contact-form-error')).forEach(
+                        (tip) => {
+                            tip.textContent = fieldMessage;
+                        },
+                    );
                 } else {
                     tips.filter((tip) => tip.hasAttribute('data-contact-form-error')).forEach(
                         (tip) => tip.remove(),
                     );
                 }
-            }
-            for (const item of wrapper.querySelectorAll('.screen-reader-response li')) {
-                (item.querySelector('a') || item).textContent = message;
             }
             const busy = pending || ['submitting', 'resetting'].includes(form.dataset.status);
             buttons.forEach((button) => {
@@ -193,7 +197,7 @@ export function initContactForms(root) {
         for (const type of ['wpcf7invalid', 'wpcf7unaccepted']) {
             scope.on(wrapper, type, (event) => {
                 for (const item of event.detail.apiResponse?.invalid_fields || [])
-                    serverErrors.add(item.field);
+                    serverErrors.set(item.field, item.message);
                 getFormFields(form).forEach((field) => touched.add(field));
                 update();
                 queueMicrotask(() => {

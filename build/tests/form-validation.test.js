@@ -8,11 +8,35 @@ import {
     registerPhoneValidator,
 } from '../../src/js/utils/form-validation.js';
 
-test('field errors use Russian only for the Russian HTML language', () => {
-    for (const language of ['ru', 'ru-RU', 'RU-ru'])
-        assert.equal(getFieldErrorMessage(language), 'Поле заполнено неверно');
-    for (const language of ['en', 'en-US', 'hy', 'de', ''])
-        assert.equal(getFieldErrorMessage(language), 'The field is filled out incorrectly');
+test('field errors use the matching message from the current form', () => {
+    const messages = Object.fromEntries(
+        [
+            'invalid_required',
+            'invalid_email',
+            'invalid_tel',
+            'invalid_url',
+            'invalid_too_short',
+            'invalid_too_long',
+            'invalid_alphabetic',
+            'accept_terms',
+            'validation_error',
+        ].map((key) => [key, 'Custom: ' + key]),
+    );
+    for (const [attributes, key] of [
+        [{ value: '' }, 'invalid_required'],
+        [{ type: 'email', value: 'bad' }, 'invalid_email'],
+        [{ type: 'tel', value: '++12' }, 'invalid_tel'],
+        [{ value: 'A' }, 'invalid_too_short'],
+        [{ name: 'cname', value: 'A'.repeat(41) }, 'invalid_too_long'],
+        [{ name: 'cname', value: '123' }, 'invalid_alphabetic'],
+        [{ type: 'checkbox', acceptance: {} }, 'accept_terms'],
+    ]) {
+        assert.equal(getFieldErrorMessage(messages, field(attributes)), messages[key]);
+        assert.equal(
+            getFieldErrorMessage({ ...messages, [key]: 'Other form' }, field(attributes)),
+            'Other form',
+        );
+    }
 });
 
 function field(overrides = {}) {

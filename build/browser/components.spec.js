@@ -652,7 +652,13 @@ test('server validation errors stay visible until the field is corrected', async
                 form.dispatchEvent(
                     new CustomEvent('wpcf7invalid', {
                         bubbles: true,
-                        detail: { apiResponse: { invalid_fields: [{ field: 'cname' }] } },
+                        detail: {
+                            apiResponse: {
+                                invalid_fields: [
+                                    { field: 'cname', message: 'Custom server validation message' },
+                                ],
+                            },
+                        },
                     }),
                 );
                 return Promise.resolve();
@@ -665,10 +671,53 @@ test('server validation errors stay visible until the field is corrected', async
     await form.locator('[type="submit"]').click();
     await expect(name).toHaveAttribute('aria-invalid', 'true');
     await expect(name).toBeFocused();
-    await expect(form.locator('.wpcf7-not-valid-tip')).toBeVisible();
+    await expect(form.locator('.wpcf7-not-valid-tip')).toHaveText(
+        'Custom server validation message',
+    );
     await expect(form.locator('[type="submit"]')).toBeDisabled();
     await name.fill('Jane');
     await expect(name).toHaveAttribute('aria-invalid', 'false');
     await expect(form.locator('.wpcf7-not-valid-tip')).toHaveCount(0);
     await expect(form.locator('[type="submit"]')).toBeEnabled();
+});
+
+test('client errors use per-form CF7 copy and preserve native accessible errors', async ({
+    page,
+}) => {
+    await page.evaluate(() => {
+        const form = document.querySelector('#inline-form form');
+        const messages = document.createElement('input');
+        messages.type = 'hidden';
+        messages.name = '_frame_cf7_messages';
+        messages.value = JSON.stringify({ invalid_alphabetic: 'Per-form alphabetic message' });
+        form.append(messages);
+        window.mountComponents();
+    });
+    const form = page.locator('#inline-form form');
+    await form.locator('input[name="cname"]').fill('123');
+    await expect(form.locator('.wpcf7-not-valid-tip')).toHaveText('Per-form alphabetic message');
+    await page.evaluate(() => {
+        const form = document.querySelector('#inline-form form');
+        const tip = form.querySelector('.wpcf7-not-valid-tip');
+        tip.removeAttribute('data-contact-form-error');
+        tip.textContent = 'Original CF7 message';
+        const response = document.createElement('div');
+        response.className = 'screen-reader-response';
+        response.innerHTML = '<ul><li>Accessible CF7 message</li></ul>';
+        form.closest('.wpcf7').append(response);
+        form.dispatchEvent(
+            new CustomEvent('wpcf7invalid', {
+                bubbles: true,
+                detail: {
+                    apiResponse: {
+                        invalid_fields: [{ field: 'cname', message: 'Server message' }],
+                    },
+                },
+            }),
+        );
+    });
+    await expect(form.locator('.wpcf7-not-valid-tip')).toHaveText('Original CF7 message');
+    await expect(page.locator('#inline-form .screen-reader-response li')).toHaveText(
+        'Accessible CF7 message',
+    );
 });

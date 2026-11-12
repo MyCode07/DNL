@@ -3,6 +3,29 @@
 add_filter('wpcf7_autop_or_not', '__return_false');
 // Keep field wrappers: CF7 needs them for validation and accessible errors.
 
+// Register custom validation copy in CF7's per-form Messages editor.
+add_filter('wpcf7_messages', function ($messages) {
+    $messages['invalid_alphabetic'] = [
+        'description' => 'Name or location contains characters other than letters, spaces, hyphens and apostrophes',
+        'default' => 'Use letters, spaces, hyphens and apostrophes.',
+    ];
+    return $messages;
+});
+
+// CF7 escapes hidden values when rendering. Copy comes from this form, never the page language.
+add_filter('wpcf7_form_hidden_fields', function ($fields) {
+    $form = WPCF7_ContactForm::get_current();
+    if (!$form) return $fields;
+    $messages = [];
+    foreach (['invalid_required', 'invalid_email', 'invalid_tel', 'invalid_url',
+        'invalid_too_short', 'invalid_too_long', 'accept_terms', 'validation_error',
+        'invalid_alphabetic'] as $key) {
+        $messages[$key] = $form->message($key);
+    }
+    $fields['_frame_cf7_messages'] = wp_json_encode($messages);
+    return $fields;
+});
+
 // Apply the same limit to rendered inputs and CF7's validation schema without editing form records.
 add_filter('wpcf7_form_tag', function ($tag) {
     // Existing form records use [text phone]; treat those as telephone fields too.
@@ -58,9 +81,7 @@ add_filter('wpcf7_validate', function ($result, $tags) {
         } elseif ($value !== '' && in_array($tag->name, ['cname', 'location'], true)) {
             if (mb_strlen($value) > 40) $result->invalidate($tag, wpcf7_get_message('invalid_too_long'));
             elseif (!frame_cf7_is_alphabetic($value)) {
-                $result->invalidate($tag, str_starts_with(get_bloginfo('language'), 'ru')
-                    ? 'Допустимы буквы, пробелы, дефисы и апострофы'
-                    : 'Use letters, spaces, hyphens and apostrophes');
+                $result->invalidate($tag, wpcf7_get_message('invalid_alphabetic'));
             }
         } elseif ($tag->basetype === 'tel' && $value !== '' && !preg_match('/^\+?[0-9]+$/D', $value)) {
             $result->invalidate($tag, wpcf7_get_message('invalid_tel'));

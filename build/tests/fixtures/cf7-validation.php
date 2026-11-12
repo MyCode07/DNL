@@ -58,4 +58,7 @@ foreach (['+', '12+34', '++123', '+44 (20) 7946-0018', '+1 letters'] as $value) 
     check(isset(validate('phone', $value, 'tel')['phone']), 'Reject malformed phone: ' . $value);
 }
 check(validate('company', 'Studio 54') === [], 'Do not restrict company names');
+check(validate('cname', '123')['cname'] === 'invalid_alphabetic', 'Use the registered per-form message key');
+$messages = $filters['wpcf7_messages']([]);
+check(isset($messages['invalid_alphabetic']['description'], $messages['invalid_alphabetic']['default']), 'Expose the custom message in the CF7 editor');
 echo "CF7 validation passed\n";

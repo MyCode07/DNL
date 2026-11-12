@@ -15,26 +15,26 @@ export function isAlphabeticValue(value) {
     return /^[\p{L}\p{M}\p{Zs}'’ʼ‐‑-]+$/u.test(value) && /\p{L}/u.test(value);
 }
 
-export function getFieldErrorMessage(language, field) {
-    const russian = /^ru(?:-|$)/i.test(language);
-    if (field && isAlphabeticField(field)) {
-        if ([...field.value.trim()].length > 40) {
-            return russian ? 'Введите не более 40 символов' : 'Enter no more than 40 characters';
-        }
-        if (field.value.trim() && !isAlphabeticValue(field.value.trim())) {
-            return russian
-                ? 'Допустимы буквы, пробелы, дефисы и апострофы'
-                : 'Use letters, spaces, hyphens and apostrophes';
-        }
-    }
-    if (field?.type === 'tel') {
-        return russian
-            ? 'Допустимы только цифры и + в начале'
-            : 'Use only digits and an optional leading +';
-    }
-    return /^ru(?:-|$)/i.test(language)
-        ? 'Поле заполнено неверно'
-        : 'The field is filled out incorrectly';
+export function getFieldErrorMessage(messages, field) {
+    const value = field.value.trim();
+    let key = 'validation_error';
+    if (field.closest('.wpcf7-acceptance')) key = 'accept_terms';
+    else if (!value || ['checkbox', 'radio'].includes(field.type)) key = 'invalid_required';
+    else if (
+        (isAlphabeticField(field) && [...value].length > 40) ||
+        (field.maxLength >= 0 && value.length > field.maxLength)
+    )
+        key = 'invalid_too_long';
+    else if (
+        (field.minLength > 0 && [...value].length < field.minLength) ||
+        (['text', 'search', 'tel', 'url', 'textarea'].includes(field.type) && [...value].length < 2)
+    )
+        key = 'invalid_too_short';
+    else if (isAlphabeticField(field) && !isAlphabeticValue(value)) key = 'invalid_alphabetic';
+    else if (field.type === 'tel') key = 'invalid_tel';
+    else if (field.type === 'email') key = 'invalid_email';
+    else if (field.type === 'url') key = 'invalid_url';
+    return messages[key] || messages.validation_error || '';
 }
 
 export function getFormFields(form) {
