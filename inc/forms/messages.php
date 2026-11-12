@@ -48,6 +48,8 @@ function frame_cf7_messages_page()
 {
     if (!current_user_can('manage_options')) return;
     $settings = get_option('frame_cf7_messages', []);
+    // Use the toolbar filter, not Polylang's preferred/default editing language.
+    $selected_language = function_exists('PLL') ? (PLL()->filter_lang->slug ?? '') : '';
     ?>
     <div class="wrap">
         <h1>Сообщения форм</h1>
@@ -57,6 +59,7 @@ function frame_cf7_messages_page()
         <form action="options.php" method="post">
             <?php settings_fields('frame_cf7_messages'); ?>
             <?php foreach (['ru' => 'Русский', 'en' => 'English'] as $language => $title) : ?>
+                <section data-cf7-message-language="<?php echo esc_attr($language); ?>"<?php echo $selected_language && $selected_language !== $language ? ' hidden' : ''; ?>>
                 <h2><?php echo esc_html($title); ?></h2>
                 <table class="form-table" role="presentation">
                     <?php foreach (frame_cf7_message_labels() as $key => $label) :
@@ -69,6 +72,7 @@ function frame_cf7_messages_page()
                         </tr>
                     <?php endforeach; ?>
                 </table>
+                </section>
             <?php endforeach; ?>
             <?php submit_button(); ?>
         </form>

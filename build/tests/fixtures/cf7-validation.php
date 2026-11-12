@@ -9,6 +9,14 @@ function get_bloginfo($name) { return 'ru-RU'; }
 function get_option($name, $default = false) { return $GLOBALS['options'][$name] ?? $default; }
 function sanitize_textarea_field($value) { return trim(strip_tags($value)); }
 function wp_json_encode($value) { return json_encode($value); }
+function PLL() { return $GLOBALS['polylang']; }
+function current_user_can($capability) { return true; }
+function esc_attr($value) { return htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); }
+function esc_html($value) { return esc_attr($value); }
+function esc_textarea($value) { return esc_attr($value); }
+function settings_errors(...$args) {}
+function settings_fields(...$args) {}
+function submit_button() {}
 if (!function_exists('mb_strlen')) {
     function mb_strlen($value) { return preg_match_all('/./us', $value); }
 }
@@ -106,4 +114,16 @@ foreach ($GLOBALS['actions']['admin_menu'] as $callback) $callback();
 check($GLOBALS['registered_menu'][0] === 'wpcf7', 'Support the legacy CF7 menu');
 foreach ($GLOBALS['actions']['admin_init'] as $callback) $callback();
 check($GLOBALS['registered_setting'][2]['sanitize_callback'] === 'frame_cf7_sanitize_messages', 'Use the sanitizer when saving through WordPress');
+foreach (['ru', 'en', ''] as $selected) {
+    $GLOBALS['polylang'] = (object) ['filter_lang' => $selected ? (object) ['slug' => $selected] : false];
+    ob_start();
+    frame_cf7_messages_page();
+    $html = ob_get_clean();
+    foreach (['ru', 'en'] as $language) {
+        $hidden = $selected && $selected !== $language ? ' hidden' : '';
+        check(str_contains($html, 'data-cf7-message-language="' . $language . '"' . $hidden . '>'), 'Show only the selected toolbar language, or all when unset');
+        check(str_contains($html, 'name="frame_cf7_messages[' . $language . '][invalid_email]"'), 'Hidden language fields remain in the submitted form');
+    }
+    check(substr_count($html, '<textarea') === 18, 'Render all fields regardless of the active language');
+}
 echo "CF7 validation passed\n";
