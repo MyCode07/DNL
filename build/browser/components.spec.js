@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { resolve, sep } from 'node:path';
 import { test as base, expect } from '@playwright/test';
 import { build } from 'vite';
+import { HERO_BACKGROUND } from '../../src/js/animations/hero-background.js';
 
 let html;
 let script;
@@ -95,6 +96,8 @@ test('mobile hero background zooms at ten percent entry and restores on return a
     const position = () =>
         background.evaluate((element) => parseFloat(getComputedStyle(element).backgroundPositionX));
     const initialX = await position();
+    const initialSize = await size();
+    const targetSize = parseFloat(HERO_BACKGROUND.targetSize);
     const width = (await background.boundingBox()).width;
     const threshold = await page.locator('.hero .glass__grid-item').evaluate((element) => {
         const rect = element.getBoundingClientRect();
@@ -104,7 +107,9 @@ test('mobile hero background zooms at ten percent entry and restores on return a
     await expect.poll(size).toBe(127);
     await page.evaluate((y) => window.scrollTo(0, y), threshold + 5);
     await expect.poll(size).toBe(150);
-    await expect.poll(position).toBeCloseTo(initialX - (width * (150 - 127)) / 200, 1);
+    const expectedX =
+        initialX - (width * (targetSize - initialSize) * HERO_BACKGROUND.horizontalAnchor) / 100;
+    await expect.poll(position).toBeCloseTo(expectedX, 1);
     await page.evaluate(() => window.scrollTo(0, 0));
     await expect.poll(size).toBe(127);
     await expect.poll(position).toBeCloseTo(initialX, 1);
