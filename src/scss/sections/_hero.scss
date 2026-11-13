@@ -45,11 +45,12 @@
                 height: 100vh;
                 height: 100svh;
                 background-position: 37% max(22rem, 22vh);
-                background-position: 37% max(22rem, 22svh);
+                background-position: 37% max(22rem, 22dvh);
                 background-size: 181%;
             }
 
             @media (max-width:767px) {
+                height: 100dvh;
                 background-position: 8rem bottom;
                 background-size: 127%;
             }
