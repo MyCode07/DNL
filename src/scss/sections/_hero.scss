@@ -59,6 +59,7 @@
     // .hero__content
     &__content {
         min-height: 100vh;
+        min-height: 100svh;
         padding-top: 4rem;
 
         @media (max-width:1440px) {
@@ -71,8 +72,7 @@
             flex-direction: column;
         }
 
-        @media (max-width:1024px) {
-        }
+        @media (max-width:1024px) {}
 
         @media (max-width:767px) {
             padding-top: 8rem;
