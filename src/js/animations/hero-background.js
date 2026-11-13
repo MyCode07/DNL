@@ -8,8 +8,8 @@ export const HERO_BACKGROUND = {
     media: '(width < 767px) and (prefers-reduced-motion: no-preference)',
     entryPercent: 10,
     targetSize: '150% auto',
-    horizontalAnchor: 0.5,
-    duration: 0.6,
+    horizontalAnchor: 0.6,
+    duration: 0.5,
     delay: 0,
     ease: 'power2.inOut',
 };

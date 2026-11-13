@@ -50,6 +50,7 @@
             @media (max-width:767px) {
                 background-position: 8rem bottom;
                 background-size: 127%;
+                will-change: background-position, background-size;
             }
         }
     }
