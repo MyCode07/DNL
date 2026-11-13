@@ -136,6 +136,13 @@
             }
         }
     }
+
+    @media (max-width:1024px) {
+        // JS moves this CTA into .menu-body; hide its initial outer position.
+        .menu > .menu-project {
+            display: none;
+        }
+    }
 }
 
 .header {

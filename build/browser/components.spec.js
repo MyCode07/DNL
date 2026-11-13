@@ -73,6 +73,17 @@ test.beforeEach(async ({ page }) => {
     await expect.poll(() => page.evaluate(() => typeof window.mountComponents)).toBe('function');
 });
 
+test('mobile header hides the outer CTA before JavaScript initializes', async ({ page }) => {
+    await page.route('http://frame.test/components.js', (route) =>
+        route.fulfill({ contentType: 'text/javascript', body: '' }),
+    );
+    await page.goto('http://frame.test/');
+    await expect(page.locator('.menu > .menu-project')).toBeHidden();
+    await expect(page.locator('.header__logo')).toBeVisible();
+    await expect(page.locator('.menu-body')).toHaveJSProperty('inert', true);
+    expect(await page.evaluate(() => typeof window.mountComponents)).toBe('undefined');
+});
+
 test('application remount releases observers, corners and overlay locks', async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 900 });
     await page.evaluate(() => {
