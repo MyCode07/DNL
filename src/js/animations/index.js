@@ -1,5 +1,6 @@
 import { createScope } from '../core/lifecycle.js';
 import { initHeroScroll } from './hero-scroll.js';
+import { initHeroBackground } from './hero-background.js';
 import { initCriteriaScroll } from './criteria-scroll.js';
 import { initSeoScroll } from './seo-scroll.js';
 import { initPixelatedScroll } from './pixelated-scroll.js';
@@ -15,6 +16,7 @@ export function initAnimations(root) {
     root.documentElement.classList.add('reveal-initializing');
     root.documentElement.classList.toggle('reveal-disabled', !ELEMENT_REVEAL_ENABLED);
     scope.add(initHeroScroll(root));
+    scope.add(initHeroBackground(root));
     scope.add(initCriteriaScroll(root));
     scope.add(initSeoScroll(root));
     scope.add(initPixelatedScroll(root));

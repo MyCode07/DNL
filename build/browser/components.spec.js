@@ -73,6 +73,61 @@ test.beforeEach(async ({ page }) => {
     await expect.poll(() => page.evaluate(() => typeof window.mountComponents)).toBe('function');
 });
 
+test('mobile hero background zooms at ten percent entry and restores on return and cleanup', async ({
+    page,
+}) => {
+    await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
+    await page.evaluate(() => {
+        window.destroyComponents();
+        const hero = document.createElement('section');
+        hero.className = 'hero';
+        hero.style.height = '2200px';
+        hero.innerHTML = `
+            <div class="hero__bg"><div class="hero__bg-image"></div></div>
+            <div style="height:1100px"></div>
+            <div class="glass__grid-item" style="height:200px">Metric</div>`;
+        document.querySelector('main').prepend(hero);
+        window.mountComponents();
+    });
+    const background = page.locator('.hero__bg-image');
+    const size = () =>
+        background.evaluate((element) => parseFloat(getComputedStyle(element).backgroundSize));
+    const position = () =>
+        background.evaluate((element) => parseFloat(getComputedStyle(element).backgroundPositionX));
+    const initialX = await position();
+    const width = (await background.boundingBox()).width;
+    const threshold = await page.locator('.hero .glass__grid-item').evaluate((element) => {
+        const rect = element.getBoundingClientRect();
+        return window.scrollY + rect.top + rect.height * 0.1 - window.innerHeight;
+    });
+    await page.evaluate((y) => window.scrollTo(0, y), threshold - 5);
+    await expect.poll(size).toBe(127);
+    await page.evaluate((y) => window.scrollTo(0, y), threshold + 5);
+    await expect.poll(size).toBe(150);
+    await expect.poll(position).toBeCloseTo(initialX - (width * (150 - 127)) / 200, 1);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect.poll(size).toBe(127);
+    await expect.poll(position).toBeCloseTo(initialX, 1);
+    await page.evaluate((y) => window.scrollTo(0, y), threshold + 5);
+    await expect.poll(size).toBe(150);
+    await page.setViewportSize({ width: 767, height: 844 });
+    await expect.poll(size).toBe(127);
+    expect(await background.evaluate((element) => element.style.backgroundSize)).toBe('');
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect.poll(size).toBe(127);
+    await page.evaluate(() => {
+        const card = document.querySelector('.hero .glass__grid-item');
+        const rect = card.getBoundingClientRect();
+        window.scrollTo(0, window.scrollY + rect.top + rect.height * 0.1 - window.innerHeight + 20);
+    });
+    await expect.poll(size).toBe(150);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await expect.poll(size).toBe(127);
+    await page.evaluate(() => window.destroyComponents());
+    expect(await background.evaluate((element) => element.style.backgroundSize)).toBe('');
+});
+
 test('mobile header hides the outer CTA before JavaScript initializes', async ({ page }) => {
     await page.route('http://frame.test/components.js', (route) =>
         route.fulfill({ contentType: 'text/javascript', body: '' }),
