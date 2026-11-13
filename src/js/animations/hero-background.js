@@ -1,17 +1,16 @@
 import { gsap } from '../core/gsap.js';
 
-// Independent of the heading parallax: play once across the threshold, reverse on return.
+// Independent of heading parallax: zoom while the first metric enters the viewport.
 export const HERO_BACKGROUND = {
     section: '.hero',
     background: '.hero__bg-image',
     trigger: '.glass__grid-item',
     media: '(width < 767px) and (prefers-reduced-motion: no-preference)',
-    entryPercent: 10,
+    start: 'top bottom',
+    end: 'bottom bottom',
+    scrub: true,
     targetSize: '150% auto',
     horizontalAnchor: 0.6,
-    duration: 0.5,
-    delay: 0,
-    ease: 'power2.inOut',
 };
 
 export function initHeroBackground(root) {
@@ -42,15 +41,12 @@ export function initHeroBackground(root) {
             {
                 backgroundSize: HERO_BACKGROUND.targetSize,
                 backgroundPosition: targetPosition,
-                duration: HERO_BACKGROUND.duration,
-                delay: HERO_BACKGROUND.delay,
-                ease: HERO_BACKGROUND.ease,
+                ease: 'none',
                 scrollTrigger: {
                     trigger,
-                    start: `${HERO_BACKGROUND.entryPercent}% bottom`,
-                    endTrigger: section,
-                    end: 'bottom top',
-                    toggleActions: 'play none none reverse',
+                    start: HERO_BACKGROUND.start,
+                    end: HERO_BACKGROUND.end,
+                    scrub: HERO_BACKGROUND.scrub,
                     invalidateOnRefresh: true,
                 },
             },

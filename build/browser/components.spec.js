@@ -74,7 +74,7 @@ test.beforeEach(async ({ page }) => {
     await expect.poll(() => page.evaluate(() => typeof window.mountComponents)).toBe('function');
 });
 
-test('mobile hero background zooms at ten percent entry and restores on return and cleanup', async ({
+test('mobile hero background follows the first card entry and restores on return and cleanup', async ({
     page,
 }) => {
     await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
@@ -101,11 +101,13 @@ test('mobile hero background zooms at ten percent entry and restores on return a
     const width = (await background.boundingBox()).width;
     const threshold = await page.locator('.hero .glass__grid-item').evaluate((element) => {
         const rect = element.getBoundingClientRect();
-        return window.scrollY + rect.top + rect.height * 0.1 - window.innerHeight;
+        return window.scrollY + rect.top - window.innerHeight;
     });
     await page.evaluate((y) => window.scrollTo(0, y), threshold - 5);
     await expect.poll(size).toBe(127);
-    await page.evaluate((y) => window.scrollTo(0, y), threshold + 5);
+    await page.evaluate((y) => window.scrollTo(0, y), threshold + 100);
+    await expect.poll(size).toBeCloseTo((initialSize + targetSize) / 2, 1);
+    await page.evaluate((y) => window.scrollTo(0, y), threshold + 205);
     await expect.poll(size).toBe(150);
     const expectedX =
         initialX - (width * (targetSize - initialSize) * HERO_BACKGROUND.horizontalAnchor) / 100;
@@ -113,7 +115,7 @@ test('mobile hero background zooms at ten percent entry and restores on return a
     await page.evaluate(() => window.scrollTo(0, 0));
     await expect.poll(size).toBe(127);
     await expect.poll(position).toBeCloseTo(initialX, 1);
-    await page.evaluate((y) => window.scrollTo(0, y), threshold + 5);
+    await page.evaluate((y) => window.scrollTo(0, y), threshold + 205);
     await expect.poll(size).toBe(150);
     await page.setViewportSize({ width: 767, height: 844 });
     await expect.poll(size).toBe(127);
@@ -124,7 +126,7 @@ test('mobile hero background zooms at ten percent entry and restores on return a
     await page.evaluate(() => {
         const card = document.querySelector('.hero .glass__grid-item');
         const rect = card.getBoundingClientRect();
-        window.scrollTo(0, window.scrollY + rect.top + rect.height * 0.1 - window.innerHeight + 20);
+        window.scrollTo(0, window.scrollY + rect.bottom - window.innerHeight + 20);
     });
     await expect.poll(size).toBe(150);
     await page.emulateMedia({ reducedMotion: 'reduce' });
