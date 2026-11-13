@@ -108,7 +108,7 @@ test('mobile hero background follows the first card entry and restores on return
     await page.evaluate((y) => window.scrollTo(0, y), threshold + 100);
     await expect.poll(size).toBeCloseTo((initialSize + targetSize) / 2, 1);
     await page.evaluate((y) => window.scrollTo(0, y), threshold + 205);
-    await expect.poll(size).toBe(150);
+    await expect.poll(size).toBe(targetSize);
     const expectedX =
         initialX - (width * (targetSize - initialSize) * HERO_BACKGROUND.horizontalAnchor) / 100;
     await expect.poll(position).toBeCloseTo(expectedX, 1);
@@ -116,7 +116,7 @@ test('mobile hero background follows the first card entry and restores on return
     await expect.poll(size).toBe(127);
     await expect.poll(position).toBeCloseTo(initialX, 1);
     await page.evaluate((y) => window.scrollTo(0, y), threshold + 205);
-    await expect.poll(size).toBe(150);
+    await expect.poll(size).toBe(targetSize);
     await page.setViewportSize({ width: 767, height: 844 });
     await expect.poll(size).toBe(127);
     expect(await background.evaluate((element) => element.style.backgroundSize)).toBe('');
@@ -128,7 +128,7 @@ test('mobile hero background follows the first card entry and restores on return
         const rect = card.getBoundingClientRect();
         window.scrollTo(0, window.scrollY + rect.bottom - window.innerHeight + 20);
     });
-    await expect.poll(size).toBe(150);
+    await expect.poll(size).toBe(targetSize);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await expect.poll(size).toBe(127);
     await page.evaluate(() => window.destroyComponents());

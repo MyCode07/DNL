@@ -9,7 +9,7 @@ export const HERO_BACKGROUND = {
     start: 'top bottom',
     end: 'bottom bottom',
     scrub: true,
-    targetSize: '150% auto',
+    targetSize: '200% auto',
     horizontalAnchor: 0.6,
 };
 
