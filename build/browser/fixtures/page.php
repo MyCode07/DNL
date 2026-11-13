@@ -129,8 +129,12 @@ function the_field($name)
 
 <body>
     <header class="header _fixed">
-        <a class="header__logo" href="/">Frame</a>
-        <?php require $root . '/template-parts/menu.php'; ?>
+        <div class="header__container _container">
+            <div class="header__body">
+                <a class="header__logo" href="/">Frame</a>
+                <?php require $root . '/template-parts/menu.php'; ?>
+            </div>
+        </div>
     </header>
     <main>
         <section class="projects" id="projects" data-tab-area>

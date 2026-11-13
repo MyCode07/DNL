@@ -43,7 +43,9 @@
 
             @media (max-width:1024px) {
                 height: 100vh;
+                height: 100svh;
                 background-position: 37% max(22rem, 22vh);
+                background-position: 37% max(22rem, 22svh);
                 background-size: 181%;
             }
 

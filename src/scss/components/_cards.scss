@@ -9,7 +9,7 @@
     height: 100%;
     padding: 2.8rem 2rem;
     border-radius: 2.8rem;
-    background: $black-10;
+    background: $white-06;
     backdrop-filter: blur(4rem);
 
     @media (max-width:1440px) {
@@ -419,6 +419,10 @@
 
             @media (min-width:1281px) {
                 width: 69%;
+
+                @media (max-width:1710px) {
+                    width: 78%;
+                }
             }
 
             @media (max-width:1440px) {

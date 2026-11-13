@@ -294,13 +294,13 @@
         padding: 0.1rem;
 
         ._btn {
-            max-height: 98rem;
+            max-height: 9.8rem;
             max-width: calc(100% - 0.2rem);
             min-width: calc(100% - 0.2rem);
             margin-inline: auto;
 
             @media (max-width:1024px) {
-                max-height: 88rem;
+                max-height: 8.8rem;
             }
         }
     }

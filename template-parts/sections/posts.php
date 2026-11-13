@@ -1,5 +1,7 @@
 <?php
 $publications = get_field('publikaczii');
+$publications_link_url = '';
+$publications_link_text = '';
 
 if ($publications) {
     $all_publications = $publications['ssylka'];
@@ -13,6 +15,9 @@ if ($publications) {
         'count' => $publications['spisok'] ? count($publications['spisok']) : 6,
         'slide' => true,
     ]);
+
+    $publications_link_url = $all_publications['url'] ?? '';
+    $publications_link_text = $all_publications['title'] ?? '';
 }
 
 if (is_singular('post')) {
@@ -36,6 +41,12 @@ if (is_singular('post')) {
         'slide' => true,
         'exclude' => $post_id,
     ]);
+
+    $publications = get_field('publikaczii', get_option('page_on_front'));
+    $link = $publications['ssylka'] ?? [];
+
+    $publications_link_url = $link['url'] ?? '';
+    $publications_link_text = $link['title'] ?? '';
 }
 ?>
 <section class="section publications <?php echo esc_attr($args['class'] ?? ''); ?>" id="publications" data-dark>
@@ -44,9 +55,9 @@ if (is_singular('post')) {
             <div class="section__top">
                 <div class="section__top-flex">
                     <h2><?php echo $title ?></h2>
-                    <?php if (is_front_page() && $all_publications && $all_publications['url']): ?>
-                        <a href="<?php echo $all_publications['url'] ?>" class="arrow-btn text-m">
-                            <?php echo $all_publications['title'] ?>
+                    <?php if ($publications_link_url): ?>
+                        <a href="<?php echo esc_url($publications_link_url) ?>" class="arrow-btn text-m">
+                            <?php echo esc_html($publications_link_text) ?>
                             <svg width="13" height="10" viewBox="0 0 13 10">
                                 <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#menu-btn-arrow')); ?>' />
                             </svg>
