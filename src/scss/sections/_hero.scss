@@ -62,7 +62,7 @@
     // .hero__content
     &__content {
         min-height: 100vh;
-        // min-height: 100svh;
+        min-height: 100svh;
         padding-top: 4rem;
 
         @media (max-width:1440px) {
@@ -76,7 +76,7 @@
         }
 
         @media (max-width:1024px) {
-            min-height: 100dvh;
+            // min-height: 100dvh;
         }
 
         @media (max-width:767px) {

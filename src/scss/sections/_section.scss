@@ -272,6 +272,7 @@
     isolation: isolate;
     background: linear-gradient(180deg, #464A53 0%, #676B74 100%);
     position: relative;
+    background-attachment: fixed;
 
     @media (max-width:767px) {
         scroll-margin-top: -12rem !important;
