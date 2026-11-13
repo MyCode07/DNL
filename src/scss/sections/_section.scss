@@ -280,7 +280,6 @@
 
     .section__body {
         min-height: 100vh;
-        min-height: 100svh;
     }
 
     // .ceo__bg
@@ -310,7 +309,6 @@
             position: sticky;
             width: 100%;
             height: calc(100vh + 4rem);
-            height: calc(100svh + 4rem);
             background-repeat: no-repeat;
             background-position: 71.25% bottom;
             background-size: contain;
@@ -318,7 +316,6 @@
 
             @media (max-width:1440px) {
                 height: calc(100vh + 3rem);
-                height: calc(100svh + 3rem);
                 background-position: 70% bottom;
                 top: 3rem;
             }
@@ -1202,13 +1199,11 @@
 
             @media (max-width:1024px) {
                 background-position: 20.5% max(33rem, 15vh);
-                background-position: 20.5% max(33rem, 15svh);
             }
 
             @media (max-width:767px) {
                 background-size: 340%;
                 background-position: 36% max(46rem, 15vh);
-                background-position: 36% max(46rem, 15svh);
             }
         }
     }
@@ -1219,7 +1214,6 @@
 
         @media (max-width:1024px) {
             min-height: calc(100vh - 16rem);
-            min-height: calc(100svh - 16rem);
             justify-content: space-between;
         }
 
@@ -1293,7 +1287,6 @@
     // .error-404__body
     .section__body {
         height: 100vh;
-        height: 100svh;
         padding-bottom: 11rem;
         display: flex;
         flex-direction: column;
