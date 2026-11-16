@@ -483,6 +483,41 @@ test('every PHP-rendered project has its own description and retains state acros
     ).toHaveJSProperty('inert', false);
 });
 
+for (const width of [390, 1024]) {
+    test(`mobile menu keeps its bottom CTA fully scrollable at width ${width}`, async ({
+        page,
+    }, testInfo) => {
+        await page.emulateMedia({ reducedMotion: 'reduce' });
+        await page.setViewportSize({ width, height: 500 });
+        await page.evaluate(() => {
+            const nav = document.querySelector('.menu-body nav');
+            for (let index = 0; index < 5; index++)
+                nav.append(nav.firstElementChild.cloneNode(true));
+        });
+        await page.locator('.menu-toggle').click();
+        const surface = page.locator('.menu-surface');
+        const body = page.locator('.menu-body');
+        await expect(surface).toHaveCSS('padding-bottom', '0px');
+        for (const height of [500, 844]) {
+            await page.setViewportSize({ width, height });
+            await body.evaluate((element) => {
+                element.scrollTop = element.scrollHeight;
+            });
+            const gap = await body.evaluate((element) => {
+                const bounds = element.getBoundingClientRect();
+                const button = element.querySelector('.menu-project ._btn').getBoundingClientRect();
+                return { bottom: bounds.bottom - button.bottom, top: button.top - bounds.top };
+            });
+            expect(gap.bottom).toBeGreaterThanOrEqual(19);
+            expect(gap.top).toBeGreaterThanOrEqual(0);
+            await expect(body.locator('.menu-project ._btn')).toBeInViewport({ ratio: 1 });
+        }
+        await page.screenshot({ path: testInfo.outputPath('mobile-menu-bottom.png') });
+        await page.locator('.menu-toggle').click();
+        await expect(surface).toHaveCSS('padding-bottom', '0px');
+    });
+}
+
 for (const width of [390, 1100, 1280, 1281, 1439, 1440, 1441, 1600, 1780]) {
     test(`menu opens and closes without empty GSAP targets at width ${width}`, async ({ page }) => {
         await page.setViewportSize({ width, height: 900 });

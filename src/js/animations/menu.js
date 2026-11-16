@@ -57,7 +57,7 @@ export function createMenuAnimation(menu, { media, toggle }) {
         if (heroButton) heroButton.inert = media.compact.matches && open;
         setIcon(open);
         const width = mobile ? '100vw' : '33.6rem';
-        const padding = mobile ? '2rem' : compact ? '1.6rem 2rem' : '2rem 2.4rem';
+        const padding = mobile ? '2rem 2rem 0' : compact ? '1.6rem 2rem' : '2rem 2.4rem';
         const measure = open && compact && !mobile;
         const height = measure
             ? measureBodyHeight(menu, surface, body, width, padding)
