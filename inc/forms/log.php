@@ -23,7 +23,7 @@ function frame_cf7_log_submission($form, $result)
         return;
     }
 
-    $path = WP_CONTENT_DIR . '/themes/cf7-submissions.php';
+    $path = WP_CONTENT_DIR . '/themes/cf7-submissions.txt';
     if (is_link($path)) {
         error_log('[frame CF7] Refusing to write submission log through a symbolic link.');
         return;
@@ -42,14 +42,12 @@ function frame_cf7_log_submission($form, $result)
             return;
         }
 
-        $stat = fstat($file);
-        if ($stat === false || fseek($file, 0, SEEK_END) !== 0) {
+        if (fseek($file, 0, SEEK_END) !== 0) {
             error_log('[frame CF7] Could not seek submission log.');
             return;
         }
 
-        // A PHP guard prevents downloading the records through the web server.
-        $entry = ($stat['size'] === 0 ? "<?php http_response_code(403); exit; ?>\n" : '') . $line . "\n";
+        $entry = $line . "\n";
         $length = strlen($entry);
         $offset = 0;
         while ($offset < $length) {

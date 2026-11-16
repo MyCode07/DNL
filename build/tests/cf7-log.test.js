@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
-test('CF7 logs final results without private payloads and blocks direct file output', (t) => {
+test('CF7 appends plain text log records without private payloads or PHP markup', (t) => {
     const root = mkdtempSync(join(tmpdir(), 'frame-cf7-log-'));
     t.after(() => rmSync(root, { recursive: true, force: true }));
     mkdirSync(join(root, 'themes'));
@@ -17,10 +17,10 @@ test('CF7 logs final results without private payloads and blocks direct file out
         assert.equal(result.status, 0, result.stdout + result.stderr);
         assert.equal(result.stdout + result.stderr, '');
     }
-    const path = join(root, 'themes', 'cf7-submissions.php');
+    const path = join(root, 'themes', 'cf7-submissions.txt');
     const log = readFileSync(path, 'utf8');
-    const [guard, ...lines] = log.trim().split('\n');
-    assert.equal(guard, '<?php http_response_code(403); exit; ?>');
+    const lines = log.trim().split('\n');
+    assert.doesNotMatch(log, /<\?php|\?>/);
     const records = lines.map((line) => JSON.parse(line));
     assert.equal(records.length, 10);
     assert.deepEqual(
@@ -31,9 +31,6 @@ test('CF7 logs final results without private payloads and blocks direct file out
     assert.ok(Number.isFinite(Date.parse(records[0].time_utc)));
     assert.deepEqual(records[2].invalid_fields, ['email']);
     assert.doesNotMatch(log, /private@example|private-token|posted_data/);
-    const direct = spawnSync('php', [path], { encoding: 'utf8', windowsHide: true });
-    assert.equal(direct.status, 0, direct.stderr);
-    assert.equal(direct.stdout, '');
 });
 
 test('an unwritable CF7 log reports failure without breaking submission output', (t) => {
