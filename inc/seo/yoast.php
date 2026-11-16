@@ -4,6 +4,16 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+add_filter('wpseo_title', 'frame_yoast_404_title');
+function frame_yoast_404_title($title)
+{
+    if (is_404() && function_exists('pll_current_language') && pll_current_language('slug') === 'en') {
+        return 'Page Not Found';
+    }
+
+    return $title;
+}
+
 // Empty values preserve Yoast's data; name, logo and sameAs stay in its UI.
 add_filter('wpseo_schema_organization', 'frame_yoast_organization_data');
 function frame_yoast_organization_data($data)
