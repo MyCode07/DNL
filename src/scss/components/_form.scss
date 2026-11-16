@@ -75,6 +75,7 @@
 
             @media (max-width:767px) {
                 font-size: 16px;
+                line-height: 16px;
             }
 
             &::placeholder {
@@ -162,6 +163,7 @@
 
                 @media (max-width:767px) {
                     font-size: 16px;
+                    line-height: 16px;
                 }
 
                 &::placeholder {
@@ -345,6 +347,7 @@
 
     @media (max-width:767px) {
         font-size: 16px;
+        line-height: 16px;
     }
 
     &:before {
