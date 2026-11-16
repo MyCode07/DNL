@@ -18,6 +18,9 @@ jobs:
     checks:
         runs-on: ubuntu-24.04
         timeout-minutes: 30
+        concurrency:
+            group: frame-checks-${{ github.workflow }}-${{ github.ref }}
+            cancel-in-progress: true
         steps:
             - name: Checkout
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -45,7 +48,7 @@ jobs:
                   php -r 'if (version_compare(PHP_VERSION, "8.3.36", "<")) { fwrite(STDERR, "CI requires PHP 8.3.36 or newer\n"); exit(1); } echo "CI PHP: ", PHP_VERSION, "\n";'
 
             - name: Install dependencies
-              run: npm ci
+              run: npm ci --no-audit --no-fund
 
             - name: Audit dependencies
               run: npm audit --audit-level=high
@@ -57,7 +60,7 @@ jobs:
               run: npm run build
 
             - name: Install Chromium
-              run: npx playwright install --with-deps chromium
+              run: npx playwright install --with-deps --only-shell chromium
 
             - name: Browser regression tests
               run: npm run test:browser
@@ -106,7 +109,12 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         runs-on: ubuntu-24.04
         timeout-minutes: 15
-        environment: staging
+        environment:
+            name: staging
+            url: ${{ vars.STAGING_URL }}
+        env:
+            STAGING_URL: ${{ vars.STAGING_URL }}
+            STAGING_THEME_PATH: ${{ vars.STAGING_THEME_PATH }}
         concurrency:
             group: frame-staging
             cancel-in-progress: false
@@ -141,26 +149,9 @@ jobs:
                   SSH_USER: ${{ secrets.SSH_USER }}
                   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
                   SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
-              run: bash build/scripts/staging-deploy.sh
+              run: |
+                  bash build/scripts/staging-verify.sh --validate
+                  bash build/scripts/staging-deploy.sh
 
             - name: Check staging availability and deployed CSS/JS
-              run: |
-                  set -euo pipefail
-                  curl_options=(--silent --show-error --location --max-redirs 5
-                    --connect-timeout 15 --max-time 60 --retry 2
-                    --proto '=https' --proto-redir '=https')
-                  homepage_status=$(curl "${curl_options[@]}" --output "$RUNNER_TEMP/staging-home.html" \
-                    --write-out '%{http_code}' 'https://dnl.chipsa.ru/')
-                  case "$homepage_status" in
-                    2??) printf 'Staging homepage HTTP %s\n' "$homepage_status" ;;
-                    401) echo 'Staging homepage HTTP 401: intentional authentication protection; application content not checked.' ;;
-                    *) printf 'Unexpected staging homepage HTTP %s\n' "$homepage_status" >&2; exit 1 ;;
-                  esac
-                  for asset in css/style.min.css js/app.min.js; do
-                    output="$RUNNER_TEMP/staging-$(basename "$asset")"
-                    curl "${curl_options[@]}" --fail --output "$output" \
-                      "https://dnl.chipsa.ru/wp-content/themes/frame/dist/$asset?frame_deploy=$GITHUB_SHA"
-                    cmp -- "$output" "$RUNNER_TEMP/frame-package/dist/$asset"
-                    printf 'Deployed asset verified over HTTPS: %s\n' "$asset"
-                  done
-                  echo 'HTTP availability does not confirm theme activation or visual correctness.'
+              run: bash build/scripts/staging-verify.sh

@@ -1,9 +1,11 @@
 # Staging deployment
 
-`staging.yml` runs on pushes to `main` and manual dispatches of `main`. It uses the
+`staging.yml` checks pushes to every branch, pull requests to `main`, and manual
+dispatches. Only `main` pushes/manual dispatches deploy. It uses the
 `staging` Environment and only its five SSH secrets. Actions are pinned to commit
 SHAs; the workflow token has only `contents: read`. Concurrency prevents overlapping
-staging runs. Node.js 24 and PHP 8.3 match the project's requirements.
+staging runs. New pushes cancel older checks for the same ref, but never cancel an
+active deployment. Node.js 24 and PHP 8.3 match the project's requirements.
 The runner explicitly updates PHP and requires at least upstream PHP 8.3.36.
 This checks the CI interpreter only; it does not update or certify the VPS's
 web PHP runtime. Vendor-backported server packages must be assessed separately.
@@ -21,8 +23,10 @@ It excludes development sources, dependencies, build tools, tests and local
 settings. Source and package symlinks are rejected. No release system, backups,
 production workflow or artifact promotion is configured in this initial phase.
 
-The SSH script requires user `chipsa` and exactly
-`/var/www/chipsa/data/www/dnl.chipsa.ru/wp-content/themes/frame/`. The directory
+The SSH script requires user `chipsa` and the destination configured in
+the `STAGING_THEME_PATH` Environment variable. The destination must match
+`/var/www/chipsa/data/www/<hostname>/wp-content/themes/frame/` exactly, including
+the trailing slash; traversal and shell metacharacters are rejected. The directory
 must already exist, resolve to the same canonical path, and contain no symlinks.
 The root directory must be created manually; rsync creates its contents only
 after verifying the SSH user and directory permissions. Host verification uses
@@ -47,6 +51,26 @@ reported as reachable but protected, without attempting to bypass authentication
 Other unexpected HTTP errors fail the check. Asset responses must be successful
 and match package bytes. HTTP 200 alone does not prove theme activation or correct rendering.
 Activate Frame manually in WordPress and visually validate the site separately.
+
+Configure these non-secret variables in Settings → Environments → staging →
+Environment variables before running the workflow:
+
+| Variable | Purpose |
+| --- | --- |
+| `STAGING_URL` | HTTPS origin of the WordPress site, with an optional trailing slash; no credentials, path, query or fragment. Used for the environment link and HTTPS checks. |
+| `STAGING_THEME_PATH` | Absolute existing server directory of the Frame theme, in the guarded format above. |
+
+There are no fallback domains or deployment directories in the workflow/scripts.
+An invalid or missing URL fails before SSH/rsync. SSH credentials and host keys
+remain in Environment secrets. `STAGING_URL` assumes WordPress is installed at
+the domain root; the public theme assets remain under `/wp-content/themes/frame/`.
+
+Dependency installation skips npm's automatic audit because the next step runs a
+blocking `npm audit --audit-level=high`. CI installs only Chromium's headless
+shell, matching Playwright's default headless mode without a browser channel.
+SSH keepalives and an rsync I/O timeout stop stalled connections without waiting
+for the full job timeout. Checksums and full remote/HTTPS verification remain
+mandatory.
 
 Staging must have `WP_ENVIRONMENT_TYPE=staging` (the theme then always uses `dist`).
 Server configuration and other WordPress directories are not changed. Production

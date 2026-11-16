@@ -26,6 +26,7 @@ async function fixture(t) {
         ssh: `#!/usr/bin/env bash
 set -eu
 [[ "$*" == *StrictHostKeyChecking=yes* ]] || exit 80
+[[ "$*" == *ServerAliveInterval=15* && "$*" == *ServerAliveCountMax=3* ]] || exit 84
 count=0
 if [[ -f "$MOCK_DIRECTORY/ssh-count" ]]; then read -r count < "$MOCK_DIRECTORY/ssh-count"; fi
 count=$((count + 1))
@@ -53,6 +54,7 @@ printf '%s\\0' "$@" > "$MOCK_DIRECTORY/rsync-args"
         MOCK_BIN: shellPath(bin),
         TEST_SCRIPT: shellPath(script),
         SSH_HOST: 'staging.example',
+        STAGING_THEME_PATH: '/var/www/chipsa/data/www/staging.example/wp-content/themes/frame/',
         SSH_PORT: '22',
         SSH_USER: 'chipsa',
         SSH_PRIVATE_KEY: 'fake test key',
@@ -81,11 +83,12 @@ test('staging deploy uses checksums and exact target, never deletes, then verifi
         .filter(Boolean);
     assert.ok(args.includes('--checksum'));
     assert.ok(args.includes('--delay-updates'));
+    assert.ok(args.includes('--timeout=120'));
     assert.ok(!args.includes('--dry-run'));
     assert.ok(!args.some((arg) => arg.startsWith('--delete') || arg.startsWith('--remove-source')));
     assert.equal(
         args.at(-1),
-        'chipsa@staging.example:/var/www/chipsa/data/www/dnl.chipsa.ru/wp-content/themes/frame/',
+        'chipsa@staging.example:/var/www/chipsa/data/www/staging.example/wp-content/themes/frame/',
     );
     assert.equal((await readFile(join(temporary, 'ssh-count'), 'utf8')).trim(), '2');
     const manifest = await readFile(join(temporary, 'ssh-input-2'), 'utf8');
@@ -96,6 +99,14 @@ test('staging deploy uses checksums and exact target, never deletes, then verifi
 test('invalid deployment inputs and SSH failure stop before rsync', async (t) => {
     const { temporary, run } = await fixture(t);
     for (const extra of [
+        { STAGING_THEME_PATH: '' },
+        { STAGING_THEME_PATH: '/' },
+        { STAGING_THEME_PATH: '/var/www/chipsa/data/www/../wp-content/themes/frame/' },
+        { STAGING_THEME_PATH: '/var/www/chipsa/data/www/staging.example/../themes/frame/' },
+        {
+            STAGING_THEME_PATH:
+                "/var/www/chipsa/data/www/staging.example'; echo unsafe/wp-content/themes/frame/",
+        },
         { SSH_USER: 'other' },
         { SSH_HOST: '-unsafe' },
         { SSH_PORT: '0' },

@@ -2,9 +2,9 @@
 set -euo pipefail
 
 # Live staging deployment. Production and deletion are deliberately unsupported.
-target='/var/www/chipsa/data/www/dnl.chipsa.ru/wp-content/themes/frame/'
-expected='/var/www/chipsa/data/www/dnl.chipsa.ru/wp-content/themes/frame/'
-[[ "$target" == "$expected" ]] || { echo 'Unexpected staging target' >&2; exit 1; }
+: "${STAGING_THEME_PATH:?Missing STAGING_THEME_PATH}"
+target="$STAGING_THEME_PATH"
+[[ "$target" =~ ^/var/www/chipsa/data/www/[a-zA-Z0-9][a-zA-Z0-9.-]*/wp-content/themes/frame/$ ]] || { echo 'Unexpected staging target' >&2; exit 1; }
 : "${RUNNER_TEMP:?Missing runner temporary directory}"
 : "${FRAME_PACKAGE_DIR:?Missing theme package}"
 : "${SSH_HOST:?Missing SSH_HOST}"
@@ -49,14 +49,15 @@ ssh_options=(
     -o ClearAllForwardings=yes
     -o ConnectTimeout=15
     -o ConnectionAttempts=1
+    -o ServerAliveInterval=15
+    -o ServerAliveCountMax=3
     -o LogLevel=ERROR
 )
 
 # Read-only checks. Neither the theme nor its ancestors may resolve elsewhere.
 ssh "${ssh_options[@]}" "$SSH_USER@$SSH_HOST" bash -s -- "$target" <<'REMOTE'
 set -euo pipefail
-expected='/var/www/chipsa/data/www/dnl.chipsa.ru/wp-content/themes/frame/'
-[[ "$1" == "$expected" ]] || { echo 'Unexpected remote target' >&2; exit 1; }
+[[ "$1" =~ ^/var/www/chipsa/data/www/[a-zA-Z0-9][a-zA-Z0-9.-]*/wp-content/themes/frame/$ ]] || { echo 'Unexpected remote target' >&2; exit 1; }
 target=${1%/}
 if [[ -L "$target" ]]; then
     echo 'Staging directory is a symlink; refusing to follow it' >&2
@@ -87,7 +88,7 @@ remote_rsync="$remote_guard && exec rsync"
 printf -v ssh_command '%q ' ssh "${ssh_options[@]}"
 rsync \
     --archive --no-owner --no-group \
-    --checksum --delay-updates --itemize-changes --stats --human-readable \
+    --checksum --delay-updates --itemize-changes --stats --human-readable --timeout=120 \
     --protect-args --chmod=D755,F644 \
     --rsh="$ssh_command" \
     --rsync-path="$remote_rsync" \
