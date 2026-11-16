@@ -28,6 +28,13 @@
     }
 }
 
+html,
+body {
+    &:has(.popup._open._result) {
+        background-color: $black;
+    }
+}
+
 .popup-result {
     position: absolute;
     inset: 0;
