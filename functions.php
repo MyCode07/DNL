@@ -18,4 +18,4 @@ require_once 'inc/wp/post_types.php';
 require_once 'inc/wp/shortcodes.php';
 require_once 'inc/forms/cf7.php';
 require_once 'inc/forms/smtp.php';
-require_once 'inc/forms/log.php';
+// require_once 'inc/forms/log.php';
