@@ -42,6 +42,9 @@ export function initContactForms(root) {
 
         function update() {
             if (disposed) return false;
+            for (const field of form.querySelectorAll('input[name="page-url"]')) {
+                field.value = (root.defaultView || window).location.href;
+            }
             const fields = getFormFields(form);
             const containers = new Map();
             let valid = true;
