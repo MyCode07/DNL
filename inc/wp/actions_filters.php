@@ -1,5 +1,11 @@
 <?php
 
+// Probe whether Polylang adds language variants to ordinary profile metadata.
+add_filter('user_contactmethods', static function ($methods) {
+    $methods['frame_author_translation_test'] = 'Тестовое поле автора (проверка перевода)';
+    return $methods;
+});
+
 // Author profiles are not public, including feeds and ?author=ID URLs.
 add_action('template_redirect', 'frame_disable_author_archives', 0);
 function frame_disable_author_archives()
