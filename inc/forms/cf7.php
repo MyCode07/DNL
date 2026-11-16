@@ -2,6 +2,14 @@
 
 require_once __DIR__ . '/messages.php';
 
+// The uploader uses this label for .cd-upload-btn in every CF7 form.
+add_filter('dnd_cf7_data_options', function ($options) {
+    if (frame_cf7_message_language() === 'en') {
+        $options['browse'] = 'Upload Files';
+    }
+    return $options;
+});
+
 add_filter('wpcf7_autop_or_not', '__return_false');
 // Keep field wrappers: CF7 needs them for validation and accessible errors.
 
