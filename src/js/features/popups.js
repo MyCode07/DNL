@@ -1,5 +1,5 @@
 import { createScope } from '../core/lifecycle.js';
-import { getFocusableElements, trapFocus } from '../utils/focus.js';
+import { getFocusableElements } from '../utils/focus.js';
 
 /** One active modal, delegated triggers, keyboard dismissal and restored focus. */
 export function initPopups(root, scrollLock, media) {
@@ -34,14 +34,18 @@ export function initPopups(root, scrollLock, media) {
 
     function releaseAfterClose(popup, release) {
         if (!release) return;
+        const complete = () => {
+            if (active !== popup) popup.close();
+            release();
+        };
         const animations = popup.getAnimations();
         if (!animations.length) {
-            release();
+            complete();
             return;
         }
         const finish = () => {
             if (!pendingCloses.delete(finish)) return;
-            release();
+            complete();
         };
         pendingCloses.add(finish);
         // CSS owns the duration; cancellation (reopening or reduced motion) also settles it.
@@ -49,9 +53,13 @@ export function initPopups(root, scrollLock, media) {
     }
 
     for (const popup of popups) {
-        popup.setAttribute('role', 'dialog');
-        popup.setAttribute('aria-modal', 'true');
-        popup.setAttribute('tabindex', '-1');
+        scope.on(popup, 'cancel', (event) => {
+            event.preventDefault();
+            if (active === popup) close();
+        });
+        scope.on(popup, 'close', () => {
+            if (active === popup && !popup.open) close();
+        });
         popup.inert = true;
     }
 
@@ -62,9 +70,15 @@ export function initPopups(root, scrollLock, media) {
         active.inert = true;
         active.dispatchEvent(new CustomEvent('popup:close', { bubbles: true }));
         active = undefined;
-        releaseAfterClose(activePopup, releaseScroll);
+        const previousOpener = opener;
+        const release = releaseScroll;
+        releaseAfterClose(activePopup, () => {
+            release?.();
+            if (restoreFocus && !active && previousOpener?.isConnected) {
+                previousOpener.focus({ preventScroll: true });
+            }
+        });
         releaseScroll = undefined;
-        if (restoreFocus && opener?.isConnected) opener.focus({ preventScroll: true });
         opener = undefined;
     }
 
@@ -80,9 +94,12 @@ export function initPopups(root, scrollLock, media) {
         if (!popup.hasAttribute('aria-label') && !popup.hasAttribute('aria-labelledby')) {
             popup.setAttribute(
                 'aria-label',
-                trigger.innerText?.trim().replace(/\s+/g, ' ') || 'Form result',
+                trigger?.innerText?.trim().replace(/\s+/g, ' ') || 'Form result',
             );
         }
+        if (!popup.open) popup.showModal();
+        // Establish the initial position before the opening transition.
+        popup.getBoundingClientRect();
         popup.classList.add('_open');
         popup.dispatchEvent(new CustomEvent('popup:open', { bubbles: true }));
         (getFocusableElements(popup)[0] || popup).focus({ preventScroll: true });
@@ -114,13 +131,6 @@ export function initPopups(root, scrollLock, media) {
         if (!active) return;
         const closeButton = event.target.closest('.popup-close, [data-close-popup]');
         if ((closeButton && active.contains(closeButton)) || event.target === active) close();
-    });
-    scope.on(root, 'keydown', (event) => {
-        if (!active) return;
-        if (event.key === 'Escape') {
-            event.preventDefault();
-            close();
-        } else trapFocus(event, active);
     });
     scope.add(() => {
         close();

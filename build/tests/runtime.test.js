@@ -20,6 +20,16 @@ function popupFixture(t) {
     let animations = [];
     Object.assign(popup, {
         style: { transitionDuration: '' },
+        open: false,
+        showModal() {
+            this.open = true;
+        },
+        close() {
+            this.open = false;
+        },
+        getBoundingClientRect() {
+            return {};
+        },
         getAttribute: (name) => attributes.get(name) ?? null,
         setAttribute: (name, value) => attributes.set(name, value),
         removeAttribute: (name) => attributes.delete(name),
@@ -58,6 +68,7 @@ function popupFixture(t) {
     t.after(destroy);
     return {
         destroy,
+        popup,
         locks: () => locks,
         open() {
             const event = new Event('click');
@@ -66,9 +77,7 @@ function popupFixture(t) {
         },
         close(finished) {
             animations = finished ? [{ finished }] : [];
-            const event = new Event('keydown');
-            Object.defineProperty(event, 'key', { value: 'Escape' });
-            root.dispatchEvent(event);
+            popup.dispatchEvent(new Event('cancel', { cancelable: true }));
         },
     };
 }
@@ -79,9 +88,11 @@ test('popup keeps its scroll lock until the closing transition finishes', async 
     fixture.open();
     fixture.close(transition.promise);
     assert.equal(fixture.locks(), 1);
+    assert.equal(fixture.popup.open, true);
     transition.resolve();
     await new Promise(setImmediate);
     assert.equal(fixture.locks(), 0);
+    assert.equal(fixture.popup.open, false);
 });
 
 test('reopening keeps its own lock when the previous close is cancelled', async (t) => {

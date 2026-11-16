@@ -154,7 +154,7 @@ function the_field($name)
             </form>
         </div>
     </main>
-    <div class="popup _fixed" id="popup-1">
+    <dialog class="popup _fixed" id="popup-1">
         <div class="popup-body">
             <?php require $root . '/template-parts/popups/result.php'; ?>
             <button class="popup-close" type="button">Close</button>
@@ -167,7 +167,7 @@ function the_field($name)
                 </div>
             </div>
         </div>
-    </div>
+    </dialog>
     <?php require $root . '/template-parts/popups/form-result.php'; ?>
     <script src="/components.js"></script>
 </body>

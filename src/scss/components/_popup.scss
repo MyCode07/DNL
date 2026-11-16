@@ -133,6 +133,20 @@
 }
 
 .popup {
+    margin: 0;
+    border: 0;
+    max-width: none;
+    max-height: none;
+    color: inherit;
+
+    &:not([open]) {
+        display: none;
+    }
+
+    &::backdrop {
+        background: transparent;
+    }
+
     position: fixed;
     z-index: 16;
     width: 100%;
@@ -146,6 +160,7 @@
     padding-top: 4rem;
     padding-bottom: 8rem;
     background-color: $white;
+    overscroll-behavior: none;
     //anim
     pointer-events: none;
     visibility: hidden;
