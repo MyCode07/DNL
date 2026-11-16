@@ -5,8 +5,8 @@ $publish_date = get_the_date('d M. Y');
 $post_meta = $publish_date;
 
 if ($author_id) {
-    $author_name = get_the_author_meta('display_name', $author_id);
-    $post_meta = get_the_author_meta('display_name', $author_id) . '<span> — ' . $publish_date . '</span>';
+    $author = frame_get_author_data($author_id);
+    $post_meta = esc_html($author['name']) . '<span> — ' . esc_html($publish_date) . '</span>';
 }
 
 ?>

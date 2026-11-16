@@ -46,12 +46,7 @@ function frame_yoast_author_data($data, $user_id)
 {
     unset($data['image'], $data['url']);
 
-    if (!function_exists('get_field')) {
-        return $data;
-    }
-
-    foreach (['jobTitle' => 'dolzhnost', 'description' => 'opisanie'] as $property => $field) {
-        $value = trim(wp_strip_all_tags((string) get_field($field, 'user_' . $user_id)));
+    foreach (frame_get_author_data($user_id) as $property => $value) {
         if ($value !== '') {
             $data[$property] = $value;
         }
