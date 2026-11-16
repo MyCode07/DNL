@@ -9,6 +9,10 @@
         margin-left: auto;
     }
 
+    @media (max-width:1024px) {
+        overscroll-behavior: none;
+    }
+
     // .menu-surface
     &-surface {
         position: relative;
