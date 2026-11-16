@@ -5,14 +5,6 @@ $btn = $cta['knopka'];
 <style>
     .cta__bg-image {
         background-image: url(<?php echo esc_url($cta['fon_desktop']) ?>);
-
-        @media (max-width:1024px) {
-            /* background-image: url(<?php echo esc_url($cta['fon_mobajl']) ?>); */
-        }
-
-        @media (max-width:767px) {
-            /* background-image: url(<?php echo esc_url($cta['fon_360']) ?>); */
-        }
     }
 </style>
 <section class="section white cta" id="cta">

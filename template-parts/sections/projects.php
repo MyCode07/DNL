@@ -5,7 +5,7 @@ $selected_projects = new WP_Query([
     'posts__in' => $projects['spisok'] ?? [],
     'posts_per_page' => $projects['spisok'] ? count($projects['spisok']) : 3,
     'orderby' => 'posts__in',
-    'order' => 'ASC',
+    'order' => 'DESC',
 ]);
 if (!$selected_projects->have_posts()) return;
 $tabs = '<div class="projects-tabs">';
