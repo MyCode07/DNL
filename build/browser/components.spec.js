@@ -219,6 +219,30 @@ test('production bundle boots and keeps dialogs keyboard accessible', async ({ p
     await expect(page.locator('body')).not.toHaveClass(/_noscroll/);
 });
 
+test('popup backdrop stays transparent during motion and turns black after opening', async ({
+    page,
+}) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.locator('.menu-toggle').click();
+    const popup = page.locator('#popup-1');
+    const backdrop = () =>
+        popup.evaluate((element) => getComputedStyle(element, '::backdrop').backgroundColor);
+    await page
+        .locator('.menu-body .menu-btn[data-open-popup]')
+        .evaluate((element) => element.click());
+    await popup.evaluate((element) =>
+        element.getAnimations().forEach((animation) => animation.pause()),
+    );
+    expect(await backdrop()).toBe('rgba(0, 0, 0, 0)');
+    await popup.evaluate((element) =>
+        element.getAnimations().forEach((animation) => animation.finish()),
+    );
+    await expect.poll(backdrop).toBe('rgb(0, 0, 0)');
+    await page.keyboard.press('Escape');
+    expect(await backdrop()).toBe('rgba(0, 0, 0, 0)');
+    await expect(popup).toHaveJSProperty('open', false);
+});
+
 for (const width of [390, 1600]) {
     for (const reducedMotion of ['reduce', 'no-preference']) {
         test(`popup interactions preserve the open menu at ${width} with ${reducedMotion}`, async ({

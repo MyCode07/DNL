@@ -30,6 +30,7 @@ export function initPopups(root, scrollLock, media) {
     let active;
     let opener;
     let releaseScroll;
+    let opening;
     const pendingCloses = new Set();
 
     function releaseAfterClose(popup, release) {
@@ -66,6 +67,8 @@ export function initPopups(root, scrollLock, media) {
     function close({ restoreFocus = true } = {}) {
         if (!active) return;
         const activePopup = active;
+        opening = undefined;
+        active.classList.remove('_backdrop');
         active.classList.remove('_open');
         active.inert = true;
         active.dispatchEvent(new CustomEvent('popup:close', { bubbles: true }));
@@ -101,6 +104,21 @@ export function initPopups(root, scrollLock, media) {
         // Establish the initial position before the opening transition.
         popup.getBoundingClientRect();
         popup.classList.add('_open');
+        const currentOpening = Symbol();
+        opening = currentOpening;
+        const finishOpening = () => {
+            if (opening === currentOpening && active === popup && popup.open) {
+                popup.classList.add('_backdrop');
+            }
+        };
+        const animations = popup.getAnimations();
+        if (animations.length) {
+            Promise.allSettled(animations.map((animation) => animation.finished)).then(
+                finishOpening,
+            );
+        } else {
+            finishOpening();
+        }
         popup.dispatchEvent(new CustomEvent('popup:open', { bubbles: true }));
         (getFocusableElements(popup)[0] || popup).focus({ preventScroll: true });
     }

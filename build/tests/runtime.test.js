@@ -69,8 +69,10 @@ function popupFixture(t) {
     return {
         destroy,
         popup,
+        hasBackdrop: () => classes.has('_backdrop'),
         locks: () => locks,
-        open() {
+        open(finished) {
+            animations = finished ? [{ finished }] : [];
             const event = new Event('click');
             Object.defineProperty(event, 'target', { value: trigger });
             root.dispatchEvent(event);
@@ -81,6 +83,43 @@ function popupFixture(t) {
         },
     };
 }
+
+test('popup backdrop appears after opening and disappears as closing starts', async (t) => {
+    const fixture = popupFixture(t);
+    const opening = Promise.withResolvers();
+    fixture.open(opening.promise);
+    assert.equal(fixture.hasBackdrop(), false);
+    opening.resolve();
+    await new Promise(setImmediate);
+    assert.equal(fixture.hasBackdrop(), true);
+    const closing = Promise.withResolvers();
+    fixture.close(closing.promise);
+    assert.equal(fixture.hasBackdrop(), false);
+    closing.resolve();
+});
+
+test('stale opening completion cannot enable the backdrop after reopening', async (t) => {
+    const fixture = popupFixture(t);
+    const first = Promise.withResolvers();
+    const second = Promise.withResolvers();
+    fixture.open(first.promise);
+    fixture.close();
+    fixture.open(second.promise);
+    first.resolve();
+    await new Promise(setImmediate);
+    assert.equal(fixture.hasBackdrop(), false);
+    second.resolve();
+    await new Promise(setImmediate);
+    assert.equal(fixture.hasBackdrop(), true);
+});
+
+test('popup backdrop is immediate when opening has no animation', (t) => {
+    const fixture = popupFixture(t);
+    fixture.open();
+    assert.equal(fixture.hasBackdrop(), true);
+    fixture.close();
+    assert.equal(fixture.hasBackdrop(), false);
+});
 
 test('popup keeps its scroll lock until the closing transition finishes', async (t) => {
     const fixture = popupFixture(t);

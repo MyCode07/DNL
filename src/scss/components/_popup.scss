@@ -147,6 +147,10 @@
         background: transparent;
     }
 
+    &._backdrop::backdrop {
+        background: $black;
+    }
+
     position: fixed;
     z-index: 16;
     width: 100%;
