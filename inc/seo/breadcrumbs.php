@@ -1,5 +1,21 @@
 <?php
 
+// Filter the shared breadcrumb data so visible links and Yoast schema agree.
+add_filter('wpseo_breadcrumb_links', 'frame_localize_breadcrumb_home');
+function frame_localize_breadcrumb_home($links)
+{
+    if (!function_exists('pll_current_language') || pll_current_language('slug') !== 'en') {
+        return $links;
+    }
+
+    $home = function_exists('pll_home_url') ? pll_home_url('en') : home_url('/');
+    if (isset($links[0]['url']) && untrailingslashit($links[0]['url']) === untrailingslashit($home)) {
+        $links[0]['text'] = 'Home';
+    }
+
+    return $links;
+}
+
 /**
  * Изменяет хлебные крошки Yoast.
  *
