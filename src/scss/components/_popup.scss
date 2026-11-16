@@ -175,6 +175,10 @@
         padding-bottom: 6rem;
     }
 
+    @media (max-width:1204px) {
+        padding-top: calc(env(safe-area-inset-top, 0px) + 3rem);
+    }
+
     &._open {
         pointer-events: all;
         visibility: visible;
