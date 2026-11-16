@@ -103,6 +103,10 @@ body {
             }
         }
 
+        @media (max-width:350px) {
+            padding-bottom: 9rem;
+        }
+
         p {
             color: $white-60;
             margin-top: 1.6rem;

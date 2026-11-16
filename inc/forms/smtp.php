@@ -3,12 +3,13 @@
 
 add_action('phpmailer_init', function ($phpmailer) {
 
-    $smtp_host = 'smtp.example.com';
+
+    $smtp_host = 'smtp.yandex.ru';
     $smtp_port = 587;
-    $smtp_user = 'info@example.com';
-    $smtp_pass = 'YOUR_PASSWORD';
-    $smtp_from = 'info@example.com';
-    $smtp_from_name = 'Website';
+    $smtp_user = 'dev@chipsa.ru';
+    $smtp_pass = 'ypnihswvdinwvxyr';
+    $smtp_from = 'dev@chipsa.ru';
+    $smtp_from_name = 'DNL Capital';
 
     $phpmailer->isSMTP();
 
