@@ -242,6 +242,29 @@ function transitionFixture({ blocked = false, broken = false } = {}) {
 const transitionTween = (progress) =>
     gsap.globalTimeline.getChildren().find((t) => t.vars.progress === progress);
 
+test('cover follows the visible viewport when CSS height lags behind Safari toolbars', async () => {
+    const fixture = transitionFixture();
+    fixture.view.innerWidth = 390;
+    fixture.view.innerHeight = 664;
+    fixture.view.visualViewport = new EventTarget();
+    Object.assign(fixture.view.visualViewport, { height: 744, offsetTop: 20 });
+    fixture.canvas.getBoundingClientRect = () => ({
+        width: 390,
+        height: Math.max(664, parseFloat(fixture.canvas.style.minHeight) || 0),
+    });
+    const destroy = initPageTransition(fixture.root);
+    await Promise.resolve();
+    assert.equal(fixture.canvas.height, 764 * 2);
+    fixture.view.visualViewport.height = 824;
+    fixture.view.visualViewport.dispatchEvent(new Event('resize'));
+    assert.equal(fixture.canvas.height, 844 * 2);
+    fixture.view.innerHeight = 900;
+    fixture.view.dispatchEvent(new Event('resize'));
+    assert.equal(fixture.canvas.height, 900 * 2);
+    destroy();
+    gsap.ticker.sleep();
+});
+
 test('opening releases only after canvas removal; closing navigates only at full coverage', async () => {
     const fixture = transitionFixture();
     let releaseCanvas;

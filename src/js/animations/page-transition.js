@@ -87,7 +87,13 @@ export function initPageTransition(root) {
     }
     function resize() {
         if (!canvas || !context) return;
-        // Include the area revealed when mobile browser toolbars collapse.
+        // Safari can report viewport units smaller than the revealed toolbar area.
+        canvas.style.minHeight = `${Math.ceil(
+            Math.max(
+                view.innerHeight,
+                (view.visualViewport?.height || 0) + (view.visualViewport?.offsetTop || 0),
+            ),
+        )}px`;
         const { width, height } = canvas.getBoundingClientRect();
         const size = width <= 767 ? 40 : width <= 1280 ? 80 : 100;
         const columns = Math.ceil(width / size);
@@ -119,7 +125,7 @@ export function initPageTransition(root) {
                 canvas.dataset.pageTransition = '';
                 canvas.setAttribute('aria-hidden', 'true');
                 canvas.style.cssText =
-                    'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:100lvh;z-index:2147483647;pointer-events:auto;display:block';
+                    'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
                 root.documentElement.append(canvas);
             }
             context = canvas.getContext('2d');
