@@ -298,3 +298,24 @@ add_action('wp_mail_failed', function ($error) {
             : null,
     ]);
 }, 10, 1);
+
+
+add_filter('wp_mail', function ($args) {
+    $recipients = $args['to'] ?? [];
+
+    if (is_string($recipients)) {
+        $recipients = explode(',', $recipients);
+    }
+
+    frame_mail_log('mail_diagnostics', [
+        'to' => array_map(
+            fn($email) => trim((string) $email),
+            (array) $recipients
+        ),
+        'subject_length' => strlen((string) ($args['subject'] ?? '')),
+        'message_length' => strlen((string) ($args['message'] ?? '')),
+        'headers' => $args['headers'] ?? [],
+    ]);
+
+    return $args;
+}, 9999);
