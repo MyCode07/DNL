@@ -219,6 +219,45 @@ test('production bundle boots and keeps dialogs keyboard accessible', async ({ p
     await expect(page.locator('body')).not.toHaveClass(/_noscroll/);
 });
 
+for (const width of [390, 1600]) {
+    for (const reducedMotion of ['reduce', 'no-preference']) {
+        test(`popup interactions preserve the open menu at ${width} with ${reducedMotion}`, async ({
+            page,
+        }) => {
+            await page.setViewportSize({ width, height: 844 });
+            await page.emulateMedia({ reducedMotion });
+            const menu = page.locator('.menu');
+            const toggle = page.locator('.menu-toggle');
+            const popup = page.locator('#popup-1');
+            const opener = page.locator('.menu-body .menu-btn[data-open-popup]');
+            await toggle.click();
+
+            for (const dismissal of ['button', 'escape', 'outside']) {
+                await opener.click();
+                await popup.locator('input').click();
+                await popup.locator('input').fill('Example');
+                await expect(menu).toHaveClass(/_open/);
+                if (dismissal === 'button') await popup.locator('.popup-close').click();
+                else if (dismissal === 'escape') await page.keyboard.press('Escape');
+                else await popup.click({ position: { x: 2, y: 2 } });
+                await expect(popup).toHaveJSProperty('open', false);
+                await expect(menu).toHaveClass(/_open/);
+                await expect(opener).toBeFocused();
+                if (width === 390) await expect(page.locator('body')).toHaveClass(/_noscroll/);
+            }
+
+            // The mobile menu covers the viewport; outside clicks are available on desktop.
+            if (width === 390) await toggle.click();
+            else await page.mouse.click(1, 843);
+            await expect(menu).not.toHaveClass(/_open/);
+            await expect(page.locator('body')).not.toHaveClass(/_noscroll/);
+            await toggle.click();
+            await page.locator('.menu-body a[href="#projects"]').click();
+            await expect(menu).not.toHaveClass(/_open/);
+        });
+    }
+}
+
 test('responsive navigation and project pagination work after tab and viewport changes', async ({
     page,
 }) => {

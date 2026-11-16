@@ -46,6 +46,8 @@ export function initMenu(root, { media, scrollLock }) {
     reset();
     scope.on(toggle, 'click', () => setOpen(!menu.classList.contains('_open')));
     scope.on(menu.ownerDocument, 'click', (event) => {
+        // Dialog interactions belong to the overlay, including its closing click.
+        if (event.target instanceof Element && event.target.closest('.popup')) return;
         if (menu.classList.contains('_open') && !menu.contains(event.target)) setOpen(false);
     });
     scope.on(surface, 'click', (event) => {
