@@ -24,7 +24,6 @@ $error = get_localized_field('oshibka_otpravki');
 <div class="popup-result popup-result--error" data-popup-result="error" hidden>
     <div class="popup-result__background" aria-hidden="true">
         <picture>
-            <source media="(max-width: 767px)" srcset="<?php echo esc_url(frame_asset('img/popup-error-360.png')); ?>">
             <source media="(max-width: 1024px)" srcset="<?php echo esc_url(frame_asset('img/popup-error-mobile.png')); ?>">
             <img src="<?php echo esc_url(frame_asset('img/popup-error-desktop.png')); ?>" alt="">
         </picture>

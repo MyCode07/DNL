@@ -33,6 +33,13 @@
     overflow: hidden;
     background-color: $black;
     color: $white;
+    overscroll-behavior: none;
+
+    @media (max-width:1024px) {
+        @media (orientation: landscape) {
+            min-height: 40rem;
+        }
+    }
 
     // .popup-result__background
     &__background {
@@ -47,6 +54,13 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
+
+            @media (max-width:1024px) {
+                @media (orientation: landscape) {
+                    object-fit: contain;
+                    margin-top: -2rem;
+                }
+            }
         }
     }
 
@@ -68,10 +82,18 @@
 
         @media (max-width:1024px) {
             padding-bottom: 24rem;
+
+            @media (orientation: landscape) {
+                padding-bottom: 4rem;
+            }
         }
 
         @media (max-width:767px) {
             padding-bottom: 12rem;
+
+            @media (orientation: landscape) {
+                padding-bottom: 4rem;
+            }
         }
 
         p {
