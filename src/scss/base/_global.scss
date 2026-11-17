@@ -994,3 +994,19 @@ input[type="checkbox"] {
     // corner-shape: superellipse(2);
     // corner-shape: squircle;
 }
+
+.safari-liquid-glass-toolbar-fixer {
+    position: sticky;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 6px;
+    background-color: transparent;
+    z-index: 999;
+    display: none;
+
+    /* Make it apply only to iOS Safari */
+    @supports (-webkit-touch-callout: none) {
+        display: block;
+    }
+}

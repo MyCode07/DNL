@@ -6,6 +6,7 @@ get_template_part('template-parts/popups/#include');
 wp_footer();
 ?>
 <div class="copied-text arrow-btn text-m"><?php echo get_localized_field('skopirovano') ?? "Copied"; ?></div>
+<div class='safari-liquid-glass-toolbar-fixer' aria-hidden='true'></div>
 </body>
 
 </html>
