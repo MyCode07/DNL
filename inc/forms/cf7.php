@@ -138,7 +138,7 @@ function frame_cf7_checkbox_rules($schema, $form)
 }
 
 
-// add_filter('wpcf7_mail_components', 'custom_cf7_multiple_recipients', 10, 3);
+add_filter('wpcf7_mail_components', 'custom_cf7_multiple_recipients', 10, 3);
 function custom_cf7_multiple_recipients($components, $contact_form, $submission)
 {
     $additional_email = 'den@adsbase.com';
