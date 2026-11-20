@@ -1025,5 +1025,29 @@ input[type="checkbox"] {
     /* Make it apply only to iOS Safari */
     @supports (-webkit-touch-callout: none) {
         display: block;
+
+        @media (max-width:1024px) {
+
+            // Extend the overlay's background under Safari's floating toolbar.
+            body:has(.menu._open, .popup._backdrop) & {
+                position: fixed;
+                inset: calc(100dvh - 2px) 0 auto;
+                height: 100lvh;
+                background-color: #202020;
+                pointer-events: none;
+            }
+
+            body:has(:where(.header.dark, .header.dark-static) .menu._open) & {
+                background-color: $gray-100;
+            }
+
+            body:has(.popup._backdrop) & {
+                background-color: $white;
+            }
+
+            body:has(.popup._backdrop._result) & {
+                background-color: $black;
+            }
+        }
     }
 }

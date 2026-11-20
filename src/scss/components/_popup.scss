@@ -151,6 +151,20 @@
         background: $black;
     }
 
+    @supports (-webkit-touch-callout: none) {
+        @media (max-width:1024px) {
+            &._backdrop::backdrop {
+                bottom: auto;
+                height: 100lvh;
+                background: $white;
+            }
+
+            &._backdrop._result::backdrop {
+                background: $black;
+            }
+        }
+    }
+
     position: fixed;
     z-index: 16;
     width: 100%;
