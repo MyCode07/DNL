@@ -249,6 +249,7 @@
             z-index: -1;
             background-color: $white;
             pointer-events: none;
+            inset-inline-start: 0;
         }
 
         @media (max-width:1440px) {

@@ -46,6 +46,7 @@ body {
     overflow: hidden;
     background-color: $black;
     color: $white;
+    inset-inline-start: 0;
 
     @media (max-width:1024px) {
         @media (orientation: landscape) {
