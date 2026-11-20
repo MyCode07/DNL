@@ -177,7 +177,6 @@
     top: 0;
     inset-inline: 0;
     overflow: hidden;
-    overflow: clip;
     background-color: transparent;
     pointer-events: none;
 
@@ -191,7 +190,6 @@
         flex-direction: column;
         overflow-x: hidden;
         overflow-y: auto;
-        overscroll-behavior: none;
         transform: translateY(100%);
         transition: transform 1s cubic-bezier(.25, .25, 0, 1);
     }
