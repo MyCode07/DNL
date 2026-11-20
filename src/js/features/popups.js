@@ -5,6 +5,9 @@ import { getFocusableElements } from '../utils/focus.js';
 export function initPopups(root, scrollLock, media) {
     const scope = createScope();
     const popups = [...root.querySelectorAll('.popup')];
+    const panels = new Map(
+        popups.map((popup) => [popup, popup.querySelector('.popup-panel') || popup]),
+    );
     const snapshots = popups.map((popup) => [
         popup,
         popup.getAttribute('role'),
@@ -13,7 +16,10 @@ export function initPopups(root, scrollLock, media) {
         popup.getAttribute('tabindex'),
         popup.getAttribute('aria-label'),
     ]);
-    const transitions = popups.map((popup) => [popup, popup.style.transitionDuration]);
+    const transitions = [...panels.values()].map((panel) => [
+        panel,
+        panel.style.transitionDuration,
+    ]);
     const closeButtons = [...root.querySelectorAll('.popup-close')];
     const closeLabels = closeButtons.map((button) => button.getAttribute('aria-label'));
     const closeLabel = root.querySelector('.menu-toggle span')?.dataset.textClose || 'Close dialog';
@@ -21,8 +27,8 @@ export function initPopups(root, scrollLock, media) {
         if (!button.hasAttribute('aria-label')) button.setAttribute('aria-label', closeLabel);
     });
     function updateMotion() {
-        transitions.forEach(([popup, duration]) => {
-            popup.style.transitionDuration = media.reducedMotion.matches ? '0s' : duration;
+        transitions.forEach(([panel, duration]) => {
+            panel.style.transitionDuration = media.reducedMotion.matches ? '0s' : duration;
         });
     }
     updateMotion();
@@ -39,7 +45,7 @@ export function initPopups(root, scrollLock, media) {
             if (active !== popup) popup.close();
             release();
         };
-        const animations = popup.getAnimations();
+        const animations = panels.get(popup).getAnimations();
         if (!animations.length) {
             complete();
             return;
@@ -102,7 +108,8 @@ export function initPopups(root, scrollLock, media) {
         }
         if (!popup.open) popup.showModal();
         // Establish the initial position before the opening transition.
-        popup.getBoundingClientRect();
+        const panel = panels.get(popup);
+        panel.getBoundingClientRect();
         popup.classList.add('_open');
         const currentOpening = Symbol();
         opening = currentOpening;
@@ -111,7 +118,7 @@ export function initPopups(root, scrollLock, media) {
                 popup.classList.add('_backdrop');
             }
         };
-        const animations = popup.getAnimations();
+        const animations = panel.getAnimations();
         if (animations.length) {
             Promise.allSettled(animations.map((animation) => animation.finished)).then(
                 finishOpening,
@@ -153,8 +160,8 @@ export function initPopups(root, scrollLock, media) {
     scope.add(() => {
         close();
         for (const finish of pendingCloses) finish();
-        transitions.forEach(([popup, duration]) => {
-            popup.style.transitionDuration = duration;
+        transitions.forEach(([panel, duration]) => {
+            panel.style.transitionDuration = duration;
         });
         closeButtons.forEach((button, index) => {
             if (closeLabels[index] === null) button.removeAttribute('aria-label');

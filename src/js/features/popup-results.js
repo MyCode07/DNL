@@ -5,6 +5,7 @@ import { gsap } from '../core/gsap.js';
 export function initPopupResults(root, media) {
     const scope = createScope();
     for (const popup of root.querySelectorAll('.popup')) {
+        const panel = popup.querySelector('.popup-panel') || popup;
         const form = popup.querySelector('.form');
         const results = [...popup.querySelectorAll('[data-popup-result]')];
         if (!results.length) continue;
@@ -60,7 +61,7 @@ export function initPopupResults(root, media) {
                 timeline.add(() => {
                     if (form) form.hidden = true;
                     result.hidden = false;
-                    popup.scrollTop = 0;
+                    panel.scrollTop = 0;
                     popup.classList.add('_result', `_${event.detail}`);
                 });
                 timeline.fromTo(result, { opacity: 0 }, { opacity: 1, duration });
