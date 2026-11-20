@@ -8,28 +8,11 @@ html {
     font-size: 10px;
 }
 
-// Preserve the theme's viewport height when Lenis is active.
 html.lenis,
 html.lenis body {
     height: 100%;
 }
 
-// Lock the root without clipping content to the body's viewport height.
-html:has(> body._noscroll) {
-    overflow: clip;
-}
-
-html:has(> body._noscroll) > body._noscroll {
-    overflow: visible;
-}
-
-@supports (-webkit-touch-callout: none) {
-
-    html:has(.header.hero-at-viewport-top),
-    body:has(.header.hero-at-viewport-top) {
-        // background-color: $black;
-    }
-}
 
 body {
     @include type.typography("body-text");
@@ -1012,10 +995,6 @@ input[type="checkbox"] {
     }
 }
 
-* {
-    // corner-shape: superellipse(2);
-    // corner-shape: squircle;
-}
 
 .safari-liquid-glass-toolbar-fixer {
     position: sticky;
@@ -1038,7 +1017,7 @@ input[type="checkbox"] {
                 position: fixed;
                 inset: calc(100dvh - 2px) 0 auto;
                 height: 100lvh;
-                background-color: #202020;
+                background-color: $black;
                 pointer-events: none;
             }
 
