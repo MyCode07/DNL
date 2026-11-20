@@ -31,12 +31,43 @@ export function initPopups(root, scrollLock, media) {
     let opener;
     let releaseScroll;
     let opening;
+    const viewport = root.defaultView?.visualViewport;
     const pendingCloses = new Set();
+
+    function clearViewport(popup) {
+        popup.style.removeProperty('--popup-viewport-top');
+        popup.style.removeProperty('--popup-viewport-height');
+    }
+
+    function updateViewport() {
+        if (!active || !viewport) return;
+        const top = Math.max(0, viewport.offsetTop);
+        if (
+            !media.mobile.matches ||
+            Math.abs(viewport.scale - 1) > 0.01 ||
+            (!top && viewport.height >= window.innerHeight - 1)
+        ) {
+            clearViewport(active);
+            return;
+        }
+
+        active.style.setProperty('--popup-viewport-top', `${top}px`);
+        active.style.setProperty('--popup-viewport-height', `${viewport.height}px`);
+    }
+
+    if (viewport) {
+        scope.on(viewport, 'resize', updateViewport);
+        scope.on(viewport, 'scroll', updateViewport);
+        scope.on(media.mobile, 'change', updateViewport);
+    }
 
     function releaseAfterClose(popup, release) {
         if (!release) return;
         const complete = () => {
-            if (active !== popup) popup.close();
+            if (active !== popup) {
+                popup.close();
+                clearViewport(popup);
+            }
             release();
         };
         const animations = popup.getAnimations();
@@ -101,6 +132,7 @@ export function initPopups(root, scrollLock, media) {
             );
         }
         if (!popup.open) popup.showModal();
+        updateViewport();
         // Establish the initial position before the opening transition.
         popup.getBoundingClientRect();
         popup.classList.add('_open');
