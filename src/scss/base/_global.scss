@@ -1013,7 +1013,8 @@ input[type="checkbox"] {
         @media (max-width:1024px) {
 
             // Extend the overlay's background under Safari's floating toolbar.
-            body:has(.menu._open, .popup._backdrop) & {
+            body:has(.menu._open, .popup._backdrop) &,
+            :root:has(> canvas[data-page-transition]) & {
                 position: fixed;
                 inset: calc(100dvh - 2px) 0 auto;
                 height: 100lvh;
@@ -1029,7 +1030,8 @@ input[type="checkbox"] {
                 background-color: $white;
             }
 
-            body:has(.popup._backdrop._result) & {
+            body:has(.popup._backdrop._result) &,
+            :root:has(> canvas[data-page-transition]) & {
                 background-color: $black;
             }
         }
