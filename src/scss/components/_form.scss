@@ -272,6 +272,18 @@
         cursor: no-drop;
         pointer-events: none;
     }
+
+    .newsletter-msg {
+        margin-top: 6rem;
+
+        @media (max-width:1024px) {
+            margin-top: 1.6rem;
+        }
+
+        &__fail {
+            color: $red;
+        }
+    }
 }
 
 .dnd-progress-bar + span,

@@ -160,4 +160,10 @@
             }
         }
     }
+
+    .glass__grid-item{
+        @media (max-width:767px){
+            backdrop-filter: blur(0.8rem);
+        }
+    }
 }

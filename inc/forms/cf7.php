@@ -153,3 +153,14 @@ function custom_cf7_multiple_recipients($components, $contact_form, $submission)
 
     return $components;
 }
+
+
+// ошибка англ формы leave contact
+add_filter('wpcf7_skip_mail', function ($skip_mail, $contact_form) {
+
+    if ((int) $contact_form->id() === 220) {
+        return true;
+    }
+
+    return $skip_mail;
+}, 10, 2);

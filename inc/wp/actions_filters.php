@@ -176,3 +176,17 @@ add_filter('jpeg_quality', function ($arg) {
 add_filter('wp_editor_set_quality', function ($arg) {
     return 100;
 });
+
+
+
+add_filter('body_class', function ($classes) {
+
+    $code = function_exists('pll_current_language') ? pll_current_language() : '';
+    if ($code) {
+        $classes[] = 'lang-' . sanitize_html_class(strtolower($code));
+    }
+
+    $classes[] = is_rtl() ? 'dir-rtl' : 'dir-ltr';
+
+    return $classes;
+});
