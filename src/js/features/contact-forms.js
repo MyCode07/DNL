@@ -15,6 +15,9 @@ export function initContactForms(root) {
     for (const form of root.querySelectorAll('.wpcf7 form')) {
         const wrapper = form.closest('.wpcf7');
         const popup = form.closest('.popup');
+        const isNewsletter = Boolean(form.querySelector('input[type="hidden"][name="newsletter"]'));
+        const newsletterSent = isNewsletter ? form.querySelector('.newsletter-msg__sent') : null;
+        const newsletterFail = isNewsletter ? form.querySelector('.newsletter-msg__fail') : null;
         const budget = getBudgetFields(form);
         const buttons = [
             ...form.querySelectorAll(
@@ -99,8 +102,17 @@ export function initContactForms(root) {
             return valid;
         }
 
+        function showNewsletterResult(result) {
+            newsletterSent?.toggleAttribute('hidden', result !== 'success');
+            newsletterFail?.toggleAttribute('hidden', result !== 'error');
+        }
+
         function showResult(result) {
             if (disposed) return;
+            if (isNewsletter) {
+                showNewsletterResult(result);
+                return;
+            }
             if (popup) {
                 if (popup.classList.contains('_open'))
                     popup.dispatchEvent(new CustomEvent('popup:result', { detail: result }));
@@ -171,6 +183,7 @@ export function initContactForms(root) {
                 if (!window.wpcf7?.submit) return;
                 event.preventDefault();
                 event.stopImmediatePropagation();
+                if (isNewsletter) showNewsletterResult();
                 pending = true;
                 update();
                 Promise.resolve()
@@ -199,6 +212,7 @@ export function initContactForms(root) {
             scope.on(wrapper, type, () => showResult('error'));
         for (const type of ['wpcf7invalid', 'wpcf7unaccepted']) {
             scope.on(wrapper, type, (event) => {
+                if (isNewsletter) showResult('error');
                 for (const item of event.detail.apiResponse?.invalid_fields || [])
                     serverErrors.set(item.field, item.message);
                 getFormFields(form).forEach((field) => touched.add(field));
