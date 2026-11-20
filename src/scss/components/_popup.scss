@@ -176,7 +176,7 @@
     height: 100dvh;
     top: 0;
     inset-inline: 0;
-    overflow: hidden;
+    overflow: clip;
     background-color: transparent;
     pointer-events: none;
 
