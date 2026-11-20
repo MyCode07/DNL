@@ -8,8 +8,13 @@
     }
 
     &._result {
-        padding-bottom: 0;
-        background-color: $black;
+        .popup-body {
+            padding-bottom: 0;
+
+            &::before {
+                background-color: $black;
+            }
+        }
 
         .popup-close {
             position: relative;

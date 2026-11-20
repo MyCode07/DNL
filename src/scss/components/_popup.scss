@@ -175,9 +175,7 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    padding-top: 4rem;
-    padding-bottom: 8rem;
-    background-color: $white;
+    background-color: transparent;
     overscroll-behavior: none;
     //anim
     pointer-events: none;
@@ -187,15 +185,6 @@
     visibility;
     transition-duration: 1s;
     transition-timing-function: cubic-bezier(.25, .25, 0, 1);
-
-    @media (max-width:1440px) {
-        padding-top: 3rem;
-        padding-bottom: 6rem;
-    }
-
-    @media (max-width:1204px) {
-        padding-top: calc(env(safe-area-inset-top, 0px) + 3rem);
-    }
 
     &._open {
         pointer-events: all;
@@ -242,6 +231,8 @@
 
     // .popup-body
     &-body {
+        position: relative;
+        isolation: isolate;
         width: 100%;
         flex: 1 1 auto;
         display: flex;
@@ -249,9 +240,24 @@
         gap: 8rem;
         margin-inline: auto;
         padding-inline: 1.6rem;
+        padding-block: 4rem 8rem;
+
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background-color: $white;
+            pointer-events: none;
+        }
 
         @media (max-width:1440px) {
             gap: 6rem;
+            padding-block: 3rem 6rem;
+        }
+
+        @media (max-width:1204px) {
+            padding-top: calc(env(safe-area-inset-top, 0px) + 3rem);
         }
     }
 
