@@ -47,7 +47,7 @@
                 background-size: 181%;
 
                 @supports (-webkit-touch-callout: none) {
-                    height: 110dvh;
+                    height: 113dvh;
                 }
             }
 
@@ -55,6 +55,11 @@
                 background-position: 8rem bottom;
                 background-size: 127%;
                 will-change: background-position, background-size;
+
+                @supports (-webkit-touch-callout: none) {
+                    background-position: 6rem bottom;
+                    background-size: 135%;
+                }
             }
         }
     }
