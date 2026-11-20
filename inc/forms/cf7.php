@@ -156,11 +156,19 @@ function custom_cf7_multiple_recipients($components, $contact_form, $submission)
 
 
 // ошибка англ формы leave contact
-add_filter('wpcf7_skip_mail', function ($skip_mail, $contact_form) {
-
-    if ((int) $contact_form->id() === 220) {
-        return true;
+add_action('wpcf7_before_send_mail', function ($contact_form) {
+    if ((int) $contact_form->id() !== 220) {
+        return;
     }
 
-    return $skip_mail;
-}, 10, 2);
+    add_filter('pre_wp_mail', 'cf7_test_mail_failure', 999);
+});
+function cf7_test_mail_failure($return)
+{
+    return false;
+}
+add_action('wpcf7_submit', function ($contact_form) {
+    if ((int) $contact_form->id() === 220) {
+        remove_filter('pre_wp_mail', 'cf7_test_mail_failure', 999);
+    }
+});
