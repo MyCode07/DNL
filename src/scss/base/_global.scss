@@ -14,6 +14,15 @@ html.lenis body {
     height: 100%;
 }
 
+// Lock the root without clipping content to the body's viewport height.
+html:has(> body._noscroll) {
+    overflow: clip;
+}
+
+html:has(> body._noscroll) > body._noscroll {
+    overflow: visible;
+}
+
 @supports (-webkit-touch-callout: none) {
 
     html:has(.header.hero-at-viewport-top),
