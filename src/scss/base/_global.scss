@@ -18,8 +18,8 @@ body {
     text-wrap: balance;
 
     &._noscroll {
-        overflow: hidden;
         overflow: clip;
+        overflow: hidden !important;
     }
 
     -webkit-font-smoothing: antialiased;

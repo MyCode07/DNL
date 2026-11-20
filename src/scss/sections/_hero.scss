@@ -4,7 +4,7 @@
     position: relative;
     isolation: isolate;
     overflow: clip;
-    background-color: rgba($color: $black, $alpha: 0.99);
+    background-color: $black;
 
     // .hero__bg
     &__bg {
@@ -24,7 +24,6 @@
             background-repeat: no-repeat;
             background-size: cover;
             background-position: 24.5rem -2rem;
-            background-color: rgba($color: $black, $alpha: 0.99);
 
             @media (max-width:1780px) {
                 background-position: 15rem 7rem;
@@ -46,6 +45,10 @@
                 height: 100dvh;
                 background-position: 37% max(22rem, 22dvh);
                 background-size: 181%;
+
+                @supports (-webkit-touch-callout: none) {
+                    height: 110dvh;
+                }
             }
 
             @media (max-width:767px) {
