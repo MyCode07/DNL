@@ -8,6 +8,24 @@ html {
     font-size: 10px;
 }
 
+// Preserve the theme's viewport height when Lenis is active.
+html.lenis,
+html.lenis body {
+    height: 100%;
+}
+
+// Lenis locks the root. Clipping the viewport-height body resets the scroll position.
+html.lenis.lenis-stopped body._noscroll {
+    overflow: visible;
+}
+
+@supports (-webkit-touch-callout: none) {
+    html:has(.header.hero-at-viewport-top),
+    body:has(.header.hero-at-viewport-top) {
+        background-color: $black;
+    }
+}
+
 body {
     @include type.typography("body-text");
     scroll-behavior: smooth;
@@ -19,7 +37,6 @@ body {
 
     &._noscroll {
         overflow: clip;
-        overflow: hidden !important;
     }
 
     -webkit-font-smoothing: antialiased;

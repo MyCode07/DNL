@@ -25,10 +25,7 @@ export function initSmoothScroll(media) {
         if (media.reducedMotion.matches) return;
         lenis = new Lenis({
             duration: 1.15,
-            smoothWheel: true,
-            syncTouch: false,
             wheelMultiplier: 0.9,
-            touchMultiplier: 1,
             // Overlay content scrolls natively while page scrolling is locked.
             prevent: (element) => Boolean(element.closest('.popup, .menu-body')),
         });

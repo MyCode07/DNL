@@ -5,7 +5,8 @@ export function initHeader(root, menu) {
     const header = root.querySelector('.header');
     if (!header) return;
     const menuBtn = root.querySelector('.menu ._btn');
-    const hasHero = Boolean(root.querySelector('.hero'));
+    const hero = root.querySelector('.hero');
+    const hasHero = Boolean(hero);
     const sections = [...root.querySelectorAll('[data-dark]')];
     const blocks = [...root.querySelectorAll('section, footer, [data-dark]')];
     const transitions = [...root.querySelectorAll('[data-pixelated-scroll-transition]')].map(
@@ -29,6 +30,11 @@ export function initHeader(root, menu) {
         if (scrollY !== previousScrollY) scrollingDown = scrollY > previousScrollY;
         previousScrollY = scrollY;
         const headerRect = header.getBoundingClientRect();
+        const heroRect = hero?.getBoundingClientRect();
+        header.classList.toggle(
+            'hero-at-viewport-top',
+            Boolean(heroRect && heroRect.top <= 0 && heroRect.bottom > 0),
+        );
         const position = scrollingDown ? headerRect.bottom : headerRect.top;
         const containsPosition = (rect) => {
             return scrollingDown
