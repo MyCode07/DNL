@@ -4,10 +4,25 @@
     (() => {
         const state = window.framePageTransition = {
             enabled: true,
-            extraHeight: /\biPhone\b/.test(window.navigator?.userAgent ?? '') ? 100 : 0,
             pending: false,
             cover: null
         };
+        if (/\biPhone\b/.test(window.navigator?.userAgent ?? '')) {
+            const style = document.documentElement.style;
+            let previousBackground;
+            state.setDocumentTint = (active) => {
+                if (active && !previousBackground) {
+                    previousBackground = [
+                        style.getPropertyValue('background-color'),
+                        style.getPropertyPriority('background-color')
+                    ];
+                    style.setProperty('background-color', '#000', 'important');
+                } else if (!active && previousBackground) {
+                    style.setProperty('background-color', ...previousBackground);
+                    previousBackground = undefined;
+                }
+            };
+        }
         state.release = () => {
             state.pending = false;
             document.dispatchEvent(new Event('frame:page-reveal'));
@@ -18,6 +33,7 @@
             state.failed = true;
             state.cover?.remove();
             state.cover = null;
+            state.setDocumentTint?.(false);
             document.documentElement.classList.add('reveal-disabled');
             state.release();
         }, 4000);
@@ -36,21 +52,20 @@
             cover.dataset.pageTransition = '';
             cover.setAttribute('aria-hidden', 'true');
             cover.style.cssText = 'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:none;display:block';
-            if (state.extraHeight) {
-                cover.style.height = `calc(max(100lvh, 100dvh) + ${state.extraHeight}px)`;
-            }
             cover.style.minHeight = `${Math.ceil(Math.max(
                 window.innerHeight || 0,
                 (window.visualViewport?.height || 0) + (window.visualViewport?.offsetTop || 0)
-            )) + state.extraHeight}px`;
+            ))}px`;
             context.fillStyle = '#000';
             context.fillRect(0, 0, 1, 1);
             document.documentElement.append(cover);
             state.cover = cover;
+            state.setDocumentTint?.(true);
             state.pending = true;
         } catch {
             state.cover?.remove();
             state.cover = null;
+            state.setDocumentTint?.(false);
             state.release();
         }
     })();
