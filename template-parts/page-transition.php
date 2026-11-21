@@ -1,7 +1,9 @@
-<?php // Early paint bridges normal document navigations; all animation lives in page-transition.js.
-?>
+<div class="frame-page-transition" hidden aria-hidden="true"></div>
+<script src="<?php echo esc_url(frame_asset('files/page-transition.js')); ?>"></script>
 <script>
     (() => {
+        // Fall back to the canvas if the standalone shell script failed to load.
+        if (window.framePageTransition) return;
         const state = window.framePageTransition = {
             enabled: true,
             pending: false,

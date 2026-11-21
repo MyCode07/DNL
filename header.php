@@ -14,13 +14,13 @@
     </script>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="<?php echo esc_url(frame_asset('files/test-loader.css')); ?>">
+    <link rel="stylesheet" href="<?php echo esc_url(frame_asset('files/page-transition.css')); ?>">
 
     <?php wp_head(); ?>
 </head>
 
 <body <?php body_class(); ?>>
-    <?php get_template_part('template-parts/test-loader'); ?>
+    <?php get_template_part('template-parts/page-transition'); ?>
     <?php
     wp_body_open();
     $header_class = '';

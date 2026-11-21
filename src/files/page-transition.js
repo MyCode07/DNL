@@ -1,5 +1,5 @@
 (() => {
-    const loader = document.querySelector('.frame-test-loader');
+    const loader = document.querySelector('.frame-page-transition');
     if (!loader || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const html = document.documentElement;
@@ -19,14 +19,14 @@
             if (!loader.isConnected) document.body.prepend(loader);
             state.setSolid(solid);
             loader.hidden = false;
-            html.classList.add('frame-test-loader-active');
+            html.classList.add('frame-page-transition-active');
         },
         setSolid(solid) {
             loader.classList.toggle('is-pixelated', !solid);
         },
         unmount() {
             loader.remove();
-            html.classList.remove('frame-test-loader-active');
+            html.classList.remove('frame-page-transition-active');
         },
         release() {
             state.pending = false;
