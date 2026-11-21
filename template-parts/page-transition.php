@@ -1,13 +1,8 @@
 <?php // Early paint bridges normal document navigations; all animation lives in page-transition.js.
 ?>
-<meta name="theme-color" content="#000" media="(scripting: enabled) and (any-pointer: coarse) and (prefers-reduced-motion: no-preference)">
-<meta name="theme-color" content="#fff">
-<style>
-    html.frame-transition-dark,
-    html.frame-transition-dark body {
-        background-color: #000;
-    }
-</style>
+<?php if (preg_match('/\biPhone\b/i', $_SERVER['HTTP_USER_AGENT'] ?? '')) : ?>
+    <meta name="theme-color" content="#000">
+<?php endif; ?>
 <script>
     (() => {
         const state = window.framePageTransition = {
@@ -15,11 +10,6 @@
             pending: false,
             cover: null
         };
-        if (/\biPhone\b/.test(window.navigator?.userAgent ?? '')) {
-            state.setDocumentTint = (active) => {
-                document.documentElement.classList.toggle('frame-transition-dark', active);
-            };
-        }
         state.release = () => {
             state.pending = false;
             document.dispatchEvent(new Event('frame:page-reveal'));
@@ -30,7 +20,6 @@
             state.failed = true;
             state.cover?.remove();
             state.cover = null;
-            state.setDocumentTint?.(false);
             document.documentElement.classList.add('reveal-disabled');
             state.release();
         }, 4000);
@@ -57,12 +46,10 @@
             context.fillRect(0, 0, 1, 1);
             document.documentElement.append(cover);
             state.cover = cover;
-            state.setDocumentTint?.(true);
             state.pending = true;
         } catch {
             state.cover?.remove();
             state.cover = null;
-            state.setDocumentTint?.(false);
             state.release();
         }
     })();
