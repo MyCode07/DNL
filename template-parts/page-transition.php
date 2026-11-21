@@ -7,22 +7,6 @@
             pending: false,
             cover: null
         };
-        if (/\biPhone\b/.test(window.navigator?.userAgent ?? '')) {
-            const style = document.documentElement.style;
-            let previousBackground;
-            state.setDocumentTint = (active) => {
-                if (active && !previousBackground) {
-                    previousBackground = [
-                        style.getPropertyValue('background-color'),
-                        style.getPropertyPriority('background-color')
-                    ];
-                    style.setProperty('background-color', '#000', 'important');
-                } else if (!active && previousBackground) {
-                    style.setProperty('background-color', ...previousBackground);
-                    previousBackground = undefined;
-                }
-            };
-        }
         state.release = () => {
             state.pending = false;
             document.dispatchEvent(new Event('frame:page-reveal'));
@@ -33,7 +17,6 @@
             state.failed = true;
             state.cover?.remove();
             state.cover = null;
-            state.setDocumentTint?.(false);
             document.documentElement.classList.add('reveal-disabled');
             state.release();
         }, 4000);
@@ -60,12 +43,10 @@
             context.fillRect(0, 0, 1, 1);
             document.documentElement.append(cover);
             state.cover = cover;
-            state.setDocumentTint?.(true);
             state.pending = true;
         } catch {
             state.cover?.remove();
             state.cover = null;
-            state.setDocumentTint?.(false);
             state.release();
         }
     })();
