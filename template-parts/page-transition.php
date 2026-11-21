@@ -1,5 +1,7 @@
 <?php // Early paint bridges normal document navigations; all animation lives in page-transition.js.
 ?>
+<meta name="theme-color" content="#000" media="(scripting: enabled) and (any-pointer: coarse) and (prefers-reduced-motion: no-preference)">
+<meta name="theme-color" content="#fff">
 <style>
     html.frame-transition-dark,
     html.frame-transition-dark body {
@@ -14,13 +16,8 @@
             cover: null
         };
         if (/\biPhone\b/.test(window.navigator?.userAgent ?? '')) {
-            const theme = document.createElement('meta');
-            theme.name = 'theme-color';
-            theme.content = '#000';
             state.setDocumentTint = (active) => {
                 document.documentElement.classList.toggle('frame-transition-dark', active);
-                if (active) document.head.prepend(theme);
-                else theme.remove();
             };
         }
         state.release = () => {
