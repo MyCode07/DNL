@@ -10,14 +10,19 @@ html {
     background-color: $white;
 
     &:has(.popup[open]) {
-        overflow: hidden;
+        overflow: clip;
     }
 
     @media (max-width: 1024px) {
         &:has(.menu._open) {
-            overflow: hidden;
+            overflow: clip;
         }
     }
+}
+
+html.lenis,
+html.lenis body {
+    height: 100%;
 }
 
 body {
