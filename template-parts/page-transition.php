@@ -34,7 +34,7 @@
             cover.width = cover.height = 1;
             cover.dataset.pageTransition = '';
             cover.setAttribute('aria-hidden', 'true');
-            cover.style.cssText = 'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);height:var(--frame-transition-height,max(100lvh,100dvh));min-height:100%;z-index:2147483647;pointer-events:none;display:block';
+            cover.style.cssText = 'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:none;display:block';
             cover.style.minHeight = `${Math.ceil(Math.max(
                 window.innerHeight || 0,
                 (window.visualViewport?.height || 0) + (window.visualViewport?.offsetTop || 0)

@@ -17,11 +17,6 @@
 
     <?php if (preg_match('/\biPhone\b/i', $_SERVER['HTTP_USER_AGENT'] ?? '')) : ?>
         <meta name="theme-color" content="#000">
-        <style>
-            canvas[data-page-transition] {
-                --frame-transition-height: 130dvh;
-            }
-        </style>
     <?php endif; ?>
     <?php wp_head(); ?>
 </head>
