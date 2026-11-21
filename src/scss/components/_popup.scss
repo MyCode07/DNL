@@ -153,27 +153,17 @@
     }
 
     &._backdrop::backdrop {
-        background: $black;
+        background: $white;
     }
 
-    @supports (-webkit-touch-callout: none) {
-        @media (max-width:1024px) {
-            &._backdrop::backdrop {
-                height: 100lvh;
-                background: $white;
-            }
-
-            &._backdrop._result::backdrop {
-                background: $black;
-            }
-        }
+    &._backdrop._result::backdrop {
+        background: $black;
     }
 
     position: fixed;
     z-index: 16;
     width: auto;
-    height: 100vh;
-    height: 100dvh;
+    height: 100%;
     top: 0;
     inset-inline: 0;
     overflow: clip;
