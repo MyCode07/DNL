@@ -4,6 +4,7 @@
     (() => {
         const state = window.framePageTransition = {
             enabled: true,
+            extraHeight: /\biPhone\b/.test(window.navigator?.userAgent ?? '') ? 100 : 0,
             pending: false,
             cover: null
         };
@@ -35,10 +36,13 @@
             cover.dataset.pageTransition = '';
             cover.setAttribute('aria-hidden', 'true');
             cover.style.cssText = 'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:none;display:block';
+            if (state.extraHeight) {
+                cover.style.height = `calc(max(100lvh, 100dvh) + ${state.extraHeight}px)`;
+            }
             cover.style.minHeight = `${Math.ceil(Math.max(
                 window.innerHeight || 0,
                 (window.visualViewport?.height || 0) + (window.visualViewport?.offsetTop || 0)
-            ))}px`;
+            )) + state.extraHeight}px`;
             context.fillStyle = '#000';
             context.fillRect(0, 0, 1, 1);
             document.documentElement.append(cover);

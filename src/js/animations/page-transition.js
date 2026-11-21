@@ -52,6 +52,7 @@ export function initPageTransition(root) {
     const view = root.defaultView;
     const bridge = view?.framePageTransition;
     if (!bridge?.enabled) return;
+    const extraHeight = bridge.extraHeight ?? 0;
     const scope = createScope();
     const motion = view.matchMedia('(prefers-reduced-motion: reduce)');
     const state = { progress: bridge.pending ? 1 : 0 };
@@ -89,12 +90,11 @@ export function initPageTransition(root) {
     function resize() {
         if (!canvas || !context) return;
         // Safari can report viewport units smaller than the revealed toolbar area.
-        canvas.style.minHeight = `${Math.ceil(
-            Math.max(
-                view.innerHeight,
-                (view.visualViewport?.height || 0) + (view.visualViewport?.offsetTop || 0),
-            ),
-        )}px`;
+        const viewportHeight = Math.max(
+            view.innerHeight,
+            (view.visualViewport?.height || 0) + (view.visualViewport?.offsetTop || 0),
+        );
+        canvas.style.minHeight = `${Math.ceil(viewportHeight) + extraHeight}px`;
         const { width, height } = canvas.getBoundingClientRect();
         const size = width <= 767 ? 40 : width <= 1280 ? 80 : 100;
         const columns = Math.ceil(width / size);
@@ -127,6 +127,9 @@ export function initPageTransition(root) {
                 canvas.setAttribute('aria-hidden', 'true');
                 canvas.style.cssText =
                     'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
+                if (extraHeight) {
+                    canvas.style.height = `calc(max(100lvh, 100dvh) + ${extraHeight}px)`;
+                }
                 root.documentElement.append(canvas);
             }
             context = canvas.getContext('2d');
