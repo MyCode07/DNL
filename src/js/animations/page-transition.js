@@ -87,12 +87,14 @@ export function initPageTransition(root) {
     }
     function resize() {
         if (!canvas || !context) return;
-        // Safari can report viewport units smaller than the revealed toolbar area.
-        const viewportHeight = Math.max(
-            view.innerHeight,
-            (view.visualViewport?.height || 0) + (view.visualViewport?.offsetTop || 0),
-        );
-        canvas.style.minHeight = `${Math.ceil(viewportHeight)}px`;
+        if (!bridge.mount) {
+            // Safari can report viewport units smaller than the revealed toolbar area.
+            const viewportHeight = Math.max(
+                view.innerHeight,
+                (view.visualViewport?.height || 0) + (view.visualViewport?.offsetTop || 0),
+            );
+            canvas.style.minHeight = `${Math.ceil(viewportHeight)}px`;
+        }
         const { width, height } = canvas.getBoundingClientRect();
         const size = width <= 767 ? 40 : width <= 1280 ? 80 : 100;
         const columns = Math.ceil(width / size);
@@ -123,10 +125,14 @@ export function initPageTransition(root) {
                 canvas = root.createElement('canvas');
                 canvas.dataset.pageTransition = '';
                 canvas.setAttribute('aria-hidden', 'true');
-                canvas.style.cssText =
-                    'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
-                const container = root.body ?? root.documentElement;
-                container.append(canvas);
+                if (bridge.mount) {
+                    bridge.mount(canvas, state.progress === 1);
+                } else {
+                    canvas.style.cssText =
+                        'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
+                    const container = root.body ?? root.documentElement;
+                    container.append(canvas);
+                }
             }
             context = canvas.getContext('2d');
             if (!context) {
@@ -146,6 +152,7 @@ export function initPageTransition(root) {
         view.clearTimeout(recoveryTimer);
         view.clearTimeout(bridge.fallback);
         canvas?.remove();
+        bridge.unmount?.();
         canvas = bridge.cover = null;
         context = null;
         state.progress = 0;
@@ -159,6 +166,7 @@ export function initPageTransition(root) {
         state.progress = 1;
         draw();
         if (!destination) return;
+        bridge.setSolid?.(true);
         try {
             view.sessionStorage.setItem(
                 STORAGE_KEY,
@@ -199,6 +207,7 @@ export function initPageTransition(root) {
                 progress: 0,
                 duration: OPEN_DURATION,
                 ease: 'power1.inOut',
+                onStart: () => bridge.setSolid?.(false),
                 onUpdate: draw,
                 onComplete: reset,
             });
@@ -230,6 +239,7 @@ export function initPageTransition(root) {
         tween?.kill();
         view.clearTimeout(bridge.fallback);
         release();
+        bridge.setSolid?.(false);
         canvas.style.pointerEvents = 'auto';
         destination = url;
         view.clearTimeout(recoveryTimer);
@@ -271,7 +281,8 @@ export function initPageTransition(root) {
     });
     if (bridge.pending) {
         // Settle layout before opening; the bootstrap watchdog covers stalled resources.
-        Promise.resolve(root.fonts?.ready).then(open, open);
+        if (bridge.ready) Promise.all([root.fonts?.ready, bridge.ready]).then(open, open);
+        else Promise.resolve(root.fonts?.ready).then(open, open);
     }
     scope.add(() => {
         disposed = true;

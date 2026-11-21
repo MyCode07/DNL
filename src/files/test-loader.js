@@ -3,30 +3,39 @@
     if (!loader || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const html = document.documentElement;
-    const started = performance.now();
-    const state = (window.framePageTransition = { enabled: false, pending: true });
-    loader.hidden = false;
-    html.classList.add('frame-test-loader-active');
-
-    function finish() {
-        loader.remove();
-        html.classList.remove('frame-test-loader-active');
-        state.pending = false;
-        document.dispatchEvent(new Event('frame:page-reveal'));
-    }
-
-    function reveal() {
-        clearTimeout(watchdog);
-        loader.classList.add('is-leaving');
-        setTimeout(finish, 300);
-    }
-
-    const watchdog = setTimeout(reveal, 4000);
-    const onLoad = () => {
-        if (!loader.isConnected || loader.classList.contains('is-leaving')) return;
-        clearTimeout(watchdog);
-        setTimeout(reveal, Math.max(0, 450 - (performance.now() - started)));
-    };
-    if (document.readyState === 'complete') onLoad();
-    else window.addEventListener('load', onLoad, { once: true });
+    const state = (window.framePageTransition = {
+        enabled: true,
+        pending: true,
+        cover: null,
+        ready: Promise.all([
+            new Promise((resolve) => setTimeout(resolve, 450)),
+            new Promise((resolve) => {
+                if (document.readyState === 'complete') resolve();
+                else window.addEventListener('load', resolve, { once: true });
+            }),
+        ]),
+        mount(canvas, solid) {
+            if (canvas) loader.append(canvas);
+            if (!loader.isConnected) document.body.prepend(loader);
+            state.setSolid(solid);
+            loader.hidden = false;
+            html.classList.add('frame-test-loader-active');
+        },
+        setSolid(solid) {
+            loader.classList.toggle('is-pixelated', !solid);
+        },
+        unmount() {
+            loader.remove();
+            html.classList.remove('frame-test-loader-active');
+        },
+        release() {
+            state.pending = false;
+            document.dispatchEvent(new Event('frame:page-reveal'));
+        },
+    });
+    state.mount(null, true);
+    state.fallback = setTimeout(() => {
+        state.unmount();
+        state.release();
+    }, 4000);
 })();
