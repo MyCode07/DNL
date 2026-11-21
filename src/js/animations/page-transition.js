@@ -124,7 +124,7 @@ export function initPageTransition(root) {
                 canvas.dataset.pageTransition = '';
                 canvas.setAttribute('aria-hidden', 'true');
                 canvas.style.cssText =
-                    'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
+                    'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);height:var(--frame-transition-height,max(100lvh,100dvh));min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
                 root.documentElement.append(canvas);
             }
             context = canvas.getContext('2d');
