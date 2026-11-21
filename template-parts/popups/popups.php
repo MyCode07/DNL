@@ -12,7 +12,7 @@ if ($popups->have_posts()) :
         $form = get_field('forma');
         if (!$form) continue;
 ?>
-        <div class="popup" role="dialog" aria-modal="true" tabindex="-1" hidden id="popup-<?php the_ID() ?>">
+        <dialog class="popup" id="popup-<?php the_ID() ?>">
             <div class="popup-panel">
                 <div class="popup-body">
                     <?php get_template_part('template-parts/popups/result'); ?>
@@ -26,7 +26,7 @@ if ($popups->have_posts()) :
                     </div>
                 </div>
             </div>
-        </div>
+        </dialog>
 <?php endwhile;
     wp_reset_postdata();
 endif; ?>

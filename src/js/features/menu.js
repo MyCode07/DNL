@@ -46,7 +46,7 @@ export function initMenu(root, media) {
         if (event.target.closest('a') && menu.classList.contains('_open')) setOpen(false);
     });
     scope.on(root, 'keydown', (event) => {
-        if (!menu.classList.contains('_open') || root.querySelector('.popup:not([hidden])')) return;
+        if (!menu.classList.contains('_open') || root.querySelector('.popup[open]')) return;
         if (event.key === 'Escape') {
             setOpen(false);
             toggle.focus({ preventScroll: true });

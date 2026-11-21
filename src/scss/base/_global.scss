@@ -9,7 +9,7 @@ html {
     scrollbar-gutter: stable;
     background-color: $white;
 
-    &:has(.popup:not([hidden])) {
+    &:has(.popup[open]) {
         overflow: hidden;
     }
 

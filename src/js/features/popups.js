@@ -1,5 +1,5 @@
 import { createScope } from '../core/lifecycle.js';
-import { getFocusableElements, trapFocus } from '../utils/focus.js';
+import { getFocusableElements } from '../utils/focus.js';
 
 /** One active modal, delegated triggers, keyboard dismissal and restored focus. */
 export function initPopups(root) {
@@ -10,7 +10,7 @@ export function initPopups(root) {
     );
     let active;
     let opener;
-    const blocked = new Set();
+    let opening;
     const pendingCloses = new Map();
 
     function afterClose(popup, done) {
@@ -28,18 +28,28 @@ export function initPopups(root) {
         Promise.allSettled(animations.map((animation) => animation.finished)).then(finish);
     }
 
+    for (const popup of popups) {
+        scope.on(popup, 'cancel', (event) => {
+            event.preventDefault();
+            if (active === popup) close();
+        });
+        scope.on(popup, 'close', () => {
+            if (active === popup && !popup.open) close();
+        });
+    }
+
     function close({ restoreFocus = true } = {}) {
         if (!active) return;
         const activePopup = active;
+        opening = undefined;
+        active.classList.remove('_backdrop');
         active.classList.remove('_open');
         active.inert = true;
         active.dispatchEvent(new CustomEvent('popup:close', { bubbles: true }));
         active = undefined;
-        for (const element of blocked) element.inert = false;
-        blocked.clear();
         const previousOpener = opener;
         afterClose(activePopup, () => {
-            activePopup.hidden = true;
+            activePopup.close();
             activePopup.inert = false;
             if (restoreFocus && !active && previousOpener?.isConnected) {
                 previousOpener.focus({ preventScroll: true });
@@ -55,19 +65,26 @@ export function initPopups(root) {
         active = popup;
         opener = trigger;
         popup.inert = false;
-        popup.hidden = false;
-        for (let node = popup; node !== popup.ownerDocument.body; node = node.parentElement) {
-            for (const sibling of node.parentElement.children) {
-                if (sibling === node || !(sibling instanceof HTMLElement) || sibling.inert)
-                    continue;
-                sibling.inert = true;
-                blocked.add(sibling);
-            }
-        }
+        if (!popup.open) popup.showModal();
         // Establish the initial position before the opening transition.
         const panel = panels.get(popup);
         panel.getBoundingClientRect();
         popup.classList.add('_open');
+        const currentOpening = Symbol();
+        opening = currentOpening;
+        const finishOpening = () => {
+            if (opening === currentOpening && active === popup && popup.open) {
+                popup.classList.add('_backdrop');
+            }
+        };
+        const animations = panel.getAnimations();
+        if (animations.length) {
+            Promise.allSettled(animations.map((animation) => animation.finished)).then(
+                finishOpening,
+            );
+        } else {
+            finishOpening();
+        }
         popup.dispatchEvent(new CustomEvent('popup:open', { bubbles: true }));
         (getFocusableElements(popup)[0] || popup).focus({ preventScroll: true });
     }
@@ -84,15 +101,6 @@ export function initPopups(root) {
     });
     scope.on(root, 'popup:request-close', (event) => {
         if (event.target === active) close();
-    });
-    scope.on(root, 'keydown', (event) => {
-        if (!active) return;
-        if (event.key === 'Escape' && !event.defaultPrevented) {
-            event.preventDefault();
-            close();
-        } else {
-            trapFocus(event, active);
-        }
     });
     scope.on(root, 'click', (event) => {
         if (!(event.target instanceof Element)) return;
