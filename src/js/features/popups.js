@@ -89,6 +89,53 @@ export function initPopups(root) {
         (getFocusableElements(popup)[0] || popup).focus({ preventScroll: true });
     }
 
+    const view = root.defaultView;
+    const viewport = view?.visualViewport;
+    if (viewport && /\biPhone\b/.test(view.navigator.userAgent)) {
+        let frame;
+
+        function adjustPanelHeight() {
+            frame = undefined;
+            if (!active?.open) return;
+
+            const panel = panels.get(active);
+            if (panel === active) return;
+            const field = root.activeElement;
+            const editing =
+                panel.contains(field) &&
+                field.matches(
+                    'textarea:not([readonly]), input:not([readonly]):is([type="text"], [type="email"], [type="tel"], [type="url"], [type="search"], [type="password"], [type="number"], :not([type]))',
+                ) &&
+                field.inputMode !== 'none';
+            // Use the dialog top so the slide animation does not affect the measurement.
+            const bounds = active.getBoundingClientRect();
+            const visibleBottom = viewport.offsetTop + viewport.height;
+            if (editing && visibleBottom < bounds.bottom) {
+                panel.style.maxHeight = `${Math.max(0, visibleBottom - bounds.top)}px`;
+            } else {
+                panel.style.removeProperty('max-height');
+            }
+        }
+
+        function scheduleAdjustment() {
+            if (active && frame === undefined) {
+                frame = view.requestAnimationFrame(adjustPanelHeight);
+            }
+        }
+
+        scope.on(viewport, 'resize', scheduleAdjustment);
+        scope.on(viewport, 'scroll', scheduleAdjustment);
+        scope.on(root, 'focusin', scheduleAdjustment);
+        scope.on(root, 'focusout', scheduleAdjustment);
+        scope.on(root, 'popup:close', (event) => {
+            panels.get(event.target)?.style.removeProperty('max-height');
+        });
+        scope.add(() => {
+            view.cancelAnimationFrame(frame);
+            panels.get(active)?.style.removeProperty('max-height');
+        });
+    }
+
     scope.on(root, 'popup:request-open', (event) => {
         if (!popups.includes(event.target)) return;
         open(event.target, event.detail.trigger);
