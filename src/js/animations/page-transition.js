@@ -125,7 +125,8 @@ export function initPageTransition(root) {
                 canvas.setAttribute('aria-hidden', 'true');
                 canvas.style.cssText =
                     'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);height:var(--frame-transition-height,max(100lvh,100dvh));min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
-                root.documentElement.append(canvas);
+                const container = root.body ?? root.documentElement;
+                container.append(canvas);
             }
             context = canvas.getContext('2d');
             if (!context) {
@@ -192,11 +193,6 @@ export function initPageTransition(root) {
             return;
         }
         canvas.style.pointerEvents = 'none';
-        // Temporary diagnostic: keep the rendered canvas available for inspection.
-        if (bridge.keepCoverVisible) {
-            release();
-            return;
-        }
         recoveryTimer = view.setTimeout(reset, 4000);
         try {
             tween = gsap.to(state, {

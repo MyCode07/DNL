@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js" data-keep-transition-cover="true" <?php language_attributes(); ?>>
+<html class="no-js" <?php language_attributes(); ?>>
 
 <head>
     <script>
@@ -15,11 +15,19 @@
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <?php get_template_part('template-parts/page-transition'); ?>
+    <?php if (preg_match('/\biPhone\b/i', $_SERVER['HTTP_USER_AGENT'] ?? '')) : ?>
+        <meta name="theme-color" content="#000">
+        <style>
+            canvas[data-page-transition] {
+                --frame-transition-height: 130dvh;
+            }
+        </style>
+    <?php endif; ?>
     <?php wp_head(); ?>
 </head>
 
 <body <?php body_class(); ?>>
+    <?php get_template_part('template-parts/page-transition'); ?>
     <?php
     wp_body_open();
     $header_class = '';

@@ -1,18 +1,9 @@
 <?php // Early paint bridges normal document navigations; all animation lives in page-transition.js.
 ?>
-<?php if (preg_match('/\biPhone\b/i', $_SERVER['HTTP_USER_AGENT'] ?? '')) : ?>
-    <meta name="theme-color" content="#000">
-    <style>
-        canvas[data-page-transition] {
-            --frame-transition-height: 120dvh;
-        }
-    </style>
-<?php endif; ?>
 <script>
     (() => {
         const state = window.framePageTransition = {
             enabled: true,
-            keepCoverVisible: document.documentElement.dataset?.keepTransitionCover === 'true',
             pending: false,
             cover: null
         };
@@ -50,7 +41,8 @@
             ))}px`;
             context.fillStyle = '#000';
             context.fillRect(0, 0, 1, 1);
-            document.documentElement.append(cover);
+            const container = document.body ?? document.documentElement;
+            container.append(cover);
             state.cover = cover;
             state.pending = true;
         } catch {
