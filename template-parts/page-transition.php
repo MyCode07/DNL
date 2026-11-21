@@ -1,5 +1,11 @@
 <?php // Early paint bridges normal document navigations; all animation lives in page-transition.js.
 ?>
+<style>
+    html.frame-transition-dark,
+    html.frame-transition-dark body {
+        background-color: #000;
+    }
+</style>
 <script>
     (() => {
         const state = window.framePageTransition = {
@@ -7,6 +13,16 @@
             pending: false,
             cover: null
         };
+        if (/\biPhone\b/.test(window.navigator?.userAgent ?? '')) {
+            const theme = document.createElement('meta');
+            theme.name = 'theme-color';
+            theme.content = '#000';
+            state.setDocumentTint = (active) => {
+                document.documentElement.classList.toggle('frame-transition-dark', active);
+                if (active) document.head.prepend(theme);
+                else theme.remove();
+            };
+        }
         state.release = () => {
             state.pending = false;
             document.dispatchEvent(new Event('frame:page-reveal'));
@@ -17,6 +33,7 @@
             state.failed = true;
             state.cover?.remove();
             state.cover = null;
+            state.setDocumentTint?.(false);
             document.documentElement.classList.add('reveal-disabled');
             state.release();
         }, 4000);
@@ -43,10 +60,12 @@
             context.fillRect(0, 0, 1, 1);
             document.documentElement.append(cover);
             state.cover = cover;
+            state.setDocumentTint?.(true);
             state.pending = true;
         } catch {
             state.cover?.remove();
             state.cover = null;
+            state.setDocumentTint?.(false);
             state.release();
         }
     })();

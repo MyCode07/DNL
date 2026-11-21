@@ -145,6 +145,7 @@ export function initPageTransition(root) {
         view.clearTimeout(recoveryTimer);
         view.clearTimeout(bridge.fallback);
         canvas?.remove();
+        bridge.setDocumentTint?.(false);
         canvas = bridge.cover = null;
         context = null;
         state.progress = 0;
@@ -158,6 +159,7 @@ export function initPageTransition(root) {
         state.progress = 1;
         draw();
         if (!destination) return;
+        bridge.setDocumentTint?.(true);
         try {
             view.sessionStorage.setItem(
                 STORAGE_KEY,
@@ -192,6 +194,7 @@ export function initPageTransition(root) {
             return;
         }
         canvas.style.pointerEvents = 'none';
+        bridge.setDocumentTint?.(true);
         recoveryTimer = view.setTimeout(reset, 4000);
         try {
             tween = gsap.to(state, {
