@@ -72,7 +72,8 @@ export function initPageTransition(root) {
         try {
             context.clearRect(0, 0, canvas.width, canvas.height);
             if (state.progress <= 0) return;
-            context.fillStyle = '#000';
+            // context.fillStyle = '#000';
+            context.fillStyle = 'rgba(0,0,0,0.99)';
             for (const cell of cells) {
                 if (state.progress >= cell.threshold) {
                     context.fillRect(cell.x, cell.y, cell.width, cell.height);
