@@ -1,4 +1,4 @@
-<dialog class="popup" id="contact-form-result">
+<div class="popup" role="dialog" aria-modal="true" tabindex="-1" hidden id="contact-form-result">
     <div class="popup-panel">
         <div class="popup-body">
             <?php get_template_part('template-parts/popups/result'); ?>
@@ -9,4 +9,4 @@
             </button>
         </div>
     </div>
-</dialog>
+</div>
