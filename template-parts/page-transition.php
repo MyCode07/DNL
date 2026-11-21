@@ -12,7 +12,7 @@
     (() => {
         const state = window.framePageTransition = {
             enabled: true,
-            keepCoverVisible: true,
+            keepCoverVisible: document.documentElement.dataset?.keepTransitionCover === 'true',
             pending: false,
             cover: null
         };
