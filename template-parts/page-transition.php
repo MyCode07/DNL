@@ -7,9 +7,6 @@
             pending: false,
             cover: null
         };
-        state.setScrollLocked = (locked) => {
-            if (document.body) document.documentElement.classList.toggle('no-scroll', locked);
-        };
         state.release = () => {
             state.pending = false;
             document.dispatchEvent(new Event('frame:page-reveal'));
@@ -20,7 +17,6 @@
             state.failed = true;
             state.cover?.remove();
             state.cover = null;
-            state.setScrollLocked(false);
             document.documentElement.classList.add('reveal-disabled');
             state.release();
         }, 4000);
@@ -48,12 +44,10 @@
             const container = document.body ?? document.documentElement;
             container.append(cover);
             state.cover = cover;
-            state.setScrollLocked(true);
             state.pending = true;
         } catch {
             state.cover?.remove();
             state.cover = null;
-            state.setScrollLocked(false);
             state.release();
         }
     })();

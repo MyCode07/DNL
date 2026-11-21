@@ -15,9 +15,6 @@
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <?php if (preg_match('/\biPhone\b/i', $_SERVER['HTTP_USER_AGENT'] ?? '')) : ?>
-        <meta name="theme-color" content="#000">
-    <?php endif; ?>
     <?php wp_head(); ?>
 </head>
 
