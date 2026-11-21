@@ -13,7 +13,6 @@ html.lenis body {
     height: 100%;
 }
 
-
 body {
     @include type.typography("body-text");
     scroll-behavior: smooth;
@@ -992,48 +991,5 @@ input[type="checkbox"] {
 
     &[data-direction="up"] {
         top: -0.2rem;
-    }
-}
-
-
-.safari-liquid-glass-toolbar-fixer {
-    position: sticky;
-    left: 0;
-    bottom: -2px;
-    width: 100%;
-    height: 6px;
-    background-color: transparent;
-    z-index: 999;
-    display: none;
-
-    /* Make it apply only to iOS Safari */
-    @supports (-webkit-touch-callout: none) {
-        display: block;
-
-        @media (max-width:1024px) {
-
-            // Extend the overlay's background under Safari's floating toolbar.
-            body:has(.menu._open, .popup._backdrop) &,
-            :root:has(> canvas[data-page-transition]) & {
-                position: fixed;
-                inset: calc(100dvh - 2px) 0 auto;
-                height: 100lvh;
-                background-color: $black;
-                pointer-events: none;
-            }
-
-            body:has(:where(.header.dark, .header.dark-static) .menu._open) & {
-                background-color: $gray-100;
-            }
-
-            body:has(.popup._backdrop) & {
-                background-color: $white;
-            }
-
-            body:has(.popup._backdrop._result) &,
-            :root:has(> canvas[data-page-transition]) & {
-                background-color: $black;
-            }
-        }
     }
 }
