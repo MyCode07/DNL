@@ -6,11 +6,17 @@
 html {
     scroll-behavior: smooth;
     font-size: 10px;
-}
+    scrollbar-gutter: stable;
 
-html.lenis,
-html.lenis body {
-    height: 100%;
+    &:has(.popup[open]) {
+        overflow: hidden;
+    }
+
+    @media (max-width: 1024px) {
+        &:has(.menu._open) {
+            overflow: hidden;
+        }
+    }
 }
 
 body {
@@ -21,10 +27,6 @@ body {
     color: $black;
     background-color: $white;
     text-wrap: balance;
-
-    &._noscroll {
-        overflow: clip;
-    }
 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

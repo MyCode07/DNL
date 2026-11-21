@@ -3,7 +3,7 @@ import { createMenuAnimation } from '../animations/menu.js';
 import { createProjectAnimation } from '../animations/menu-project.js';
 import { trapFocus } from '../utils/focus.js';
 
-export function initMenu(root, { media, scrollLock }) {
+export function initMenu(root, media) {
     const menu = root.querySelector('.menu');
     const toggle = menu?.querySelector('.menu-toggle');
     const header = menu?.closest('.header');
@@ -14,31 +14,18 @@ export function initMenu(root, { media, scrollLock }) {
     const scope = createScope();
     const animation = createMenuAnimation(menu, { media, toggle });
     const project = createProjectAnimation(header, media);
-    let releaseScroll;
-
-    function syncScrollLock(open) {
-        if (open && media.mobile.matches) releaseScroll ??= scrollLock.acquire();
-        else {
-            releaseScroll?.();
-            releaseScroll = undefined;
-        }
-    }
 
     function setOpen(open) {
         menu.classList.toggle('_open', open);
-        toggle.setAttribute('aria-expanded', String(open));
         if (label && !media.compact.matches && !header.classList.contains('header-small'))
             label.textContent = open ? label.dataset.textClose : label.dataset.textOpen;
-        syncScrollLock(open);
         project.sync();
         animation.animate(open);
     }
 
     function reset() {
         menu.classList.remove('_open');
-        toggle.setAttribute('aria-expanded', 'false');
         if (label) label.textContent = label.dataset.textOpen;
-        syncScrollLock(false);
         animation.reset();
         project.sync(true);
     }
@@ -62,16 +49,14 @@ export function initMenu(root, { media, scrollLock }) {
         if (!menu.classList.contains('_open') || root.querySelector('.popup[open]')) return;
         if (event.key === 'Escape') {
             setOpen(false);
-            toggle.focus();
+            toggle.focus({ preventScroll: true });
         } else if (media.mobile.matches) trapFocus(event, menu);
     });
     scope.on(media.mobile, 'change', reset);
     scope.on(media.compact, 'change', reset);
     scope.on(media.reducedMotion, 'change', reset);
     scope.add(() => {
-        releaseScroll?.();
         menu.classList.remove('_open');
-        toggle.setAttribute('aria-expanded', 'false');
         if (label) label.textContent = label.dataset.textOpen;
         animation.destroy();
         project.destroy();

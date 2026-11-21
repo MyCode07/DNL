@@ -13,7 +13,7 @@ $global_btn = get_localized_field('globalnaya_knopka');
             <a href="<?php echo get_home_page_url() ?>" class="menu-logo">
                 <img src="<?php echo esc_url(frame_asset('img/logo-mb.svg')); ?>" width="50" height="20" alt="<?php echo bloginfo('name') ?>">
             </a>
-            <button class="menu-toggle" aria-expanded="false" aria-controls="menu-body">
+            <button class="menu-toggle" type="button">
                 <span class="label-m" data-text-open="<?php echo $menu_open ?>" data-text-close="<?php echo $menu_close ?>"><?php echo $menu_open ?></span>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <rect x="2" y="2" width="4" height="4" rx="1" fill="white" fill-opacity="0.2" />
@@ -28,7 +28,7 @@ $global_btn = get_localized_field('globalnaya_knopka');
                 </svg>
             </button>
         </div>
-        <div class="menu-body" id="menu-body" inert>
+        <div class="menu-body" inert>
             <?php echo get_locate_menu('primary'); ?>
 
             <?php if ($menu_btn['ssylka'] && $menu_btn['ssylka']['url']):

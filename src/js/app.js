@@ -1,6 +1,5 @@
 import { createScope } from './core/lifecycle.js';
 import { createMediaQueries } from './core/media.js';
-import { createScrollLock } from './core/scroll-lock.js';
 import { ScrollTrigger } from './core/gsap.js';
 import { initAnimations } from './animations/index.js';
 import { initPageTransition } from './animations/page-transition.js';
@@ -31,14 +30,11 @@ export function initApp(root = document) {
     const scope = createScope();
     try {
         const media = createMediaQueries();
-        const smoothScroll = initSmoothScroll(media);
-        scope.add(smoothScroll.destroy);
-        const scrollLock = createScrollLock(root, smoothScroll);
-        scope.add(scrollLock.destroy);
-        const menu = initMenu(root, { media, scrollLock });
+        scope.add(initSmoothScroll(media));
+        const menu = initMenu(root, media);
         scope.add(menu?.destroy);
         scope.add(initHeader(root, menu));
-        scope.add(initPopups(root, scrollLock, media));
+        scope.add(initPopups(root));
         scope.add(initPopupResults(root, media));
         scope.add(initContactForms(root));
         scope.add(initIosBorder(root));

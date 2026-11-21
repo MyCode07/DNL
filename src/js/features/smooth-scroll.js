@@ -9,7 +9,6 @@ export function initSmoothScroll(media) {
     let lenis;
     let tick;
     let unsubscribe;
-    let stopped = false;
 
     function disposeLenis() {
         if (!lenis) return;
@@ -26,13 +25,12 @@ export function initSmoothScroll(media) {
         lenis = new Lenis({
             duration: 1.15,
             wheelMultiplier: 0.9,
-            // Overlay content scrolls natively while page scrolling is locked.
-            prevent: (element) => Boolean(element.closest('.popup, .menu-body')),
+            autoToggle: true,
+            allowNestedScroll: true,
         });
         unsubscribe = lenis.on('scroll', ScrollTrigger.update);
         tick = (time) => lenis.raf(time * 1000);
         gsap.ticker.add(tick);
-        if (stopped) lenis.stop();
     }
 
     configure();
@@ -41,15 +39,5 @@ export function initSmoothScroll(media) {
         disposeLenis();
         html.style.scrollBehavior = originalScrollBehavior;
     });
-    return {
-        stop() {
-            stopped = true;
-            lenis?.stop();
-        },
-        start() {
-            stopped = false;
-            lenis?.start();
-        },
-        destroy: scope.destroy,
-    };
+    return scope.destroy;
 }

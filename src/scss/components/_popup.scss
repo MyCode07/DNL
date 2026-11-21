@@ -192,6 +192,10 @@
         overflow-y: auto;
         transform: translateY(100%);
         transition: transform 1s cubic-bezier(.25, .25, 0, 1);
+
+        @media (prefers-reduced-motion: reduce) {
+            transition: none;
+        }
     }
 
     &._open {

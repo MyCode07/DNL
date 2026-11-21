@@ -36,7 +36,7 @@
             get_template_part('template-parts/breadcrumbs');
         }
         ?>
-        <header class="header white _fixed <?php echo $header_class ?>">
+        <header class="header white <?php echo $header_class ?>">
             <div class="header__container _container">
                 <div class="header__body">
                     <a href="<?php echo get_home_page_url() ?>" class="header__logo">
