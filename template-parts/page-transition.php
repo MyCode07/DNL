@@ -12,6 +12,7 @@
     (() => {
         const state = window.framePageTransition = {
             enabled: true,
+            keepCoverVisible: true,
             pending: false,
             cover: null
         };

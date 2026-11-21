@@ -192,8 +192,8 @@ export function initPageTransition(root) {
             return;
         }
         canvas.style.pointerEvents = 'none';
-        // Temporary iPhone diagnostic: keep the rendered canvas available for inspection.
-        if (/\biPhone\b/.test(view.navigator?.userAgent ?? '')) {
+        // Temporary diagnostic: keep the rendered canvas available for inspection.
+        if (bridge.keepCoverVisible) {
             release();
             return;
         }
