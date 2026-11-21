@@ -47,7 +47,7 @@ export function getPageTransitionUrl(anchor, event, currentHref) {
     return url.href;
 }
 
-/** One removable module owns the canvas, navigation interception and entrance handoff. */
+/** One removable module owns the cover, navigation interception and entrance handoff. */
 export function initPageTransition(root) {
     const view = root.defaultView;
     const bridge = view?.framePageTransition;
@@ -55,7 +55,7 @@ export function initPageTransition(root) {
     const scope = createScope();
     const motion = view.matchMedia('(prefers-reduced-motion: reduce)');
     const state = { progress: bridge.pending ? 1 : 0 };
-    let canvas = bridge.cover;
+    let cover = bridge.cover;
     let context;
     let cells = [];
     let tween;
@@ -69,8 +69,12 @@ export function initPageTransition(root) {
         if (bridge.pending) bridge.release();
     };
     function draw() {
+        if (bridge.solidCover) {
+            cover.style.opacity = String(state.progress);
+            return;
+        }
         try {
-            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.clearRect(0, 0, cover.width, cover.height);
             if (state.progress <= 0) return;
             context.fillStyle = '#000';
             for (const cell of cells) {
@@ -86,14 +90,18 @@ export function initPageTransition(root) {
         }
     }
     function resize() {
-        if (!canvas || !context) return;
+        if (!cover || (!bridge.solidCover && !context)) return;
         // Safari can report viewport units smaller than the revealed toolbar area.
         const viewportHeight = Math.max(
             view.innerHeight,
             (view.visualViewport?.height || 0) + (view.visualViewport?.offsetTop || 0),
         );
-        canvas.style.minHeight = `${Math.ceil(viewportHeight)}px`;
-        const { width, height } = canvas.getBoundingClientRect();
+        cover.style.minHeight = `${Math.ceil(viewportHeight)}px`;
+        if (bridge.solidCover) {
+            draw();
+            return;
+        }
+        const { width, height } = cover.getBoundingClientRect();
         const size = width <= 767 ? 40 : width <= 1280 ? 80 : 100;
         const columns = Math.ceil(width / size);
         const pixel = width / columns;
@@ -101,9 +109,9 @@ export function initPageTransition(root) {
         const ratio = Math.min(view.devicePixelRatio || 1, 2);
         const bitmapWidth = Math.round(width * ratio);
         const bitmapHeight = Math.round(height * ratio);
-        if (cells.length && canvas.width === bitmapWidth && canvas.height === bitmapHeight) return;
-        canvas.width = bitmapWidth;
-        canvas.height = bitmapHeight;
+        if (cells.length && cover.width === bitmapWidth && cover.height === bitmapHeight) return;
+        cover.width = bitmapWidth;
+        cover.height = bitmapHeight;
         cells = createPixelCells(columns, rows, 'down').map((cell) => {
             const x = Math.round(cell.column * pixel * ratio);
             const y = Math.round(cell.row * pixel * ratio);
@@ -119,23 +127,24 @@ export function initPageTransition(root) {
     }
     function prepare() {
         try {
-            if (!canvas) {
-                canvas = root.createElement('canvas');
-                canvas.dataset.pageTransition = '';
-                canvas.setAttribute('aria-hidden', 'true');
-                canvas.style.cssText =
+            if (!cover) {
+                cover = root.createElement(bridge.solidCover ? 'div' : 'canvas');
+                cover.dataset.pageTransition = '';
+                cover.setAttribute('aria-hidden', 'true');
+                cover.style.cssText =
                     'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
                 const container = root.body ?? root.documentElement;
-                container.append(canvas);
+                container.append(cover);
             }
-            context = canvas.getContext('2d');
-            if (!context) {
+            if (bridge.solidCover) cover.style.backgroundColor = '#000';
+            else context = cover.getContext('2d');
+            if (!bridge.solidCover && !context) {
                 reset();
                 return false;
             }
-            bridge.cover = canvas;
+            bridge.cover = cover;
             resize();
-            return Boolean(canvas && context);
+            return Boolean(cover && (bridge.solidCover || context));
         } catch {
             reset();
             return false;
@@ -145,8 +154,8 @@ export function initPageTransition(root) {
         tween?.kill();
         view.clearTimeout(recoveryTimer);
         view.clearTimeout(bridge.fallback);
-        canvas?.remove();
-        canvas = bridge.cover = null;
+        cover?.remove();
+        cover = bridge.cover = null;
         context = null;
         state.progress = 0;
         destination = null;
@@ -192,7 +201,7 @@ export function initPageTransition(root) {
             reset();
             return;
         }
-        canvas.style.pointerEvents = 'none';
+        cover.style.pointerEvents = 'none';
         recoveryTimer = view.setTimeout(reset, 4000);
         try {
             tween = gsap.to(state, {
@@ -230,7 +239,7 @@ export function initPageTransition(root) {
         tween?.kill();
         view.clearTimeout(bridge.fallback);
         release();
-        canvas.style.pointerEvents = 'auto';
+        cover.style.pointerEvents = 'auto';
         destination = url;
         view.clearTimeout(recoveryTimer);
         recoveryTimer = view.setTimeout(() => {
