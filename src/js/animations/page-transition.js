@@ -192,6 +192,11 @@ export function initPageTransition(root) {
             return;
         }
         canvas.style.pointerEvents = 'none';
+        // Temporary iPhone diagnostic: keep the rendered canvas available for inspection.
+        if (/\biPhone\b/.test(view.navigator?.userAgent ?? '')) {
+            release();
+            return;
+        }
         recoveryTimer = view.setTimeout(reset, 4000);
         try {
             tween = gsap.to(state, {
