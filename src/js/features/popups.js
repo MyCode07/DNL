@@ -110,6 +110,11 @@ export function initPopups(root) {
             // Use the dialog top so the slide animation does not affect the measurement.
             const bounds = active.getBoundingClientRect();
             const visibleBottom = viewport.offsetTop + viewport.height;
+            // The viewport can pan past the dialog while the keyboard is still open.
+            const keyboardVisible =
+                viewport.height < bounds.height &&
+                (editing || active.classList.contains('_keyboard'));
+            active.classList.toggle('_keyboard', keyboardVisible);
             if (editing && visibleBottom < bounds.bottom) {
                 panel.style.maxHeight = `${Math.max(0, visibleBottom - bounds.top)}px`;
             } else {
@@ -128,10 +133,12 @@ export function initPopups(root) {
         scope.on(root, 'focusin', scheduleAdjustment);
         scope.on(root, 'focusout', scheduleAdjustment);
         scope.on(root, 'popup:close', (event) => {
+            event.target.classList.remove('_keyboard');
             panels.get(event.target)?.style.removeProperty('max-height');
         });
         scope.add(() => {
             view.cancelAnimationFrame(frame);
+            active?.classList.remove('_keyboard');
             panels.get(active)?.style.removeProperty('max-height');
         });
     }
