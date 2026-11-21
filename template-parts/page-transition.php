@@ -4,7 +4,6 @@
     (() => {
         const state = window.framePageTransition = {
             enabled: true,
-            solidCover: /\biPhone\b/i.test(window.navigator?.userAgent ?? ''),
             pending: false,
             cover: null
         };
@@ -29,14 +28,10 @@
         }
         if (!state.enabled || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         try {
-            const cover = document.createElement(state.solidCover ? 'div' : 'canvas');
-            if (!state.solidCover) {
-                const context = cover.getContext('2d');
-                if (!context) return;
-                cover.width = cover.height = 1;
-                context.fillStyle = '#000';
-                context.fillRect(0, 0, 1, 1);
-            }
+            const cover = document.createElement('canvas');
+            const context = cover.getContext('2d');
+            if (!context) return;
+            cover.width = cover.height = 1;
             cover.dataset.pageTransition = '';
             cover.setAttribute('aria-hidden', 'true');
             cover.style.cssText = 'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:none;display:block';
@@ -44,7 +39,8 @@
                 window.innerHeight || 0,
                 (window.visualViewport?.height || 0) + (window.visualViewport?.offsetTop || 0)
             ))}px`;
-            if (state.solidCover) cover.style.backgroundColor = '#000';
+            context.fillStyle = '#000';
+            context.fillRect(0, 0, 1, 1);
             const container = document.body ?? document.documentElement;
             container.append(cover);
             state.cover = cover;
