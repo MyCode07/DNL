@@ -8,13 +8,29 @@ export function initPopups(root) {
     const panels = new Map(
         popups.map((popup) => [popup, popup.querySelector('.popup-panel') || popup]),
     );
+    const view = root.defaultView;
+    const viewport = view?.visualViewport;
+    const isIPhone = /\biPhone\b/.test(view?.navigator.userAgent);
+    const wrap = isIPhone ? root.getElementById('popups-wrap') : null;
+    const cover = wrap?.querySelector('.popup-toolbar-cover');
     let active;
     let opener;
     let opening;
     const pendingCloses = new Map();
 
+    function positionCover() {
+        const top = viewport?.offsetTop || 0;
+        const bottom = Math.max(view.innerHeight, top + (viewport?.height || 0));
+        cover.style.setProperty(
+            '--popup-viewport-top',
+            `${top - wrap.getBoundingClientRect().top}px`,
+        );
+        cover.style.setProperty('--popup-viewport-height', `${bottom - top}px`);
+    }
+
     function afterClose(popup, done) {
         const animations = panels.get(popup).getAnimations();
+        if (cover) animations.push(...cover.getAnimations());
         if (!animations.length) {
             done();
             return;
@@ -42,6 +58,10 @@ export function initPopups(root) {
         if (!active) return;
         const activePopup = active;
         opening = undefined;
+        if (cover) {
+            positionCover();
+            active.classList.add('_closing');
+        }
         active.classList.remove('_backdrop');
         active.classList.remove('_open');
         active.inert = true;
@@ -49,6 +69,11 @@ export function initPopups(root) {
         active = undefined;
         const previousOpener = opener;
         afterClose(activePopup, () => {
+            activePopup.classList.remove('_closing');
+            if (cover && !active && !pendingCloses.size) {
+                cover.hidden = true;
+                cover.classList.remove('_retry');
+            }
             activePopup.close();
             activePopup.inert = false;
             if (restoreFocus && !active && previousOpener?.isConnected) {
@@ -66,6 +91,13 @@ export function initPopups(root) {
         opener = trigger;
         popup.inert = false;
         if (!popup.open) popup.showModal();
+        if (cover) {
+            popup.classList.remove('_closing');
+            cover.classList.remove('_retry');
+            cover.hidden = false;
+            positionCover();
+            cover.getBoundingClientRect();
+        }
         // Establish the initial position before the opening transition.
         const panel = panels.get(popup);
         panel.getBoundingClientRect();
@@ -89,9 +121,24 @@ export function initPopups(root) {
         (getFocusableElements(popup)[0] || popup).focus({ preventScroll: true });
     }
 
-    const view = root.defaultView;
-    const viewport = view?.visualViewport;
-    if (viewport && /\biPhone\b/.test(view.navigator.userAgent)) {
+    if (cover) {
+        const syncCover = () => {
+            if (!cover.hidden) positionCover();
+        };
+        scope.on(view, 'resize', syncCover);
+        scope.on(view, 'scroll', syncCover);
+        if (viewport) {
+            scope.on(viewport, 'resize', syncCover);
+            scope.on(viewport, 'scroll', syncCover);
+        }
+        scope.on(wrap, 'popup:retry', (event) => {
+            if (event.target === active && !active.querySelector('.form')) {
+                cover.classList.add('_retry');
+            }
+        });
+    }
+
+    if (viewport && isIPhone) {
         let frame;
 
         function adjustPanelHeight() {

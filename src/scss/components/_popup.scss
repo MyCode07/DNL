@@ -1,5 +1,45 @@
 @use "../abstracts/variables" as *;
 
+$popup-slide: transform 1s cubic-bezier(.25, .25, 0, 1);
+
+#popups-wrap {
+    position: relative;
+
+    &:has(> .popup:is(._open, ._closing)) > .popup-toolbar-cover {
+        opacity: 1;
+    }
+
+    &:has(> .popup._open) > .popup-toolbar-cover {
+        transform: translateY(0);
+    }
+
+    &:has(> .popup._open._result) > .popup-toolbar-cover:not(._retry),
+    &:not(:has(> .popup._open)):has(> .popup._closing._result) > .popup-toolbar-cover:not(._retry) {
+        background-color: $black;
+    }
+}
+
+.popup-toolbar-cover {
+    --toolbar-top: 120px;
+    --toolbar-bottom: 100px;
+
+    position: absolute;
+    z-index: 16;
+    inset-inline: 0;
+    top: calc(var(--popup-viewport-top, 0px) - var(--toolbar-top));
+    height: calc(var(--popup-viewport-height, 100vh) + var(--toolbar-top) + var(--toolbar-bottom));
+    height: calc(max(var(--popup-viewport-height, 100vh), 100lvh) + var(--toolbar-top) + var(--toolbar-bottom));
+    background-color: $white;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(100%);
+    transition: $popup-slide;
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+}
+
 .cookies {
     position: fixed;
     bottom: 4rem;
@@ -182,7 +222,7 @@
         flex-direction: column;
         overflow-x: hidden;
         overflow-y: auto;
-        transition: transform 1s cubic-bezier(.25, .25, 0, 1);
+        transition: $popup-slide;
 
         @media (prefers-reduced-motion: reduce) {
             transition: none;

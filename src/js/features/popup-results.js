@@ -91,6 +91,7 @@ export function initPopupResults(root, media) {
             if (!(event.target instanceof Element) || !event.target.closest('[data-popup-retry]'))
                 return;
             if (sourceForm) {
+                popup.dispatchEvent(new CustomEvent('popup:retry', { bubbles: true }));
                 popup.dispatchEvent(new CustomEvent('popup:request-close', { bubbles: true }));
                 sourceForm
                     .querySelector('input:not([type="hidden"])')
