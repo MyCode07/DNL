@@ -90,7 +90,7 @@ export function initPageTransition(root) {
         if (bridge.syncPosition) {
             bridge.syncPosition();
         } else if (canvas) {
-            canvas.style.top = `${view.scrollY}px`;
+            canvas.style.top = `calc(${view.scrollY}px - var(--frame-transition-top-overscan, 0px))`;
         }
     }
     function resize() {
@@ -105,7 +105,7 @@ export function initPageTransition(root) {
             const minHeight = `${Math.ceil(viewportHeight)}px`;
             canvas.style.minHeight =
                 'pageTransitionOverscan' in canvas.dataset
-                    ? `calc(${minHeight} + var(--frame-transition-bottom-overscan, 0px))`
+                    ? `calc(${minHeight} + var(--frame-transition-height-overscan, 0px))`
                     : minHeight;
         }
         const { width, height } = canvas.getBoundingClientRect();
@@ -142,7 +142,7 @@ export function initPageTransition(root) {
                     bridge.mount(canvas, state.progress === 1);
                 } else {
                     canvas.style.cssText =
-                        'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
+                        'position:fixed;inset:0 0 auto;width:100%;height:calc(100vh + var(--frame-transition-top-overscan, 0px));height:calc(max(100lvh,100dvh) + var(--frame-transition-top-overscan, 0px));min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
                     if (isIPhone) {
                         canvas.dataset.pageTransitionOverscan = '';
                         canvas.style.position = 'absolute';

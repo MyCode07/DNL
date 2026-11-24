@@ -28,7 +28,7 @@
         },
         syncPosition() {
             if (isIPhone && loader.isConnected) {
-                loader.style.top = `${window.scrollY}px`;
+                loader.style.top = `calc(${window.scrollY}px - var(--frame-transition-top-overscan, 0px))`;
             }
         },
         setSolid(solid) {
