@@ -90,7 +90,7 @@ export function initPageTransition(root) {
         if (bridge.syncPosition) {
             bridge.syncPosition();
         } else if (canvas) {
-            canvas.style.top = `${view.visualViewport?.pageTop ?? view.scrollY}px`;
+            canvas.style.top = `${view.scrollY}px`;
         }
     }
     function resize() {
@@ -281,7 +281,6 @@ export function initPageTransition(root) {
     if (view.visualViewport) scope.on(view.visualViewport, 'resize', resize);
     if (isIPhone) {
         scope.on(view, 'scroll', syncPosition);
-        if (view.visualViewport) scope.on(view.visualViewport, 'scroll', syncPosition);
         syncPosition();
     }
     scope.on(view, 'pageshow', (event) => {

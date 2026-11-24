@@ -28,7 +28,7 @@
         },
         syncPosition() {
             if (isIPhone && loader.isConnected) {
-                loader.style.top = `${window.visualViewport?.pageTop ?? window.scrollY}px`;
+                loader.style.top = `${window.scrollY}px`;
             }
         },
         setSolid(solid) {
