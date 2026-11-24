@@ -44,6 +44,7 @@
             if (/\biPhone\b/.test(window.navigator?.userAgent)) {
                 cover.dataset.pageTransitionOverscan = '';
                 cover.style.position = 'absolute';
+                cover.style.top = `${window.visualViewport?.pageTop ?? window.scrollY}px`;
                 cover.style.minHeight = `calc(${minHeight} + var(--frame-transition-bottom-overscan, 0px))`;
             } else {
                 cover.style.minHeight = minHeight;

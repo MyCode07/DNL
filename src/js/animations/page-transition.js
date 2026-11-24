@@ -54,6 +54,7 @@ export function initPageTransition(root) {
     if (!bridge?.enabled) return;
     const scope = createScope();
     const motion = view.matchMedia('(prefers-reduced-motion: reduce)');
+    const isIPhone = /\biPhone\b/.test(view.navigator?.userAgent);
     const state = { progress: bridge.pending ? 1 : 0 };
     let canvas = bridge.cover;
     let context;
@@ -85,7 +86,15 @@ export function initPageTransition(root) {
             if (url) view.location.assign(url);
         }
     }
+    function syncPosition() {
+        if (bridge.syncPosition) {
+            bridge.syncPosition();
+        } else if (canvas) {
+            canvas.style.top = `${view.visualViewport?.pageTop ?? view.scrollY}px`;
+        }
+    }
     function resize() {
+        if (isIPhone) syncPosition();
         if (!canvas || !context) return;
         if (!bridge.mount) {
             // Safari can report viewport units smaller than the revealed toolbar area.
@@ -134,7 +143,7 @@ export function initPageTransition(root) {
                 } else {
                     canvas.style.cssText =
                         'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
-                    if (/\biPhone\b/.test(view.navigator?.userAgent)) {
+                    if (isIPhone) {
                         canvas.dataset.pageTransitionOverscan = '';
                         canvas.style.position = 'absolute';
                     }
@@ -270,6 +279,11 @@ export function initPageTransition(root) {
     });
     scope.on(view, 'resize', resize);
     if (view.visualViewport) scope.on(view.visualViewport, 'resize', resize);
+    if (isIPhone) {
+        scope.on(view, 'scroll', syncPosition);
+        if (view.visualViewport) scope.on(view.visualViewport, 'scroll', syncPosition);
+        syncPosition();
+    }
     scope.on(view, 'pageshow', (event) => {
         if (!event.persisted) return;
         // Keep queued reveals waiting while replacing a cached outgoing cover.

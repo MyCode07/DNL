@@ -3,7 +3,8 @@
     if (!loader || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const html = document.documentElement;
-    if (/\biPhone\b/.test(navigator.userAgent)) {
+    const isIPhone = /\biPhone\b/.test(navigator.userAgent);
+    if (isIPhone) {
         loader.dataset.pageTransitionOverscan = '';
     }
     const state = (window.framePageTransition = {
@@ -23,6 +24,12 @@
             state.setSolid(solid);
             loader.hidden = false;
             html.classList.add('frame-page-transition-active');
+            state.syncPosition();
+        },
+        syncPosition() {
+            if (isIPhone && loader.isConnected) {
+                loader.style.top = `${window.visualViewport?.pageTop ?? window.scrollY}px`;
+            }
         },
         setSolid(solid) {
             loader.classList.toggle('is-pixelated', !solid);
