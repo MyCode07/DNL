@@ -132,11 +132,12 @@ export function initPageTransition(root) {
                 if (bridge.mount) {
                     bridge.mount(canvas, state.progress === 1);
                 } else {
-                    if (/\biPhone\b/.test(view.navigator?.userAgent)) {
-                        canvas.dataset.pageTransitionOverscan = '';
-                    }
                     canvas.style.cssText =
                         'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
+                    if (/\biPhone\b/.test(view.navigator?.userAgent)) {
+                        canvas.dataset.pageTransitionOverscan = '';
+                        canvas.style.position = 'absolute';
+                    }
                     const container = root.body ?? root.documentElement;
                     container.append(canvas);
                 }

@@ -14,6 +14,7 @@ html.frame-page-transition-active {
 }
 
 .frame-page-transition[data-page-transition-overscan] {
+    position: absolute;
     height: calc(100% + var(--frame-transition-bottom-overscan));
     height: calc(max(100%, 100lvh, 100dvh) + var(--frame-transition-bottom-overscan));
 }
