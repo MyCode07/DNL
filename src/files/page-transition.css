@@ -1,7 +1,10 @@
 html.frame-page-transition-active {
-    background-color: #0b0b0b;
     overflow: hidden;
     overflow: clip;
+}
+
+html.frame-page-transition-solid {
+    background-color: #0b0b0b;
 }
 
 .frame-page-transition {

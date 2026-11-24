@@ -23,10 +23,11 @@
         },
         setSolid(solid) {
             loader.classList.toggle('is-pixelated', !solid);
+            html.classList.toggle('frame-page-transition-solid', solid);
         },
         unmount() {
             loader.remove();
-            html.classList.remove('frame-page-transition-active');
+            html.classList.remove('frame-page-transition-active', 'frame-page-transition-solid');
         },
         release() {
             state.pending = false;
