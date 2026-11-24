@@ -3,10 +3,6 @@ html.frame-page-transition-active {
     overflow: clip;
 }
 
-html.frame-page-transition-solid {
-    background-color: #0b0b0b;
-}
-
 .frame-page-transition {
     position: fixed;
     top: 0;
@@ -15,6 +11,15 @@ html.frame-page-transition-solid {
     height: 100%;
     z-index: 100;
     background-color: #000;
+}
+
+.frame-page-transition[data-page-transition-overscan] {
+    height: calc(100% + var(--frame-transition-bottom-overscan));
+    height: calc(max(100%, 100lvh, 100dvh) + var(--frame-transition-bottom-overscan));
+}
+
+[data-page-transition-overscan] {
+    --frame-transition-bottom-overscan: 100px;
 }
 
 .frame-page-transition.is-pixelated {

@@ -93,7 +93,11 @@ export function initPageTransition(root) {
                 view.innerHeight,
                 (view.visualViewport?.height || 0) + (view.visualViewport?.offsetTop || 0),
             );
-            canvas.style.minHeight = `${Math.ceil(viewportHeight)}px`;
+            const minHeight = `${Math.ceil(viewportHeight)}px`;
+            canvas.style.minHeight =
+                'pageTransitionOverscan' in canvas.dataset
+                    ? `calc(${minHeight} + var(--frame-transition-bottom-overscan, 0px))`
+                    : minHeight;
         }
         const { width, height } = canvas.getBoundingClientRect();
         const size = width <= 767 ? 40 : width <= 1280 ? 80 : 100;
@@ -128,6 +132,9 @@ export function initPageTransition(root) {
                 if (bridge.mount) {
                     bridge.mount(canvas, state.progress === 1);
                 } else {
+                    if (/\biPhone\b/.test(view.navigator?.userAgent)) {
+                        canvas.dataset.pageTransitionOverscan = '';
+                    }
                     canvas.style.cssText =
                         'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:auto;display:block';
                     const container = root.body ?? root.documentElement;

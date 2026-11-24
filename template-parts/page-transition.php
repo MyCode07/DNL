@@ -37,10 +37,16 @@
             cover.dataset.pageTransition = '';
             cover.setAttribute('aria-hidden', 'true');
             cover.style.cssText = 'position:fixed;inset:0 0 auto;width:100%;height:100vh;height:max(100lvh,100dvh);min-height:100%;z-index:2147483647;pointer-events:none;display:block';
-            cover.style.minHeight = `${Math.ceil(Math.max(
+            const minHeight = `${Math.ceil(Math.max(
                 window.innerHeight || 0,
                 (window.visualViewport?.height || 0) + (window.visualViewport?.offsetTop || 0)
             ))}px`;
+            if (/\biPhone\b/.test(window.navigator?.userAgent)) {
+                cover.dataset.pageTransitionOverscan = '';
+                cover.style.minHeight = `calc(${minHeight} + var(--frame-transition-bottom-overscan, 0px))`;
+            } else {
+                cover.style.minHeight = minHeight;
+            }
             context.fillStyle = '#000';
             context.fillRect(0, 0, 1, 1);
             const container = document.body ?? document.documentElement;

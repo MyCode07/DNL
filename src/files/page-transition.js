@@ -3,6 +3,9 @@
     if (!loader || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const html = document.documentElement;
+    if (/\biPhone\b/.test(navigator.userAgent)) {
+        loader.dataset.pageTransitionOverscan = '';
+    }
     const state = (window.framePageTransition = {
         enabled: true,
         pending: true,
@@ -23,11 +26,10 @@
         },
         setSolid(solid) {
             loader.classList.toggle('is-pixelated', !solid);
-            html.classList.toggle('frame-page-transition-solid', solid);
         },
         unmount() {
             loader.remove();
-            html.classList.remove('frame-page-transition-active', 'frame-page-transition-solid');
+            html.classList.remove('frame-page-transition-active');
         },
         release() {
             state.pending = false;
