@@ -282,7 +282,7 @@ function my_pagenavi()
 
 
 // Выводит обрезанный excerpt с проверкой длины.
-function get_loop_custom_excerpt($post = null, $limit = 12, $more = '...')
+function get_loop_custom_excerpt($post = null, $limit = 40, $more = '...')
 {
     // get_post() не делает запросов к БД, если пост уже в памяти (кэширован циклом)
     $post = get_post($post);
