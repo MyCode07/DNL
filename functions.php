@@ -10,6 +10,7 @@ require_once 'inc/acf/options.php';
 require_once 'inc/acf/author.php';
 require_once 'inc/seo/breadcrumbs.php';
 require_once 'inc/seo/yoast.php';
+require_once 'inc/seo/favicon.php';
 require_once 'inc/seo/sitemap.php';
 require_once 'inc/ajax/cookies.php';
 require_once 'inc/ajax/load-more.php';
