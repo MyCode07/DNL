@@ -13,6 +13,10 @@ add_filter('dnd_cf7_data_options', function ($options) {
 add_filter('wpcf7_autop_or_not', '__return_false');
 // Keep field wrappers: CF7 needs them for validation and accessible errors.
 
+add_filter('wpcf7_form_title_attr', static function (string $title): string {
+    return $title !== '' ? $title : (WPCF7_ContactForm::get_current()?->title() ?? '');
+});
+
 // Register custom validation copy in CF7's per-form Messages editor.
 add_filter('wpcf7_messages', function ($messages) {
     $messages['invalid_alphabetic'] = [
