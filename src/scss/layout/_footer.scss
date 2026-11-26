@@ -15,12 +15,6 @@
         padding-top: 8rem;
     }
 
-    // .footer__container
-    &__container {}
-
-    // .footer__body
-    &__body {}
-
     //.footer__grid
     &__grid {
         display: grid;
@@ -271,8 +265,6 @@
             margin-top: -2rem;
         }
 
-        @media (max-width:475px) {}
-
         &:before {
             content: '';
             display: block;
@@ -287,9 +279,6 @@
             }
         }
     }
-
-    // .footer__copyright
-    &__copyright {}
 
     // .footer__cookies
     // .footer__privacy

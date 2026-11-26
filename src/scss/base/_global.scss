@@ -75,12 +75,6 @@ main {
     }
 }
 
-section,
-h2,
-.h2,
-h3,
-.h3 {}
-
 label {
     * {
         user-select: none;
@@ -108,8 +102,6 @@ label {
         @media (max-width:1440px) {
             margin-top: 4rem;
         }
-
-        @media (max-width:1024px) {}
 
         button {
             width: 5rem;
@@ -390,7 +382,6 @@ svg {
 
         @media (any-hover: hover) {
             &:hover {
-                // background-color: $black;
                 color: $white;
             }
         }
@@ -408,7 +399,6 @@ svg {
 
         @media (any-hover: hover) {
             &:hover {
-                // background-color: $white;
                 color: $black;
             }
         }

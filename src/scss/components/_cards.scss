@@ -275,8 +275,6 @@
             aspect-ratio: 1/0.73;
         }
 
-        &-wrapper {}
-
         &-slide {
 
             img,
@@ -508,8 +506,6 @@
 
     // .post-item__author
     &__author {
-        // padding-bottom: 0.8rem;
-        // border-bottom: 0.1rem solid $gray-300;
         display: flex;
         flex-wrap: wrap;
         gap: 0.8rem 0.4rem;

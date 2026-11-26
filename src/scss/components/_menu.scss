@@ -141,10 +141,6 @@
     }
 
     &._open {
-        @media (max-width:1024px) {
-            .menu-surface {}
-        }
-
         .menu-body {
             @media (max-width:1024px) {
                 overflow-y: auto;
