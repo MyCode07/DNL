@@ -44,7 +44,7 @@ $footer_form_id = get_localized_field('footer_form');
                         ?>
 
                         <a href="<?php echo get_chipsa_project_url() ?>"
-                            target="_blank" rel="nofollow" class="chipsa text-m">
+                            target="_blank" rel="nofollow noopener noreferrer" class="chipsa text-m">
                             Made in
                             <img src="<?php echo esc_url(frame_asset('img/icons/chipsa.svg')); ?>" alt="">
                             Chipsa

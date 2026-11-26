@@ -17,6 +17,9 @@ add_filter('wpcf7_form_title_attr', static function (string $title): string {
     return $title !== '' ? $title : (WPCF7_ContactForm::get_current()?->title() ?? '');
 });
 
+// Run after Polylang applies translated form content.
+add_filter('wpcf7_form_elements', 'frame_add_blank_link_rel', 20);
+
 // Register custom validation copy in CF7's per-form Messages editor.
 add_filter('wpcf7_messages', function ($messages) {
     $messages['invalid_alphabetic'] = [

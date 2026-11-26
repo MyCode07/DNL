@@ -128,6 +128,22 @@ function get_logo_url()
 
 
 
+function frame_add_blank_link_rel(string $html): string
+{
+    $tags = new WP_HTML_Tag_Processor($html);
+    while ($tags->next_tag('A')) {
+        if (strtolower((string) $tags->get_attribute('target')) !== '_blank') {
+            continue;
+        }
+        $rel = preg_split('/\s+/', trim((string) $tags->get_attribute('rel')), -1, PREG_SPLIT_NO_EMPTY);
+        $missing = array_diff(['noopener', 'noreferrer'], array_map('strtolower', $rel));
+        if ($missing) {
+            $tags->set_attribute('rel', implode(' ', array_merge($rel, $missing)));
+        }
+    }
+    return $tags->get_updated_html();
+}
+
 // get link text and url
 function get_link_info($link, $class = '', $attrs = '')
 {
@@ -139,7 +155,7 @@ function get_link_info($link, $class = '', $attrs = '')
 
     $rel = '';
     if ($link_target == '_blank') {
-        $rel = 'rel="nofollow"';
+        $rel = 'rel="nofollow noopener noreferrer"';
     }
 
     $svg = '';
@@ -171,7 +187,9 @@ function get_link_with_icon_info($link, $class, $svg = false)
         $icon = '';
     }
 
-    return '<a href="' . $link_url . '" target="' . $link_target . '" class="' . $class . '">
+    $rel = $link_target === '_blank' ? ' rel="noopener noreferrer"' : '';
+
+    return '<a href="' . $link_url . '" target="' . $link_target . '"' . $rel . ' class="' . $class . '">
                     <span>' . $link_text . '</span>
                     ' . $icon . '
                 </a>';

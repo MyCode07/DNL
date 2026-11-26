@@ -2,6 +2,6 @@
 $cookies = get_localized_field('kuki_popap');
 ?>
 <div class="cookies _hide" inert aria-hidden="true">
-    <p class="text-s"><?php echo $cookies['tekst'] ?></p>
+    <p class="text-s"><?php echo frame_add_blank_link_rel($cookies['tekst'] ?? '') ?></p>
     <button type="button" class="arrow-btn text-m" data-accept-cookies><?php echo $cookies['knopka'] ?></button>
 </div>

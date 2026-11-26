@@ -24,17 +24,17 @@ $share_links = [
             </svg>
         </button>
 
-        <a href="<?php echo esc_url($share_links['facebook']); ?>" target="_blank" rel="nofollow" aria-label="Facebook">
+        <a href="<?php echo esc_url($share_links['facebook']); ?>" target="_blank" rel="nofollow noopener noreferrer" aria-label="Facebook">
             <svg width="20" height="20" viewBox="0 0 20 20">
                 <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#facebook')); ?>' />
             </svg>
         </a>
-        <a href="<?php echo esc_url($share_links['linkedin']); ?>" target="_blank" rel="nofollow" aria-label="LinkedIn">
+        <a href="<?php echo esc_url($share_links['linkedin']); ?>" target="_blank" rel="nofollow noopener noreferrer" aria-label="LinkedIn">
             <svg width="20" height="20" viewBox="0 0 20 20">
                 <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#linkedin')); ?>' />
             </svg>
         </a>
-        <a href="<?php echo esc_url($share_links['telegram']); ?>" target="_blank" rel="nofollow" aria-label="Telegram">
+        <a href="<?php echo esc_url($share_links['telegram']); ?>" target="_blank" rel="nofollow noopener noreferrer" aria-label="Telegram">
             <svg width="20" height="20" viewBox="0 0 20 20">
                 <use xlink:href='<?php echo esc_url(frame_asset('img/svg/icons.svg#telegram')); ?>' />
             </svg>

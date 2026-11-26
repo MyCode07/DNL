@@ -71,11 +71,11 @@ export function initCopyLinksInstagramTiktok(root = document) {
                 view.clearTimeout(timer);
                 timer = view.setTimeout(() => {
                     if (Date.now() - startTime < 2000 && !view.document.hidden) {
-                        view.open(appUrl, '_blank');
+                        view.open(appUrl, '_blank', 'noopener,noreferrer');
                     }
                 }, 1500);
             } else {
-                view.open(webUrl, '_blank');
+                view.open(webUrl, '_blank', 'noopener,noreferrer');
             }
         });
     }
