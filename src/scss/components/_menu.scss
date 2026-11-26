@@ -121,6 +121,8 @@
         }
 
         @media (any-hover: hover) {
+
+            &:focus-visible,
             &:hover {
                 rect {
                     fill-opacity: 1;
@@ -169,6 +171,7 @@
                 justify-content: space-between;
                 @include type.typography("h4");
 
+                &:focus-visible,
                 &:hover {
                     &:after {
                         opacity: 1;
@@ -255,6 +258,7 @@
             text-transform: uppercase;
             transition: color 0.3s ease 0s;
 
+            &:focus-visible,
             &:hover {
                 color: $white;
             }
