@@ -2,7 +2,7 @@
 get_header();
 ?>
 
-<main>
+<main id="main">
     <?php
     $blog_page_id = get_option('page_for_posts');
     $posts_per_page = get_option('posts_per_page') ?? 6;

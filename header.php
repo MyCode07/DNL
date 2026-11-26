@@ -33,10 +33,9 @@
     }
     ?>
     <div class="wrapper">
-        <?php if (!is_front_page() && !is_404()) {
-            get_template_part('template-parts/breadcrumbs');
-        }
-        ?>
+        <nav class="skip-links _container" aria-label="Ссылки для быстрого перехода">
+            <a class="skip-link" href="#main">Перейти к основному содержанию</a>
+        </nav>
         <header class="header white <?php echo $header_class ?>">
             <div class="header__container _container">
                 <div class="header__body">
@@ -48,3 +47,7 @@
                 </div>
             </div>
         </header>
+        <?php if (!is_front_page() && !is_404()) {
+            get_template_part('template-parts/breadcrumbs');
+        }
+        ?>

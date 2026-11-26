@@ -277,6 +277,10 @@
         min-height: 100vh;
     }
 
+    .section__top {
+        position: relative;
+    }
+
     // .ceo__bg
     &__bg {
         position: absolute;
@@ -313,8 +317,7 @@
                 margin-left: auto;
                 width: 74%;
                 position: relative;
-                top: 0;
-                height: 75rem;
+                height: 80rem;
                 mask-image: linear-gradient(to bottom,
                         #000 0%,
                         #000 90%,
@@ -346,8 +349,14 @@
                 }
             }
 
+            @media (max-width:991px) {
+                height: 75rem;
+                top: 0;
+            }
+
             @media (max-width:767px) {
                 height: 44rem;
+                min-height: 80vw;
                 mask-image: linear-gradient(to bottom,
                         #000 0%,
                         #000 75%,
@@ -356,6 +365,7 @@
         }
     }
 
+    // .ceo__photo
     &__photo {
         display: block;
         width: 100%;
@@ -958,6 +968,7 @@
             left: 0;
         }
 
+        // .deals-collection__wrap
         &__wrap {
             isolation: isolate;
             position: relative;
@@ -1181,6 +1192,7 @@
         overflow: clip;
     }
 
+    // .cta__photo
     &__photo {
         position: absolute;
         --photo-width: 160%;

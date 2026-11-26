@@ -30,8 +30,8 @@ $footer_form_id = get_localized_field('footer_form');
             </div>
             <div class="footer__bottom footer__grid">
                 <div class="footer__left">
-                    <a href="<?php echo get_home_page_url() ?>" width="430" height="80" class="footer__logo h2">
-                        <img src="<?php echo esc_url(frame_asset('img/logo-black.svg')); ?>" alt="<?php echo bloginfo('name') ?>">
+                    <a href="<?php echo get_home_page_url() ?>" class="footer__logo h2">
+                        <img src="<?php echo esc_url(frame_asset('img/logo-black.svg')); ?>" width="430" height="80" alt="<?php echo bloginfo('name') ?>">
                     </a>
                 </div>
                 <div class="footer__right">

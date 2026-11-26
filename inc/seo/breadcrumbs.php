@@ -10,7 +10,7 @@ function frame_localize_breadcrumb_home($links)
 
     $home = function_exists('pll_home_url') ? pll_home_url('en') : home_url('/');
     if (isset($links[0]['url']) && untrailingslashit($links[0]['url']) === untrailingslashit($home)) {
-        $links[0]['text'] = 'Home';
+        $links[0]['text'] = 'DNL Capital';
     }
 
     return $links;

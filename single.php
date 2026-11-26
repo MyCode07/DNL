@@ -2,7 +2,7 @@
 get_header();
 ?>
 
-<main>
+<main id="main">
     <?php while (have_posts()) : the_post(); ?>
         <article class="section text-page single" id="post-<?php the_ID(); ?>">
             <div class="section__container _container">

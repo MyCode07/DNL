@@ -5,7 +5,7 @@ export const HERO_BACKGROUND = {
     section: '.hero',
     background: '.hero__photo',
     trigger: '.glass__grid-item',
-    media: '(width < 767px) and (prefers-reduced-motion: no-preference)',
+    media: '(width < 767px)',
     start: 'top bottom',
     end: 'bottom bottom',
     scrub: true,

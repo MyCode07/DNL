@@ -23,14 +23,16 @@
 
             @media (max-width:1024px) {
                 height: 100dvh;
+                height: 100svh;
 
                 @supports (-webkit-touch-callout: none) {
-                    height: 113dvh;
+                    height: 113svh;
                 }
             }
         }
     }
 
+    // .hero__photo
     &__photo {
         display: block;
         width: 100%;
@@ -55,6 +57,7 @@
         }
 
         @media (max-width:1024px) {
+            object-position: center;
             position: absolute;
             --photo-width: 181%;
             width: var(--photo-width);
@@ -70,6 +73,7 @@
             bottom: 0;
             left: 8rem;
             transform-origin: 60% bottom;
+            will-change: transform;
 
             @supports (-webkit-touch-callout: none) {
                 --photo-width: 135%;
@@ -92,10 +96,6 @@
             padding-bottom: 1.6rem;
             display: flex;
             flex-direction: column;
-        }
-
-        @media (max-width:1024px) {
-            min-height: 100dvh;
         }
 
         @media (max-width:767px) {
@@ -181,6 +181,7 @@
         }
     }
 
+    // .glass__grid-item
     .glass__grid-item {
         @media (max-width:767px) {
             backdrop-filter: blur(0.8rem);

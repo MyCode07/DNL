@@ -39,7 +39,7 @@ add_filter('wpseo_sitemap_url', function ($output, $url) {
         }
     }
 
-    $fields = "\t<changefreq>weekly</changefreq>\n";
+    $fields = "\t<changefreq>monthly</changefreq>\n";
     $fields .= "\t\t<priority>{$priority}</priority>\n";
 
     return str_replace('</url>', $fields . "\t</url>", $output);

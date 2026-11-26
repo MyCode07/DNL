@@ -109,6 +109,7 @@
                 position: static;
             }
 
+            // .form__item
             &__item {
                 input {
                     @include type.typography("body-text");
@@ -116,7 +117,8 @@
                 }
             }
 
-            .form__privacy {
+            // form__privacy
+            &__privacy {
                 margin-top: 1.6rem;
 
                 p {

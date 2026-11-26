@@ -6,12 +6,10 @@ $list = $hero['spisok'];
 <section class="hero white">
     <div class="hero__bg" aria-hidden="true">
         <div class="hero__bg-image">
-            <?php echo wp_get_attachment_image((int) ($hero['fon_desktop'] ?? 0), 'full', false, [
+            <?php echo wp_get_attachment_image(($hero['fon_desktop'] ?? 0), 'full', false, [
                 'class' => 'hero__photo',
-                'alt' => '',
                 'loading' => 'eager',
                 'fetchpriority' => 'high',
-                'sizes' => '(max-width: 767px) 200vw, (max-width: 1024px) 181vw, 100vw',
             ]); ?>
         </div>
     </div>

@@ -196,6 +196,7 @@
         background-color: transparent;
         transition: opacity 0.3s ease 0s;
 
+        &:focus-visible,
         &:hover {
             opacity: 0.6;
         }

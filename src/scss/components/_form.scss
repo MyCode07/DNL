@@ -54,10 +54,9 @@
         }
 
         &.error {
-            border-color: $red;
-
             input {
                 color: $red;
+                border-color: $red;
 
                 &::placeholder {
                     color: $red;
@@ -277,6 +276,7 @@
             margin-top: 1.6rem;
         }
 
+        // .newsletter-msg__fail
         &__fail {
             color: $red;
         }
@@ -468,4 +468,27 @@
 
 .iti--detached-country-selector {
     top: calc(anchor(bottom) + 10px);
+}
+
+.form__checkboxes:has(:focus-visible),
+.codedropz-upload-wrapper:has(:focus-visible),
+input:focus-visible {
+    border-color: $black;
+}
+
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.form__privacy label:has(:focus-visible):before {
+    border-color: $black;
+}
+
+a:focus-visible {
+    text-decoration: underline;
+}
+
+._btn:focus-visible {
+    outline: 0.1rem solid $black;
+    outline-offset: 0.2rem;
 }

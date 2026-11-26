@@ -2,7 +2,7 @@
 get_header();
 ?>
 
-<main>
+<main id="main">
 
     <section class="section text-page" id="page-<?php the_ID() ?>">
         <div class="section__container _container">

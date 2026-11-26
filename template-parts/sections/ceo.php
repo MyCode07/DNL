@@ -6,11 +6,9 @@ $list = $ceo['spisok'];
     <div class="ceo__bgc"></div>
     <div class="ceo__bg" aria-hidden="true">
         <div class="ceo__bg-image">
-            <?php echo wp_get_attachment_image((int) ($ceo['fon_desktop'] ?? 0), 'full', false, [
+            <?php echo wp_get_attachment_image(($ceo['fon_desktop'] ?? 0), 'full', false, [
                 'class' => 'ceo__photo',
-                'alt' => '',
                 'loading' => 'lazy',
-                'sizes' => '(max-width: 1024px) 74vw, 100vw',
             ]); ?>
         </div>
     </div>

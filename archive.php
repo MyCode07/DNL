@@ -2,7 +2,7 @@
 get_header();
 ?>
 
-<main>
+<main id="main">
 
     <?php
     $archive_class = '';

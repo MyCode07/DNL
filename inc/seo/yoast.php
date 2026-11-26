@@ -115,3 +115,6 @@ function frame_yoast_article_without_comments($data)
 }
 
 
+add_filter('wpseo_opengraph_site_name', function ($name) {
+    return 'DNL Capital';
+});
