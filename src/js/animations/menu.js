@@ -45,13 +45,18 @@ export function createMenuAnimation(menu, { media, toggle }) {
         rects.forEach((rect, index) => rect.setAttribute('fill-opacity', opacity[index]));
     }
 
+    function setBodyOpen(open) {
+        body.inert = !open;
+        toggle.setAttribute('aria-expanded', String(open));
+    }
+
     function animate(open, { modeChange = false, immediate = false } = {}) {
         timeline?.kill();
         const mobile = media.mobile.matches;
         const compact = media.compact.matches || small;
         const reducedMotion = media.reducedMotion.matches || immediate;
         const duration = reducedMotion ? 0 : 0.8;
-        body.inert = !open;
+        setBodyOpen(open);
         if (outerLogo) outerLogo.inert = mobile && open;
         if (innerLogo) innerLogo.inert = true;
         if (heroButton) heroButton.inert = media.compact.matches && open;
@@ -201,7 +206,7 @@ export function createMenuAnimation(menu, { media, toggle }) {
             if (logos.length) gsap.set(logos, { clearProps: 'opacity,visibility' });
             if (heroButton) gsap.set(heroButton, { clearProps: 'height' });
         });
-        body.inert = true;
+        setBodyOpen(false);
         if (outerLogo) outerLogo.inert = false;
         if (innerLogo) innerLogo.inert = true;
         if (heroButton) heroButton.inert = false;
@@ -224,7 +229,7 @@ export function createMenuAnimation(menu, { media, toggle }) {
             logos.forEach((logo, index) => {
                 logo.inert = originalLogoInert[index];
             });
-            body.inert = originalBodyInert;
+            setBodyOpen(!originalBodyInert);
             if (heroButton) heroButton.inert = originalHeroInert;
             rects.forEach((rect, index) => {
                 if (originalOpacity[index] === null) rect.removeAttribute('fill-opacity');
