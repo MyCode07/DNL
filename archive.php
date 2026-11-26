@@ -40,6 +40,7 @@ get_header();
                     if (max(1, (int) get_query_var('paged')) < $wp_query->max_num_pages) {
                         get_template_part('template-parts/load-more-btn');
                     }
+                    echo my_pagenavi();
                     ?>
                 <?php else:
                     get_template_part('template-parts/content-none');

@@ -274,28 +274,26 @@ function check_posts_count($post_type, $count = 3)
 // archive navigation
 function my_pagenavi()
 {
-    global $wp_query;
+    $arrow = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" role="img" aria-label="%s">
+        <use href="' . esc_url(frame_asset('img/svg/icons.svg#swiper-arrow')) . '" />
+    </svg>';
 
-    $prev = '<span>Назад</span>';
-    $next = '<span>Вперед</span>';
+    $links = paginate_links([
+        'type' => 'list',
+        'mid_size' => 1,
+        'prev_text' => sprintf($arrow, esc_attr_x('Previous', 'previous set of posts')),
+        'next_text' => sprintf($arrow, esc_attr_x('Next', 'next set of posts')),
+    ]);
 
-    $args = array(
-        'type'    => 'list',
-        'current' => max(1, get_query_var('paged')),
-        'total'   => $wp_query->max_num_pages,
-        'prev_text'    => $prev,
-        'next_text'    => $next,
-        'show_all'     => false,
-        'add_args'  => array(),
+    if (!$links) {
+        return '';
+    }
+
+    return sprintf(
+        '<nav class="swiper-navigation archive-pagination" aria-label="%s">%s</nav>',
+        esc_attr__('Posts pagination'),
+        $links
     );
-
-
-    $result = paginate_links($args);
-
-    // удаляем добавку к пагинации для первой страницы
-    $result = preg_replace('~/page/1/?([\'"])~', '', $result);
-
-    return $result;
 }
 
 

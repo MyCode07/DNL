@@ -1338,7 +1338,8 @@
         }
     }
 
-    .load-more {
+    .load-more,
+    .archive-pagination {
         margin-inline: auto;
         margin-top: 6rem;
 
@@ -1346,4 +1347,20 @@
             margin-top: 4rem;
         }
     }
+
+    .archive-pagination > .page-numbers {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+    }
+
+    .archive-pagination .dots {
+        padding-inline: 0.4rem;
+    }
+}
+
+.no-js .archive .load-more {
+    display: none;
 }

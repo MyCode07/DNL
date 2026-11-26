@@ -103,7 +103,7 @@ label {
             margin-top: 4rem;
         }
 
-        button {
+        :is(button, :where(.archive-pagination li > .page-numbers:not(.dots))) {
             width: 5rem;
             height: 5rem;
             display: flex;
@@ -112,6 +112,7 @@ label {
             border-radius: 1.4rem;
             transition: background-color 0.3s ease 0s;
             background-color: $black;
+            color: $white;
 
             @media (max-width:1440px) {
                 width: 4.4rem;
@@ -135,7 +136,8 @@ label {
                 }
             }
 
-            &:not(.swiper-button-disabled):hover {
+            &:not(.swiper-button-disabled, .current):focus-visible,
+            &:not(.swiper-button-disabled, .current):hover {
 
                 img,
                 svg {
@@ -160,8 +162,10 @@ label {
             }
         }
 
-        .swiper-button-disabled {
+        .swiper-button-disabled,
+        &.archive-pagination .current {
             background-color: $gray-100;
+            color: $black;
 
             svg {
                 stroke: $black-50;
