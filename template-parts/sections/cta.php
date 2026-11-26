@@ -2,14 +2,14 @@
 $cta = get_field('cta');
 $btn = $cta['knopka'];
 ?>
-<style>
-    .cta__bg-image {
-        background-image: url(<?php echo esc_url($cta['fon_desktop']) ?>);
-    }
-</style>
 <section class="section white cta" id="cta">
-    <div class="cta__bg">
-        <div class="cta__bg-image"></div>
+    <div class="cta__bg" aria-hidden="true">
+        <?php echo wp_get_attachment_image((int) ($cta['fon_desktop'] ?? 0), 'full', false, [
+            'class' => 'cta__photo',
+            'alt' => '',
+            'loading' => 'lazy',
+            'sizes' => '(max-width: 767px) 340vw, (max-width: 1280px) 200vw, 160vw',
+        ]); ?>
     </div>
     <div class="pixelated-scroll-transition" data-pixelated-scroll-transition data-color="#ffffff"
         data-direction="up" aria-hidden="true">

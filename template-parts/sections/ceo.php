@@ -2,15 +2,17 @@
 $ceo = get_field('seo');
 $list = $ceo['spisok'];
 ?>
-<style>
-    .ceo__bg-image {
-        background-image: url(<?php echo esc_url($ceo['fon_desktop']) ?>);
-    }
-</style>
 <section class="section ceo white" id="ceo">
     <div class="ceo__bgc"></div>
-    <div class="ceo__bg">
-        <div class="ceo__bg-image"></div>
+    <div class="ceo__bg" aria-hidden="true">
+        <div class="ceo__bg-image">
+            <?php echo wp_get_attachment_image((int) ($ceo['fon_desktop'] ?? 0), 'full', false, [
+                'class' => 'ceo__photo',
+                'alt' => '',
+                'loading' => 'lazy',
+                'sizes' => '(max-width: 1024px) 74vw, 100vw',
+            ]); ?>
+        </div>
     </div>
     <div class="pixelated-scroll-transition" data-pixelated-scroll-transition data-color="#ffffff"
         data-direction="up" aria-hidden="true">

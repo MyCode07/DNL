@@ -3,14 +3,13 @@ import { gsap } from '../core/gsap.js';
 // Independent of heading parallax: zoom while the first metric enters the viewport.
 export const HERO_BACKGROUND = {
     section: '.hero',
-    background: '.hero__bg-image',
+    background: '.hero__photo',
     trigger: '.glass__grid-item',
     media: '(width < 767px) and (prefers-reduced-motion: no-preference)',
     start: 'top bottom',
     end: 'bottom bottom',
     scrub: true,
-    targetSize: '200% auto',
-    horizontalAnchor: 0.6,
+    targetWidthPercent: 200,
 };
 
 export function initHeroBackground(root) {
@@ -21,26 +20,16 @@ export function initHeroBackground(root) {
 
     const media = gsap.matchMedia();
     media.add(HERO_BACKGROUND.media, () => {
-        const styles = root.defaultView.getComputedStyle(background);
-        const initialSize = styles.backgroundSize;
-        const initialPosition = styles.backgroundPosition;
-        const initialX = styles.backgroundPositionX;
-        const initialY = styles.backgroundPositionY;
-        const targetPosition = () => {
-            const width = background.getBoundingClientRect().width;
-            const initialWidth = (parseFloat(initialSize) / 100) * width;
-            const targetWidth = (parseFloat(HERO_BACKGROUND.targetSize) / 100) * width;
-            const x = initialX.endsWith('%')
-                ? ((width - initialWidth) * parseFloat(initialX)) / 100
-                : parseFloat(initialX);
-            return `${x - (targetWidth - initialWidth) * HERO_BACKGROUND.horizontalAnchor}px ${initialY}`;
+        const targetScale = () => {
+            const styles = root.defaultView.getComputedStyle(background);
+            const widthPercent = parseFloat(styles.getPropertyValue('--photo-width'));
+            return HERO_BACKGROUND.targetWidthPercent / widthPercent;
         };
         gsap.fromTo(
             background,
-            { backgroundSize: initialSize, backgroundPosition: initialPosition },
+            { scale: 1 },
             {
-                backgroundSize: HERO_BACKGROUND.targetSize,
-                backgroundPosition: targetPosition,
+                scale: targetScale,
                 ease: 'none',
                 scrollTrigger: {
                     trigger,

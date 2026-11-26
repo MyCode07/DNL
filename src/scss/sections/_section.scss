@@ -307,19 +307,11 @@
             position: sticky;
             width: 100%;
             height: calc(100vh + 4rem);
-            background-repeat: no-repeat;
-            background-position: 71.25% bottom;
-            background-size: contain;
             top: 4rem;
 
             @media (max-width:1440px) {
                 height: calc(100vh + 3rem);
-                background-position: 70% bottom;
                 top: 3rem;
-            }
-
-            @media (max-width:1280px) {
-                background-position: 79% bottom;
             }
 
             @media (max-width:1024px) {
@@ -327,7 +319,6 @@
                 width: 74%;
                 position: relative;
                 top: 0;
-                background-position: right top;
                 height: 75rem;
                 mask-image: linear-gradient(to bottom,
                         #000 0%,
@@ -367,6 +358,26 @@
                         #000 75%,
                         transparent 90%);
             }
+        }
+    }
+
+    &__photo {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: 71.25% bottom;
+
+        @media (max-width:1440px) {
+            object-position: 70% bottom;
+        }
+
+        @media (max-width:1280px) {
+            object-position: 79% bottom;
+        }
+
+        @media (max-width:1024px) {
+            object-position: right top;
         }
     }
 
@@ -1194,31 +1205,33 @@
         z-index: -2;
         pointer-events: none;
         background-color: $black;
+        overflow: clip;
+    }
 
-        // .cta__bg-image
-        &-image {
-            width: 100%;
-            height: 100%;
-            background-repeat: no-repeat;
-            background-size: 160%;
-            --top: clamp(4rem, calc(4rem + (1920px - 100vw) * 0.2), 25rem);
-            background-position: 2% var(--top);
+    &__photo {
+        position: absolute;
+        --photo-width: 160%;
+        --photo-offset: 0.02;
+        width: var(--photo-width);
+        max-width: none;
+        height: auto;
+        left: calc((100% - var(--photo-width)) * var(--photo-offset));
+        top: clamp(4rem, calc(4rem + (1920px - 100vw) * 0.2), 25rem);
 
-            @media (max-width:1440px) {}
+        @media (max-width:1280px) {
+            --photo-width: 200%;
+            --photo-offset: 0.205;
+            top: 7rem;
+        }
 
-            @media (max-width:1280px) {
-                background-size: 200%;
-                background-position: 20.5% 7rem;
-            }
+        @media (max-width:1024px) {
+            top: max(33rem, 15vh);
+        }
 
-            @media (max-width:1024px) {
-                background-position: 20.5% max(33rem, 15vh);
-            }
-
-            @media (max-width:767px) {
-                background-size: 340%;
-                background-position: 36% max(46rem, 15vh);
-            }
+        @media (max-width:767px) {
+            --photo-width: 340%;
+            --photo-offset: 0.36;
+            top: max(46rem, 15vh);
         }
     }
 

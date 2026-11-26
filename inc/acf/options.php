@@ -1,5 +1,11 @@
 <?php
 
+// Use attachment IDs for the home page backgrounds, including existing ACF field groups.
+add_filter('acf/load_field/name=fon_desktop', static function (array $field): array {
+    $field['return_format'] = 'id';
+    return $field;
+});
+
 if (function_exists('acf_add_options_page')) {
     add_action('acf/init', function () {
 

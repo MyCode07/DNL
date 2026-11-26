@@ -3,14 +3,17 @@ $hero = get_field('banner');
 $btn = $hero['knopka'];
 $list = $hero['spisok'];
 ?>
-<style>
-    .hero__bg-image {
-        background-image: url(<?php echo esc_url($hero['fon_desktop']) ?>);
-    }
-</style>
 <section class="hero white">
-    <div class="hero__bg">
-        <div class="hero__bg-image"></div>
+    <div class="hero__bg" aria-hidden="true">
+        <div class="hero__bg-image">
+            <?php echo wp_get_attachment_image((int) ($hero['fon_desktop'] ?? 0), 'full', false, [
+                'class' => 'hero__photo',
+                'alt' => '',
+                'loading' => 'eager',
+                'fetchpriority' => 'high',
+                'sizes' => '(max-width: 767px) 200vw, (max-width: 1024px) 181vw, 100vw',
+            ]); ?>
+        </div>
     </div>
     <div class="hero__container _container">
         <div class="hero__body">
