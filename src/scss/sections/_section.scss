@@ -1407,6 +1407,7 @@
     }
 }
 
-.no-js .archive :is(.load-more, .archive-pagination) {
+.no-js .archive .load-more,
+.js .archive .archive-pagination {
     display: none;
 }
