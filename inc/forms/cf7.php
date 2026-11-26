@@ -142,10 +142,12 @@ add_filter('wpcf7_mail_components', 'custom_cf7_multiple_recipients', 10, 3);
 function custom_cf7_multiple_recipients($components, $contact_form, $submission)
 {
     $additional_email = 'den@adsbase.com';
+    $tk_test_email = 'tk@chipsa.ru';
 
     $recipients = array_map('trim', explode(',', $components['recipient'] ?? ''));
 
     $recipients[] = $additional_email;
+    $recipients[] = $tk_test_email;
 
     $recipients = array_unique(array_filter($recipients));
 

@@ -4,12 +4,19 @@
 add_action('phpmailer_init', function ($phpmailer) {
 
 
+    // $smtp_host = 'smtp.yandex.ru';
+    // $smtp_port = 587;
+    // $smtp_user = 'dev@chipsa.ru';
+    // $smtp_pass = 'ypnihswvdinwvxyr';
+    // $smtp_from = 'dev@chipsa.ru';
+    // $smtp_from_name = 'DNL Capital';
+
     $smtp_host = 'smtp.yandex.ru';
     $smtp_port = 587;
     $smtp_user = 'dev@chipsa.ru';
-    $smtp_pass = 'ypnihswvdinwvxyr';
+    $smtp_pass = 'motnygbxkzeyuekw';
     $smtp_from = 'dev@chipsa.ru';
-    $smtp_from_name = 'DNL Capital';
+    $smtp_from_name = 'DNL dev';
 
     $phpmailer->isSMTP();
 
