@@ -1348,19 +1348,65 @@
         }
     }
 
-    .archive-pagination > .page-numbers {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        gap: 0.8rem;
-    }
+    .archive-pagination {
+        > .page-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
 
-    .archive-pagination .dots {
-        padding-inline: 0.4rem;
+        li > .page-numbers:not(.dots) {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 5rem;
+            height: 5rem;
+            border-radius: 1.4rem;
+            background-color: $gray-100;
+            color: $black;
+            transition: background-color 0.3s ease, color 0.3s ease;
+
+            &.current,
+            &:any-link:is(:hover, :focus-visible) {
+                background-color: $black;
+                color: $white;
+            }
+
+            &:any-link:is(:hover, :focus-visible) svg {
+                scale: 1.25;
+            }
+
+            @media (max-width:1440px) {
+                width: 4.4rem;
+                height: 4.4rem;
+                border-radius: 1rem;
+            }
+        }
+
+        svg {
+            width: 2rem;
+            height: 2rem;
+            stroke: currentColor;
+            transition: scale 0.3s ease;
+
+            @media (max-width:767px) {
+                width: 1.4rem;
+                height: 1.4rem;
+            }
+        }
+
+        .prev svg {
+            transform: rotate(180deg);
+        }
+
+        .dots {
+            padding-inline: 0.4rem;
+        }
     }
 }
 
-.no-js .archive .load-more {
+.no-js .archive :is(.load-more, .archive-pagination) {
     display: none;
 }

@@ -290,7 +290,7 @@ function my_pagenavi()
     }
 
     return sprintf(
-        '<nav class="swiper-navigation archive-pagination" aria-label="%s">%s</nav>',
+        '<nav class="archive-pagination" aria-label="%s">%s</nav>',
         esc_attr__('Posts pagination'),
         $links
     );
