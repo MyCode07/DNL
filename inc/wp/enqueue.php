@@ -1,5 +1,14 @@
 <?php
 
+add_action('wp_enqueue_scripts', static function (): void {
+    $honeypot = wp_scripts()->query('cf7apps-honeypot-refill', 'registered');
+
+    if ($honeypot) {
+        // The refill script uses native APIs. Its optional jQuery integration is for Popup Maker.
+        $honeypot->deps = array_values(array_diff($honeypot->deps, ['jquery']));
+    }
+}, PHP_INT_MAX);
+
 /** Set WP_VITE_DEV to true in local wp-config.php only while npm run dev is running. */
 add_action('wp_enqueue_scripts', static function (): void {
     if (frame_is_vite_dev()) {

@@ -23,6 +23,7 @@ wp-config-*.php
 *.sqlite3
 
 # Local settings, caches, logs and temporary files
+/audit
 /.idea/
 /.vscode/
 .npmrc
