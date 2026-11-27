@@ -17,8 +17,7 @@ export function initMenu(root, media) {
 
     function setOpen(open) {
         menu.classList.toggle('_open', open);
-        if (label && !media.compact.matches && !header.classList.contains('header-small'))
-            label.textContent = open ? label.dataset.textClose : label.dataset.textOpen;
+        if (label) label.textContent = open ? label.dataset.textClose : label.dataset.textOpen;
         project.sync();
         animation.animate(open);
     }

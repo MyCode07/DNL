@@ -1,8 +1,9 @@
 <?php
 $is_glass_menu = is_front_page();
 
-$menu_open = get_localized_field('menyu_otkryt');
-$menu_close = get_localized_field('menyu_zakryt');
+$is_english = function_exists('pll_current_language') && pll_current_language('slug') === 'en';
+$menu_open = get_localized_field('menyu_otkryt') ?: ($is_english ? 'Open menu' : 'Открыть меню');
+$menu_close = get_localized_field('menyu_zakryt') ?: ($is_english ? 'Close menu' : 'Закрыть меню');
 $menu_btn = get_localized_field('knopka_menyu');
 $menu_social = get_localized_field('menyu_soczseti');
 $global_btn = get_localized_field('globalnaya_knopka');
@@ -13,9 +14,9 @@ $global_btn = get_localized_field('globalnaya_knopka');
             <a href="<?php echo get_home_page_url() ?>" class="menu-logo">
                 <img src="<?php echo esc_url(frame_asset('img/logo-mb.svg')); ?>" width="50" height="20" alt="<?php echo bloginfo('name') ?>">
             </a>
-            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-body">
-                <span class="label-m" data-text-open="<?php echo $menu_open ?>" data-text-close="<?php echo $menu_close ?>"><?php echo $menu_open ?></span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-body" aria-labelledby="menu-toggle-label">
+                <span id="menu-toggle-label" class="label-m" data-text-open="<?php echo esc_attr($menu_open) ?>" data-text-close="<?php echo esc_attr($menu_close) ?>"><?php echo htmlspecialchars($menu_open, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <rect x="2" y="2" width="4" height="4" rx="1" fill="white" fill-opacity="0.2" />
                     <rect x="10" y="2" width="4" height="4" rx="1" fill="white" />
                     <rect x="18" y="2" width="4" height="4" rx="1" fill="white" fill-opacity="0.2" />
