@@ -24,13 +24,6 @@ function frame_localize_breadcrumb_home($links)
  */
 class Pretty_Breadcrumb {
 
-	/**
-	 * Какую позицию занимает элемент в цепочке хлебных крошек.
-	 *
-	 * @var int
-	 */
-	private $el_position = 0;
-
 	public function __construct() {
 		add_action( 'pretty_breadcrumb', [ $this, 'render' ] );
 	}
@@ -59,9 +52,6 @@ class Pretty_Breadcrumb {
 		remove_filter( 'wpseo_breadcrumb_output', [ $this, 'modify_yoast_output' ] );
 		remove_filter( 'wpseo_breadcrumb_output_wrapper', [ $this, 'modify_yoast_wrapper' ] );
 		remove_filter( 'wpseo_breadcrumb_separator', '__return_empty_string' );
-
-		// Обнуляем счётчик
-		$this->el_position = 0;
 	}
 
 	/**
@@ -74,23 +64,21 @@ class Pretty_Breadcrumb {
 	 */
 	function modify_yoast_items( $link_html, $link_data ) {
 		// Шаблон контейнера li
-		$li = '<li itemprop="itemListElement" itemscope="itemscope" itemtype="https://schema.org/ListItem" %s>%s</li>';
+		$li = '<li%s>%s</li>';
 
 		// Содержимое li в зависимости от позиции элемента
 		if ( strpos( $link_html, 'breadcrumb_last' ) === false ) {
 			$li_inner = sprintf( '
-                <a itemprop="item" href="%s" class="pathway">
-                    <span itemprop="name">%s</span>
+                <a href="%s" class="pathway">
+                    <span>%s</span>
                 </a>
             ', $link_data['url'], $link_data['text'] );
 			$li_inner .= '<div class="sep"></div>';
 			$li_class = '';
 		} else {
-			$li_inner = sprintf( '<span itemprop="name">%s</span>', $link_data['text'] );
-			$li_class = 'class="active"';
+			$li_inner = sprintf( '<span>%s</span>', $link_data['text'] );
+			$li_class = ' class="active"';
 		}
-
-		$li_inner .= sprintf( '<meta itemprop="position" content="%d"/>', ++ $this->el_position );
 
 		// Вкладываем сформированное содержание в li и возвращаем полученный элемент хлебных крошек.
 		return sprintf( $li, $li_class, $li_inner );
@@ -118,7 +106,7 @@ class Pretty_Breadcrumb {
 		$html = str_replace( [ '<wrapper>', '</wrapper>' ], '', $html );
 
 		// Формируем контейнер для li элементов
-		$ul = '<ul itemscope="itemscope" itemtype="https://schema.org/BreadcrumbList" class="breadcrumb">%s</ul>';
+		$ul = '<ul class="breadcrumb">%s</ul>';
 
 		// Вставляем в контейнер li элменты
 		$html = sprintf( $ul, $html );
